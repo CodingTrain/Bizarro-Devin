@@ -1,4 +1,10 @@
 const vscode = require('vscode');
+
+const { typeRealistically } = require('./util/realisticTyping');
+const { speak } = require('./util/speak');
+
+const { script } = require('./script');
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 
@@ -6,59 +12,50 @@ const vscode = require('vscode');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-  console.log('Choo choo 🚂!');
+    console.log('Choo choo 🚂!');
 
-  // The command has been defined in the package.json file
-  // Now provide the implementation of the command with  registerCommand
-  // The commandId parameter must match the command field in package.json
-  let disposable = vscode.commands.registerCommand(
-    'bizarro-devin.chooChoo',
-    runAIAgent
-  );
-  context.subscriptions.push(disposable);
+    // The command has been defined in the package.json file
+    // Now provide the implementation of the command with  registerCommand
+    // The commandId parameter must match the command field in package.json
+    let disposable = vscode.commands.registerCommand(
+        'bizarro-devin.chooChoo',
+        runAIAgent
+    );
+    context.subscriptions.push(disposable);
 }
 
 function deactivate() {}
 
-function pauseAgent(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 // TODO: Receive a prompt to get started
 async function runAIAgent() {
-  // TODO: CREATE index.html and sketch.js
-  // Run live server
-  // Also, set up the window panes properly
+    // TODO: CREATE index.html and sketch.js
+    // Run live server
+    // Also, set up the window panes properly
 
-  // get active text editor
-  let editor = vscode.window.activeTextEditor;
-  if (!editor) {
-    vscode.window.showInformationMessage('Create a text file first!');
-    return; // No open text editor
-  }
-  vscode.commands.executeCommand('livePreview.start');
-  let code = `function setup() {\ncreateCanvas(400, 400);\nbackground(255); }
-	function draw() { fill(0);\ncircle(mouseX, mouseY, 100); }`;
-  for (let i = 0; i < code.length; i++) {
-    await pauseAgent(100);
-    editor.edit((editBuilder) => {
-      editBuilder.insert(editor.selection.active, code.charAt(i));
-    });
-  }
+    // get active text editor
+    let editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        vscode.window.showInformationMessage('Create a text file first!');
+        return; // No open text editor
+    }
 
-  vscode.commands.executeCommand('editor.action.formatDocument');
+    await vscode.commands.executeCommand('livePreview.start');
 
-  // await pauseAgent(3000);
+    // Iterate through each step
+    for (const step of script) {
+        await processStep(step, editor);
+    }
+}
 
-  // editor.edit((editBuilder) => {
-  //   editBuilder.insert(
-  //     editor.selection.active,
-  //     `
-  //   );
-  // });
+async function processStep(step, editor) {
+    if (step.type === 'code') {
+        await typeRealistically(editor, step.content.join('\n')); // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal
+    } else if (step.type === 'narrate') {
+        await speak(step.content);
+    }
 }
 
 module.exports = {
-  activate,
-  deactivate,
+    activate,
+    deactivate,
 };
