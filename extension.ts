@@ -1,11 +1,13 @@
-const vscode = require('vscode');
+import vscode from 'vscode';
+import typewriter from './typewriter';
+import { Devin_Response } from './yourAi';
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 
 /**
  * @param {vscode.ExtensionContext} context
  */
-function activate(context) {
+function activate(context: vscode.ExtensionContext) {
   console.log('Choo choo 🚂!');
 
   // The command has been defined in the package.json file
@@ -20,7 +22,7 @@ function activate(context) {
 
 function deactivate() {}
 
-function pauseAgent(ms) {
+function pauseAgent(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
@@ -37,14 +39,12 @@ async function runAIAgent() {
     return; // No open text editor
   }
   vscode.commands.executeCommand('livePreview.start');
-  let code = `function setup() {\ncreateCanvas(400, 400);\nbackground(255); }
-	function draw() { fill(0);\ncircle(mouseX, mouseY, 100); }`;
-  for (let i = 0; i < code.length; i++) {
-    await pauseAgent(100);
-    editor.edit((editBuilder) => {
-      editBuilder.insert(editor.selection.active, code.charAt(i));
-    });
-  }
+  
+  let code = (await Devin_Response("start","")).msg
+  typewriter(code,(character) => {
+    editor.edit((editBuilder) => editBuilder.insert(editor.selection.active, character));
+  })
+
 
   vscode.commands.executeCommand('editor.action.formatDocument');
 
