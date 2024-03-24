@@ -1,0 +1,23 @@
+[
+    {
+        "type": "narrate",
+        "content": "First I'm creating the canvas with a size of 400x400 pixels and then setting the background to white."
+    },
+    {
+        "type": "code",
+        "content": [
+            "function setup() {",
+            "    createCanvas(400, 400);",
+            "    background(255);",
+            "}"
+        ]
+    },
+    {
+        "type": "narrate",
+        "content": ""
+    },
+    {
+        "type": "code",
+        "content": []
+    }
+]
