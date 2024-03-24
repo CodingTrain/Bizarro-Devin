@@ -2,6 +2,7 @@ const vscode = require('vscode');
 
 const { typeRealistically } = require('./util/realisticTyping');
 const { speak } = require('./util/speak');
+const { sleep } = require('./util/sleep');
 
 const { script } = require('./script');
 
@@ -39,7 +40,26 @@ async function runAIAgent() {
         return; // No open text editor
     }
 
+    // Open live preview
     await vscode.commands.executeCommand('livePreview.start');
+
+    // Wait a second for the window to at least open
+    while (vscode.window.tabGroups.all.length < 2) {
+        await sleep(50);
+    }
+
+    // Toggle row layout
+    await vscode.commands.executeCommand(
+        'workbench.action.toggleEditorGroupLayout'
+    );
+
+    // Set this tab as our active tab again (weird workaround to make sure the next command works)
+    await vscode.commands.executeCommand('vscode.open', editor.document.uri);
+
+    // Move code editor to the bottom
+    await vscode.commands.executeCommand(
+        'workbench.action.moveActiveEditorGroupDown'
+    );
 
     // Iterate through each step
     for (const step of script) {
