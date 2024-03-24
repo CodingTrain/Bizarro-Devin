@@ -46,7 +46,7 @@ async function runAIAgent() {
     });
   }
 
-  vscode.commands.executeCommand('editor.action.formatDocument');
+  formatCurrentDocument(editor);
 
   // await pauseAgent(3000);
 
@@ -56,6 +56,33 @@ async function runAIAgent() {
   //     `
   //   );
   // });
+}
+
+function formatCurrentDocument(editor) {
+  vscode.commands
+    .executeCommand("vscode.executeFormatDocumentProvider", editor.document.uri)
+    .then(
+      (edits) => {
+        if (Array.isArray(edits) && edits.length > 0) {
+          const edit = new vscode.WorkspaceEdit();
+          edit.set(editor.document.uri, edits);
+          vscode.workspace.applyEdit(edit).then((success) => {
+            if (!success) {
+              vscode.window.showErrorMessage("Failed to format document.");
+            }
+          });
+        } else {
+          vscode.window.showInformationMessage(
+            "No formatting edits were returned."
+          );
+        }
+      },
+      (error) => {
+        vscode.window.showErrorMessage(
+          "An error occurred while formatting document: " + error
+        );
+      }
+    );
 }
 
 module.exports = {
