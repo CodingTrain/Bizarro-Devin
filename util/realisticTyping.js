@@ -1,4 +1,5 @@
 const { sleep } = require('./sleep');
+const vscode = require('vscode');
 
 const typeRealistically = async (editor, code, delay = 100) => {
     for (let i = 0; i < code.length; i++) {
@@ -12,6 +13,10 @@ const typeRealistically = async (editor, code, delay = 100) => {
     await editor.edit((editBuilder) => {
         editBuilder.insert(editor.selection.active, '\n');
     });
+
+    // Format document
+    await vscode.commands.executeCommand('vscode.open', editor.document.uri);
+    await vscode.commands.executeCommand('editor.action.formatDocument');
 };
 
 module.exports = {

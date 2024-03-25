@@ -18,17 +18,23 @@ function activate(context) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with  registerCommand
     // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand(
-        'bizarro-devin.chooChoo',
+
+    const setupLayoutCmd = vscode.commands.registerCommand(
+        'bizarro-devin.setupLayout',
+        setupLayout
+    );
+    context.subscriptions.push(setupLayoutCmd);
+
+    const runAIAgentCmd = vscode.commands.registerCommand(
+        'bizarro-devin.runAIAgent',
         runAIAgent
     );
-    context.subscriptions.push(disposable);
+    context.subscriptions.push(runAIAgentCmd);
 }
 
 function deactivate() {}
 
-// TODO: Receive a prompt to get started
-async function runAIAgent() {
+async function setupLayout() {
     // TODO: CREATE index.html and sketch.js
     // Run live server
     // Also, set up the window panes properly
@@ -60,6 +66,15 @@ async function runAIAgent() {
     await vscode.commands.executeCommand(
         'workbench.action.moveActiveEditorGroupDown'
     );
+}
+
+// TODO: Receive a prompt to get started
+async function runAIAgent() {
+    let editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        vscode.window.showInformationMessage('Create a text file first!');
+        return; // No open text editor
+    }
 
     // Iterate through each step
     for (const step of script) {

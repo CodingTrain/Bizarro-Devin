@@ -1,6 +1,6 @@
 {
   "name": "bizarro-devin",
-  "displayName": "Bizarro-Devin",
+  "displayName": "Bizarro Devin",
   "description": "Unhinged creative coding AI agent",
   "version": "0.0.1",
   "engines": {
@@ -14,8 +14,14 @@
   "contributes": {
     "commands": [
       {
-        "command": "bizarro-devin.chooChoo",
-        "title": "Choo choo"
+        "command": "bizarro-devin.setupLayout",
+        "title": "Setup Layout",
+        "category": "Bizarro Devin"
+      },
+      {
+        "command": "bizarro-devin.runAIAgent",
+        "title": "Run AI Agent",
+        "category": "Bizarro Devin"
       }
     ]
   },
