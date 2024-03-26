@@ -1,13 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import {runAIAgent, setupLayout} from './bizzaro-commands.js';
+import { COMMANDS } from './bizzaro-commands.js';
 
-
-const COMMANDS: {[key: string]: (() => Promise<void>) | (() => void) } = {
-	"runAIAgent": runAIAgent,
-	"setupLayout": setupLayout,
-};
 
 
 // This method is called when your extension is activated
