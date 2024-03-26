@@ -18,11 +18,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   setupLayout: () => (/* binding */ setupLayout)
 /* harmony export */ });
 /* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _util_createFiles_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
-/* harmony import */ var _util_realisticTyping_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
-/* harmony import */ var _util_speak_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
-/* harmony import */ var _util_sleep_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
-/* harmony import */ var _script_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
+/* harmony import */ var _util_createFiles_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
+/* harmony import */ var _util_realisticTyping_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(4);
+/* harmony import */ var _util_speak_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(6);
+/* harmony import */ var _util_sleep_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(5);
+/* harmony import */ var _script_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(7);
 
 
 
@@ -101,9 +101,49 @@ async function processStep(step, editor) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createIndexHtml: () => (/* binding */ createIndexHtml),
+/* harmony export */   createSketchJs: () => (/* binding */ createSketchJs)
+/* harmony export */ });
+/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+
+async function createIndexHtml() {
+  const activeFolder = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.workspaceFolders?.[0];
+  if (!activeFolder) {
+    vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Open a folder first!');
+    return;
+  }
+
+  const indexHtmlPath = vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(activeFolder.uri, 'index.html');
+  const indexHtmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+</html>`;
+
+  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
+}
+
+async function createSketchJs() {
+  const scetchJsPath = vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(activeFolder.uri, 'sketch.js');
+  const sketchJsContent = '';
+  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(scetchJsPath, new TextEncoder().encode(sketchJsContent));
+}
+
+/***/ }),
+/* 4 */
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   typeRealistically: () => (/* binding */ typeRealistically)
 /* harmony export */ });
-/* harmony import */ var _sleep_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(4);
+/* harmony import */ var _sleep_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(5);
 /* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(1);
 
 
@@ -127,7 +167,7 @@ const typeRealistically = async (editor, code, delay = 100) => {
 };
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -139,7 +179,7 @@ const sleep = async (ms) => {
 };
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -167,7 +207,7 @@ const speak = async (text) => {
 
 
 /***/ }),
-/* 6 */
+/* 7 */
 /***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
 
 __webpack_require__.r(__webpack_exports__);
@@ -226,46 +266,6 @@ const script = [
       ],
   },
 ];
-
-/***/ }),
-/* 7 */
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
-
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   createIndexHtml: () => (/* binding */ createIndexHtml),
-/* harmony export */   createSketchJs: () => (/* binding */ createSketchJs)
-/* harmony export */ });
-/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-
-async function createIndexHtml() {
-  const activeFolder = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.workspaceFolders?.[0];
-  if (!activeFolder) {
-    vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Open a folder first!');
-    return;
-  }
-
-  const indexHtmlPath = vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(activeFolder.uri, 'index.html');
-  const indexHtmlContent = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
-</html>`;
-
-  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
-}
-
-async function createSketchJs() {
-  const scetchJsPath = vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(activeFolder.uri, 'sketch.js');
-  const sketchJsContent = '';
-  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(scetchJsPath, new TextEncoder().encode(sketchJsContent));
-}
 
 /***/ })
 /******/ 	]);
