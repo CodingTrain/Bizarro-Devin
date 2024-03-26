@@ -25,7 +25,7 @@
         "category": "Bizarro Devin"
       },
       {
-        "command": "bizarro-devin.setupFiles",
+        "command": "bizarro-devin.createFiles",
         "title": "Setup Files",
         "category": "Bizarro Devin"
       }

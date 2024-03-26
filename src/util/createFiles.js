@@ -1,6 +1,6 @@
 import vscode from 'vscode';
+const activeFolder = vscode.workspace.workspaceFolders?.[0];
 export async function createIndexHtml() {
-  const activeFolder = vscode.workspace.workspaceFolders?.[0];
   if (!activeFolder) {
     vscode.window.showInformationMessage('Open a folder first!');
     return;

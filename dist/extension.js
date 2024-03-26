@@ -106,8 +106,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
 
+const activeFolder = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.workspaceFolders?.[0];
 async function createIndexHtml() {
-  const activeFolder = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.workspaceFolders?.[0];
   if (!activeFolder) {
     vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Open a folder first!');
     return;
@@ -361,7 +361,7 @@ function activate(context) {
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
     for (const [key, value] of Object.entries(_bizzaro_commands_js__WEBPACK_IMPORTED_MODULE_1__)) { //key is the name of the exported function, value is the function
-        context.subscriptions.push(vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand("bizarro-devin." + key, value));
+        context.subscriptions.push(vscode__WEBPACK_IMPORTED_MODULE_0___default().commands.registerCommand("bizarro-devin." + key, value));
     }
 }
 // This method is called when your extension is deactivated
