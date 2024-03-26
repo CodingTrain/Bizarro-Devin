@@ -262,7 +262,9 @@ async function createIndexHtml() {
 }
 
 async function createSketchJs() {
-  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
+  const scetchJsPath = vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(activeFolder.uri, 'sketch.js');
+  const sketchJsContent = '';
+  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(scetchJsPath, new TextEncoder().encode(sketchJsContent));
 }
 
 /***/ })

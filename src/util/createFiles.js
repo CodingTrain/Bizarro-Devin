@@ -23,5 +23,7 @@ export async function createIndexHtml() {
 }
 
 export async function createSketchJs() {
-  await vscode.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
+  const scetchJsPath = vscode.Uri.joinPath(activeFolder.uri, 'sketch.js');
+  const sketchJsContent = '';
+  await vscode.workspace.fs.writeFile(scetchJsPath, new TextEncoder().encode(sketchJsContent));
 }
