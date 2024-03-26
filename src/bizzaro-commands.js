@@ -54,6 +54,31 @@ export async function runAIAgent() {
   }
 }
 
+
+export async function createFiles() {
+  const activeFolder = vscode.workspace.workspaceFolders?.[0];
+  if (!activeFolder) {
+    vscode.window.showInformationMessage('Open a folder first!');
+    return;
+  }
+
+  const indexHtmlPath = vscode.Uri.joinPath(activeFolder.uri, 'index.html');
+  const indexHtmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+</html>`;
+
+  await vscode.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
+}
+
+
 async function processStep(step, editor) {
   if (step.type === 'code') {
       await typeRealistically(editor, step.content.join('\n')); // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal

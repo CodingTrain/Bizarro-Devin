@@ -13,6 +13,7 @@ module.exports = require("vscode");
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createFiles: () => (/* binding */ createFiles),
 /* harmony export */   runAIAgent: () => (/* binding */ runAIAgent),
 /* harmony export */   setupLayout: () => (/* binding */ setupLayout)
 /* harmony export */ });
@@ -77,6 +78,31 @@ async function runAIAgent() {
   }
 }
 
+
+async function createFiles() {
+  const activeFolder = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.workspaceFolders?.[0];
+  if (!activeFolder) {
+    vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Open a folder first!');
+    return;
+  }
+
+  const indexHtmlPath = vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(activeFolder.uri, 'index.html');
+  const indexHtmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+</html>`;
+
+  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
+}
+
+
 async function processStep(step, editor) {
   if (step.type === 'code') {
       await (0,_util_realisticTyping_js__WEBPACK_IMPORTED_MODULE_1__.typeRealistically)(editor, step.content.join('\n')); // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal
@@ -84,7 +110,6 @@ async function processStep(step, editor) {
       await (0,_util_speak_js__WEBPACK_IMPORTED_MODULE_2__.speak)(step.content);
   }
 }
-
 
 /***/ }),
 /* 3 */
@@ -302,10 +327,6 @@ __webpack_require__.r(__webpack_exports__);
 // Import the module and reference it with the alias vscode in your code below
 
 
-const COMMANDS = {
-    "runAIAgent": _bizzaro_commands_js__WEBPACK_IMPORTED_MODULE_1__.runAIAgent,
-    "setupLayout": _bizzaro_commands_js__WEBPACK_IMPORTED_MODULE_1__.setupLayout,
-};
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {
@@ -315,7 +336,7 @@ function activate(context) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
-    for (const [key, value] of Object.entries(COMMANDS)) { //key is the name of the exported function, value is the function
+    for (const [key, value] of Object.entries(_bizzaro_commands_js__WEBPACK_IMPORTED_MODULE_1__)) { //key is the name of the exported function, value is the function
         context.subscriptions.push(vscode__WEBPACK_IMPORTED_MODULE_0__.commands.registerCommand("bizarro-devin." + key, value));
     }
 }
