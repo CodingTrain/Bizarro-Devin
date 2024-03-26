@@ -1,4 +1,5 @@
-# Ignore dist directory and node_modules directory
+# Ignore dist directory and node_modules directory except dist/package.json
 .gitignore
 dist/**
+!dist/package.json
 node_modules/**
