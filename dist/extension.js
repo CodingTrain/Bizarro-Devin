@@ -18,10 +18,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   setupLayout: () => (/* binding */ setupLayout)
 /* harmony export */ });
 /* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _util_realisticTyping_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(3);
-/* harmony import */ var _util_speak_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(5);
-/* harmony import */ var _util_sleep_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4);
-/* harmony import */ var _script_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(6);
+/* harmony import */ var _util_createFiles_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(7);
+/* harmony import */ var _util_realisticTyping_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(3);
+/* harmony import */ var _util_speak_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(5);
+/* harmony import */ var _util_sleep_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(4);
+/* harmony import */ var _script_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(6);
+
 
 
 
@@ -47,7 +49,7 @@ async function setupLayout() {
 
   // Wait a second for the window to at least open
   while (vscode__WEBPACK_IMPORTED_MODULE_0__.window.tabGroups.all.length < 2) {
-      await (0,_util_sleep_js__WEBPACK_IMPORTED_MODULE_3__.sleep)(50);
+      await (0,_util_sleep_js__WEBPACK_IMPORTED_MODULE_4__.sleep)(50);
   }
 
   // Toggle row layout
@@ -73,41 +75,23 @@ async function runAIAgent() {
   }
 
   // Iterate through each step
-  for (const step of _script_js__WEBPACK_IMPORTED_MODULE_4__.script) {
+  for (const step of _script_js__WEBPACK_IMPORTED_MODULE_5__.script) {
       await processStep(step, editor);
   }
 }
 
 
 async function createFiles() {
-  const activeFolder = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.workspaceFolders?.[0];
-  if (!activeFolder) {
-    vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Open a folder first!');
-    return;
-  }
-
-  const indexHtmlPath = vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(activeFolder.uri, 'index.html');
-  const indexHtmlContent = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
-</html>`;
-
-  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
+  await (0,_util_createFiles_js__WEBPACK_IMPORTED_MODULE_1__.createIndexHtml)();
+  await (0,_util_createFiles_js__WEBPACK_IMPORTED_MODULE_1__.createSketchJs)();
 }
 
 
 async function processStep(step, editor) {
   if (step.type === 'code') {
-      await (0,_util_realisticTyping_js__WEBPACK_IMPORTED_MODULE_1__.typeRealistically)(editor, step.content.join('\n')); // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal
+      await (0,_util_realisticTyping_js__WEBPACK_IMPORTED_MODULE_2__.typeRealistically)(editor, step.content.join('\n')); // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal
   } else if (step.type === 'narrate') {
-      await (0,_util_speak_js__WEBPACK_IMPORTED_MODULE_2__.speak)(step.content);
+      await (0,_util_speak_js__WEBPACK_IMPORTED_MODULE_3__.speak)(step.content);
   }
 }
 
@@ -242,6 +226,44 @@ const script = [
       ],
   },
 ];
+
+/***/ }),
+/* 7 */
+/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createIndexHtml: () => (/* binding */ createIndexHtml),
+/* harmony export */   createSketchJs: () => (/* binding */ createSketchJs)
+/* harmony export */ });
+/* harmony import */ var vscode__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
+
+async function createIndexHtml() {
+  const activeFolder = vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.workspaceFolders?.[0];
+  if (!activeFolder) {
+    vscode__WEBPACK_IMPORTED_MODULE_0__.window.showInformationMessage('Open a folder first!');
+    return;
+  }
+
+  const indexHtmlPath = vscode__WEBPACK_IMPORTED_MODULE_0__.Uri.joinPath(activeFolder.uri, 'index.html');
+  const indexHtmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+</html>`;
+
+  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
+}
+
+async function createSketchJs() {
+  await vscode__WEBPACK_IMPORTED_MODULE_0__.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
+}
 
 /***/ })
 /******/ 	]);

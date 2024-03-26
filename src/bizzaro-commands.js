@@ -1,4 +1,5 @@
 import vscode from 'vscode';
+import { createIndexHtml, createSketchJs } from './util/createFiles.js';
 
 import { typeRealistically } from './util/realisticTyping.js';
 import { speak } from './util/speak.js';
@@ -56,26 +57,8 @@ export async function runAIAgent() {
 
 
 export async function createFiles() {
-  const activeFolder = vscode.workspace.workspaceFolders?.[0];
-  if (!activeFolder) {
-    vscode.window.showInformationMessage('Open a folder first!');
-    return;
-  }
-
-  const indexHtmlPath = vscode.Uri.joinPath(activeFolder.uri, 'index.html');
-  const indexHtmlContent = `<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  
-</body>
-</html>`;
-
-  await vscode.workspace.fs.writeFile(indexHtmlPath, new TextEncoder().encode(indexHtmlContent));
+  await createIndexHtml();
+  await createSketchJs();
 }
 
 
