@@ -1,2 +1,4 @@
+# Ignore dist directory and node_modules directory
+.gitignore
 dist/**
 node_modules/**
