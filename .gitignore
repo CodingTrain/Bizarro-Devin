@@ -1,5 +1,6 @@
-# Ignore dist directory and node_modules directory except dist/package.json
-.gitignore
-dist/**
+
+.vscode/
+node_modules/
+
+dist/
 !dist/package.json
-node_modules/**
