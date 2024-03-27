@@ -23,26 +23,17 @@
         "command": "bizarro-devin.runAIAgent",
         "title": "Run AI Agent",
         "category": "Bizarro Devin"
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
       },
       {
         "command": "bizarro-devin.createFiles",
         "title": "Setup Files",
         "category": "Bizarro Devin"
-<<<<<<< Updated upstream
-=======
       },
       {
         "command": "bizarro-devin.setupP5js",
         "title": "Create index.html, sketch.js then add boiler plate p5js code",
         "shortTitle": "Set Up P5.js",
         "category": "Bizarro Devin"
->>>>>>> Stashed changes
->>>>>>> Stashed changes
       }
     ]
   },
@@ -60,28 +51,21 @@
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/semver": "^7.5.8",
     "@types/vscode": "^1.87.0",
     "@typescript-eslint/eslint-plugin": "^7.0.2",
     "@typescript-eslint/parser": "^7.0.2",
     "@vscode/test-cli": "^0.0.6",
     "@vscode/test-electron": "^2.3.9",
     "eslint": "^8.56.0",
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-    "typescript": "^5.3.3"
-=======
->>>>>>> Stashed changes
+    "install": "^0.13.0",
+    "npm": "^10.5.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.3.3",
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4"
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
   },
   "dependencies": {
     "say": "^0.16.0"
->>>>>>> Stashed changes
   }
 }
