@@ -6,5 +6,6 @@ type CommandFunc = (...args: any[]) => (Promise<void> | void);
 export const setupLayout: CommandFunc;
 export const runAIAgent: CommandFunc;
 export const createFiles: CommandFunc;
+export const setupP5js: CommandFunc;
 
 //pls if anybody knows any dynamic way to do this, let me know 

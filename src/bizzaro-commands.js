@@ -1,11 +1,20 @@
 import vscode from 'vscode';
-import { createIndexHtml, createSketchJs } from './util/createFiles.js';
 
-import { typeRealistically } from './util/realisticTyping.js';
 import { speak } from './util/speak.js';
 import { sleep } from './util/sleep.js';
 
 import { script } from './script.js';
+
+import createFile from './util/createFile.js';
+import { typeRealistically } from './util/realisticTyping.js';
+
+
+export async function setupP5js() {
+  await createFiles();
+  await setupLayout();
+  await runAIAgent();
+}
+
 
 export async function setupLayout() {
   // TODO: CREATE index.html and sketch.js
@@ -40,7 +49,6 @@ export async function setupLayout() {
       'workbench.action.moveActiveEditorGroupDown'
   );
 }
-
 // TODO: Receive a prompt to get started
 export async function runAIAgent() {
   let editor = vscode.window.activeTextEditor;
@@ -53,6 +61,13 @@ export async function runAIAgent() {
   for (const step of script) {
       await processStep(step, editor);
   }
+  async function processStep(step, editor) {
+    if (step.type === 'code') {
+        await typeRealistically(editor, step.content.join('\n')); // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal
+    } else if (step.type === 'narrate') {
+        await speak(step.content);
+    }
+  }
 }
 
 
@@ -61,11 +76,16 @@ export async function createFiles() {
   await createSketchJs();
 }
 
-
-async function processStep(step, editor) {
-  if (step.type === 'code') {
-      await typeRealistically(editor, step.content.join('\n')); // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal
-  } else if (step.type === 'narrate') {
-      await speak(step.content);
-  }
-}
+const createIndexHtml = async() => await createFile('index.html', 
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+</html>`);
+const createSketchJs = async() => await createFile('sketch.js',"",{show : true});

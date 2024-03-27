@@ -16,6 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 
 	for (const [key, value] of Object.entries(COMMANDS)) { //key is the name of the exported function, value is the function
+		console.log("registering command: ", key, value);
 		context.subscriptions.push(vscode.commands.registerCommand( "bizarro-devin." + key , value ));
 	}
 }
