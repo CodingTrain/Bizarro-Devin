@@ -9,7 +9,6 @@ class SetupLayoutCommand extends Command {
     }
 
     async run() {
-        // TODO: CREATE index.html and sketch.js
         // Run live server
         // Also, set up the window panes properly
 
