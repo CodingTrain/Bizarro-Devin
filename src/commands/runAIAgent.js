@@ -5,7 +5,7 @@ const { typeRealistically } = require('../util/realisticTyping');
 const { speak } = require('../util/speak');
 const { script } = require('../script');
 
-class SetupLayoutCommand extends Command {
+class RunAIAgentCommand extends Command {
     constructor() {
         super('bizarro-devin.runAIAgent');
     }
@@ -33,4 +33,4 @@ class SetupLayoutCommand extends Command {
     }
 }
 
-module.exports = SetupLayoutCommand;
+module.exports = RunAIAgentCommand;
