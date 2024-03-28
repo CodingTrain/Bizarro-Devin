@@ -1,0 +1,50 @@
+{
+  "name": "bizarro-devin",
+  "displayName": "Bizarro Devin",
+  "description": "Unhinged creative coding AI agent",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.87.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "bizarro-devin.setupLayout",
+        "title": "Setup Layout",
+        "category": "Bizarro Devin"
+      },
+      {
+        "command": "bizarro-devin.runAIAgent",
+        "title": "Run AI Agent",
+        "category": "Bizarro Devin"
+      },
+      {
+        "command": "bizarro-devin.setupFiles",
+        "title": "Setup Files",
+        "category": "Bizarro Devin"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.87.0",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "say": "^0.16.0"
+  }
+}
