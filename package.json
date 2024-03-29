@@ -25,10 +25,10 @@
                 "icon": "$(debug-start)"
             },
             {
-                "command": "bizarro-devin.stopAIAgent",
-                "title": "Stop AI Agent",
+                "command": "bizarro-devin.muteAIAgent",
+                "title": "Mute / Unmute AI Agent",
                 "category": "Bizarro Devin",
-                "icon": "$(debug-stop)"
+                "icon": "$(mute)"
             },
             {
                 "command": "bizarro-devin.pauseAIAgent",
@@ -48,7 +48,7 @@
                     "group": "navigation"
                 },
                 {
-                    "command": "bizarro-devin.stopAIAgent",
+                    "command": "bizarro-devin.muteAIAgent",
                     "group": "navigation"
                 }
             ]
