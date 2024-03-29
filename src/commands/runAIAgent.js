@@ -26,7 +26,8 @@ class RunAIAgentCommand extends Command {
 
     async processStep(step, editor) {
         if (step.type === 'code') {
-            await typeRealistically(editor, step.content.join('\n')); // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal
+            // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal
+            await typeRealistically(editor, step.content.join('\n'));
         } else if (step.type === 'narrate') {
             await speak(step.content);
         }
