@@ -10,7 +10,7 @@ async function test() {
     quantized: false,
   });
 
-  const output = await synthesizer('Hello, I am bizarro Devin the AI Agent!');
+  const output = await synthesizer('Hello, I am bizarro Devin the ai Agent!');
 
   const ffplay = spawn(
     'ffplay',
