@@ -1,4 +1,4 @@
-const { ModelProvider } = require('./modelProvider');
+const ModelProvider = require('./genericProvider');
 
 class OllamaProvider extends ModelProvider {
   constructor() {

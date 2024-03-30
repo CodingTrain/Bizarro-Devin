@@ -1,5 +1,4 @@
-import { ModelProvider } from './modelProvider';
-
+const ModelProvider = require('./genericProvider');
 const Replicate = require('replicate');
 const config = require('../../config');
 

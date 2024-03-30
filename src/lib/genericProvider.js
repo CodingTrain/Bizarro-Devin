@@ -1,12 +1,4 @@
-const config = require('../../config');
-
-const model = config.model || 'ollama';
-
-const QueryModelProvider = require(`./queryModel.${model}.js`);
-console.log(`Using model from ${model}`);
-
-const provider = new QueryModelProvider();
-
+/** @abstract */
 class ModelProvider {
   constructor() {
     /**
@@ -32,4 +24,4 @@ class ModelProvider {
   }
 }
 
-module.exports = { ModelProvider, provider };
+module.exports = ModelProvider;

@@ -1,10 +1,11 @@
 const { typeImmediately } = require('../util/realisticTyping');
 const vscode = require('vscode');
-const { provider } = require('./modelProvider');
+const { getProvider } = require('./providerInstance');
 
 class Agent {
   constructor() {
     this.editor = vscode.window.activeTextEditor;
+    this.provider = getProvider();
   }
 
   /**
@@ -13,7 +14,10 @@ class Agent {
    */
   prompt(input) {
     console.log('prompting', input);
-    provider.queryStream(input, (response) => this.consumeStream(response));
+    this.provider.queryStream(input, (response) =>
+      this.consumeStream(response)
+    );
+    console.log(this.provider.messageHistory);
   }
 
   async consumeStream(response) {
