@@ -3,19 +3,20 @@ const { createFile } = require('../util/createFile');
 
 class SetupFilesCommand extends Command {
   constructor() {
-      super('bizarro-devin.setupFiles');
-    }
-    
-    async run() {
-      // create index.html
-      await this.createIndexHtml();
-      // create sketch.js && opening it
-      const doc = await createFile('sketch.js');
-      await doc.open();
-    }
-    
-    async createIndexHtml() {
-      await createFile('index.html', 
+    super('bizarro-devin.setupFiles');
+  }
+
+  async run() {
+    // create index.html
+    await this.createIndexHtml();
+    // create sketch.js && opening it
+    const doc = await createFile('sketch.js');
+    await doc.open();
+  }
+
+  async createIndexHtml() {
+    await createFile(
+      'index.html',
       `<!DOCTYPE html>
       <html lang="en">
       <head>
@@ -27,8 +28,9 @@ class SetupFilesCommand extends Command {
       </head>
       <body>
       </body>
-      </html>`);
-    }
+      </html>`
+    );
+  }
 }
 
 module.exports = SetupFilesCommand;
