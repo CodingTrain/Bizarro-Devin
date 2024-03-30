@@ -26,7 +26,7 @@ async function streamResponse(url, data, process) {
           const chunk = new TextDecoder('utf-8').decode(value);
           try {
             const json = JSON.parse(chunk);
-            process(json);
+            await process(json);
           } catch (error) {
             console.error('Error parsing chunk to JSON', error);
           }

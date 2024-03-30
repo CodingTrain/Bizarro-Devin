@@ -19,7 +19,7 @@ async function queryStream(prompt, process) {
   while (true) {
     const { value } = await stream.next();
     if (value.event == 'done') break;
-    process(value.data);
+    await process({ response: value.data });
   }
 }
 

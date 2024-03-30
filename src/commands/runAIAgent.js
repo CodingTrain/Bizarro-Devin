@@ -7,7 +7,7 @@ const {
 } = require('../util/realisticTyping');
 const { speak } = require('../util/speak');
 
-const { query } = require('../util/queryModel');
+const { query, queryStream } = require('../util/queryModel');
 
 // const { script } = require('../script');
 const { prompts } = require('../prompt');
@@ -26,13 +26,13 @@ class RunAIAgentCommand extends Command {
     }
 
     const startingPrompt = prompts.startingPrompt;
-    // query(startingPrompt, async (response) => {
-    //   console.log(response);
-    //   typeImmediately(editor, response.response);
-    // });
-    const response = await query(startingPrompt);
-    typeImmediately(editor, response.response);
-    console.log(response);
+    queryStream(startingPrompt, async (response) => {
+      console.log(response);
+      await typeImmediately(editor, response.response);
+    });
+    // const response = await query(startingPrompt);
+    // typeImmediately(editor, response.response);
+    // console.log(response);
   }
 
   async processStep(step, editor) {
