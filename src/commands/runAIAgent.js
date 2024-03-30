@@ -7,6 +7,8 @@ const {
 } = require('../util/realisticTyping');
 const { speak } = require('../util/speak');
 
+const { query } = require('../util/queryModel');
+
 // const { script } = require('../script');
 const { prompts } = require('../prompt');
 
@@ -24,10 +26,13 @@ class RunAIAgentCommand extends Command {
     }
 
     const startingPrompt = prompts.startingPrompt;
-    query(startingPrompt, async (response) => {
-      console.log(response);
-      typeImmediately(editor, response.response);
-    });
+    // query(startingPrompt, async (response) => {
+    //   console.log(response);
+    //   typeImmediately(editor, response.response);
+    // });
+    const response = await query(startingPrompt);
+    typeImmediately(editor, response.response);
+    console.log(response);
   }
 
   async processStep(step, editor) {
@@ -38,49 +43,6 @@ class RunAIAgentCommand extends Command {
     } else if (step.type === 'narrate') {
       await speak(step.content);
     }
-  }
-}
-
-function query(prompt, process) {
-  const url = 'http://127.0.0.1:11434/api/generate';
-  const data = {
-    model: 'llama2',
-    prompt,
-  };
-  streamResponse(url, data, process);
-}
-
-async function streamResponse(url, data, process) {
-  try {
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const reader = response.body.getReader();
-    let stream = new ReadableStream({
-      async start(controller) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = new TextDecoder('utf-8').decode(value);
-          try {
-            const json = JSON.parse(chunk);
-            process(json);
-          } catch (error) {
-            console.error('Error parsing chunk to JSON', error);
-          }
-          controller.enqueue(value);
-        }
-        controller.close();
-        reader.releaseLock();
-      },
-    });
-  } catch (error) {
-    console.error('Failed to fetch:', error);
   }
 }
 
