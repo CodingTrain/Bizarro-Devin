@@ -1,4 +1,4 @@
-const config = require('../../config');
+const config = require('../../../../config');
 const ModelProvider = require('./genericProvider');
 const model = config.model || 'ollama';
 

@@ -1,4 +1,4 @@
-const { getAgent } = require('../lib/Agent');
+const { getAgent } = require('../lib/agent/Agent');
 
 const vscode = require('vscode');
 const Command = require('../lib/command');

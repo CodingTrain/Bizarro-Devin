@@ -1,6 +1,6 @@
-const { typeImmediately } = require('../util/realisticTyping');
+const { typeImmediately } = require('../../util/realisticTyping');
 const vscode = require('vscode');
-const { getProvider } = require('./providerInstance');
+const { getProvider } = require('./providers/providerInstance');
 
 class Agent {
   constructor() {
