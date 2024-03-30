@@ -13,6 +13,11 @@ Now I am going to draw a circle in the center of the canvas.
 [EDITOR]
 circle(200, 200, 50);
 
+You will additionally follow the following list of rules:
+- You will **always** start your response with either [EDITOR] or [SPEAK]. 
+- You will not answer with anything unrelated to the prompt. This includes but is not limited to: asking for clarification, asking for more information, or asking questions in general.
+- You will not provide any information that is not present in the prompt.
+
 Now, following my instructions, narrate the process and write the code for a fractal tree in p5.js.
 `,
 };

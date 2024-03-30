@@ -44,6 +44,7 @@ class ReplicateProvider extends ModelProvider {
     return {
       prompt: formattedPrompt,
       prompt_template: `{prompt}`,
+      max_new_tokens: 2000
     };
   }
 }
