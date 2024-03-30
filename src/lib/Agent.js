@@ -1,6 +1,6 @@
 const { typeImmediately } = require('../util/realisticTyping');
 const vscode = require('vscode');
-const { queryStream } = require('../util/queryModel');
+const { provider } = require('./modelProvider');
 
 class Agent {
   constructor() {
@@ -13,7 +13,7 @@ class Agent {
    */
   prompt(input) {
     console.log('prompting', input);
-    queryStream(input, (response) => this.consumeStream(response));
+    provider.queryStream(input, (response) => this.consumeStream(response));
   }
 
   async consumeStream(response) {
