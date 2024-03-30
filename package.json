@@ -61,6 +61,7 @@
   },
   "scripts": {
     "lint": "eslint .",
+    "format": "prettier --write .",
     "pretest": "npm run lint",
     "test": "vscode-test"
   },
@@ -71,6 +72,7 @@
     "@vscode/test-cli": "^0.0.6",
     "@vscode/test-electron": "^2.3.9",
     "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
     "typescript": "^5.3.3"
   },
   "dependencies": {

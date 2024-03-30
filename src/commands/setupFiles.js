@@ -28,7 +28,7 @@ class SetupFilesCommand extends Command {
       </head>
       <body>
       </body>
-      </html>`
+      </html>`,
     );
   }
 }
