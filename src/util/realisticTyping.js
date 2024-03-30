@@ -1,6 +1,12 @@
 const { sleep } = require('./sleep');
 const vscode = require('vscode');
 
+const typeImmediately = async (editor, code) => {
+  await editor.edit((editBuilder) => {
+    editBuilder.insert(editor.selection.active, code);
+  });
+};
+
 const typeRealistically = async (editor, code, delay = 100) => {
   for (let i = 0; i < code.length; i++) {
     const char = code.charAt(i);
@@ -21,4 +27,5 @@ const typeRealistically = async (editor, code, delay = 100) => {
 
 module.exports = {
   typeRealistically,
+  typeImmediately,
 };

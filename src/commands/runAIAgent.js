@@ -1,9 +1,9 @@
-const vscode = require('vscode');
+const { getAgent } = require('../lib/agent/Agent');
 
+const vscode = require('vscode');
 const Command = require('../lib/command');
-const { typeRealistically } = require('../util/realisticTyping');
-const { speak } = require('../util/speak');
-const { script } = require('../script');
+
+const { prompts } = require('../prompt');
 
 class RunAIAgentCommand extends Command {
   constructor() {
@@ -15,22 +15,13 @@ class RunAIAgentCommand extends Command {
     let editor = vscode.window.activeTextEditor;
     if (!editor) {
       vscode.window.showInformationMessage('Create a text file first!');
-      return; // No open text editor
+      return;
     }
 
-    // Iterate through each step
-    for (const step of script) {
-      await this.processStep(step, editor);
-    }
-  }
+    const agent = getAgent();
 
-  async processStep(step, editor) {
-    if (step.type === 'code') {
-      // Join the array of strings into a single string separated by newlines, more clear in terms of formatting than the template literal
-      await typeRealistically(editor, step.content.join('\n'));
-    } else if (step.type === 'narrate') {
-      await speak(step.content);
-    }
+    const startingPrompt = prompts.startingPrompt;
+    agent.prompt(startingPrompt);
   }
 }
 
