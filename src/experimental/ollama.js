@@ -32,13 +32,43 @@ async function streamResponse(url, data, process) {
   }
 }
 
-function query(prompt, process) {
+function queryStream(prompt, process) {
   const url = 'http://127.0.0.1:11434/api/generate';
   const data = {
     model: 'llama2',
     prompt,
   };
   streamResponse(url, data, process);
+}
+
+async function getResponse(url, data, process) {
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    console.log(response);
+    // const json = await response.json();
+    // console.log(json);
+  } catch (error) {
+    console.error('Failed to fetch:', error);
+  }
+}
+
+function query(prompt) {
+  const url = 'http://127.0.0.1:11434/api/generate';
+  const data = {
+    model: 'llama2',
+    messages: [
+      {
+        role: 'user',
+        content: 'why is the sky blue?',
+      },
+    ],
+    stream: 'false',
+  };
+  getResponse(url, data, process);
 }
 
 query('Why is the sky blue?', (json) => {
