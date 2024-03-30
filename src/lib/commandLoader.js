@@ -14,14 +14,14 @@ class CommandLoader {
     const files = fs.readdirSync(path.join(__dirname, '../', loadingPath));
     for (const file of files) {
       const CommandClass = require(
-        path.join(__dirname, '../', loadingPath, file),
+        path.join(__dirname, '../', loadingPath, file)
       );
       const command = new CommandClass();
       command.load();
 
       const vscodeCommand = vscode.commands.registerCommand(
         command.id,
-        () => command.run(), // Supplying the run method directly will make the "this" context from the command class not what we expect it to be
+        () => command.run() // Supplying the run method directly will make the "this" context from the command class not what we expect it to be
       );
       this.context.subscriptions.push(vscodeCommand);
 

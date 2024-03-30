@@ -29,7 +29,7 @@ class SetupLayoutCommand extends Command {
 
     // Toggle row layout
     await vscode.commands.executeCommand(
-      'workbench.action.toggleEditorGroupLayout',
+      'workbench.action.toggleEditorGroupLayout'
     );
 
     // Set this tab as our active tab again (weird workaround to make sure the next command works)
@@ -37,7 +37,7 @@ class SetupLayoutCommand extends Command {
 
     // Move code editor to the bottom
     await vscode.commands.executeCommand(
-      'workbench.action.moveActiveEditorGroupDown',
+      'workbench.action.moveActiveEditorGroupDown'
     );
   }
 }
