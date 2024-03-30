@@ -1,4 +1,4 @@
-const ModelProvider = require('./agent/providers/genericProvider');
+const ModelProvider = require('./genericProvider');
 const Replicate = require('replicate');
 const config = require('../../config');
 
