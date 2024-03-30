@@ -5,6 +5,9 @@ const { typeRealistically } = require('../util/realisticTyping');
 const { speak } = require('../util/speak');
 const { script } = require('../script');
 
+// Adapting this file to run from llama instead of script
+// The script might still be used for prompt engineering
+
 class RunAIAgentCommand extends Command {
   constructor() {
     super('bizarro-devin.runAIAgent');
