@@ -13,12 +13,9 @@ class CommandLoader {
   load(loadingPath) {
     const files = fs.readdirSync(path.join(__dirname, '../', loadingPath));
     for (const file of files) {
-      const CommandClass = require(path.join(
-        __dirname,
-        '../',
-        loadingPath,
-        file
-      ));
+      const CommandClass = require(
+        path.join(__dirname, '../', loadingPath, file)
+      );
       const command = new CommandClass();
       command.load();
 
