@@ -41,7 +41,6 @@ class ReplicateProvider extends ModelProvider {
         return msg.role == 'user' ? `[INST] ${msg.content} [/INST]` : msg.content;
       })
       .join('\n');
-      console.log(prompts.systemPrompt)
     return {
       prompt: formattedPrompt,
       prompt_template: `[INST]<<SYS>>\n{system_prompt}\n<</SYS>>[/INST]\n\n{prompt}`,
