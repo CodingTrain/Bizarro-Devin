@@ -1,6 +1,6 @@
-const ModelProvider = require('./agent/providers/genericProvider');
+const ModelProvider = require('./genericProvider');
 const Replicate = require('replicate');
-const config = require('../../config');
+const config = require('../../../../config');
 
 class ReplicateProvider extends ModelProvider {
   constructor() {
@@ -12,7 +12,7 @@ class ReplicateProvider extends ModelProvider {
 
   async query(prompt) {
     this.messageHistory.push({ role: 'user', content: prompt });
-    const output = await this.replicate.run('meta/llama-2-7b-chat', {
+    const output = await this.replicate.run('meta/llama-2-70b-chat', {
       input: this.createPrompt(),
     });
     this.messageHistory.push({ role: 'assistant', content: output.join('') });
@@ -21,7 +21,7 @@ class ReplicateProvider extends ModelProvider {
 
   async queryStream(prompt, process) {
     this.messageHistory.push({ role: 'user', content: prompt });
-    const stream = this.replicate.stream('meta/llama-2-7b-chat', {
+    const stream = this.replicate.stream('meta/llama-2-70b-chat', {
       input: this.createPrompt(),
     });
     let fullResponse = '';
