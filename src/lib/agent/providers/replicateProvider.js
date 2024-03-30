@@ -37,7 +37,7 @@ class ReplicateProvider extends ModelProvider {
   createPrompt() {
     const formattedPrompt = this.messageHistory
       .map((msg) => {
-        msg.role == 'user' ? `[INST] ${msg.content} [/INST]` : msg.content;
+        return msg.role == 'user' ? `[INST] ${msg.content} [/INST]` : msg.content;
       })
       .join('\n');
 
