@@ -1,6 +1,7 @@
 const ModelProvider = require('./genericProvider');
 const Replicate = require('replicate');
 const config = require('../../../../config');
+const { prompts } = require('../../../prompt');
 
 class ReplicateProvider extends ModelProvider {
   constructor() {
@@ -40,11 +41,13 @@ class ReplicateProvider extends ModelProvider {
         return msg.role == 'user' ? `[INST] ${msg.content} [/INST]` : msg.content;
       })
       .join('\n');
-
+      console.log(prompts.systemPrompt)
     return {
       prompt: formattedPrompt,
-      prompt_template: `{prompt}`,
-      max_new_tokens: 2000
+      prompt_template: `[INST]<<SYS>>\n{system_prompt}\n<</SYS>>[/INST]\n\n{prompt}`,
+      max_new_tokens: 2000,
+      system_prompt: prompts.systemPrompt,
+
     };
   }
 }
