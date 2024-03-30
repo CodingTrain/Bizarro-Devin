@@ -9,12 +9,12 @@ const vscode = require('vscode');
 
 /**
  * Creates a file with the given relative path and optional content.
-*
-* @param {string} path - The relative path of the file to be created.
-* @param {string} [content] - The content to be written to the file. Optional, defaults to an empty string.
-* @return {Promise<document>} - A promise that resolves to a {@link document} wtth .path and .open() methods.
-*/
-async function createFile (path, content = "") {
+ *
+ * @param {string} path - The relative path of the file to be created.
+ * @param {string} [content] - The content to be written to the file. Optional, defaults to an empty string.
+ * @return {Promise<document>} - A promise that resolves to a {@link document} wtth .path and .open() methods.
+ */
+async function createFile(path, content = '') {
   const activeFolder = vscode.workspace.workspaceFolders[0];
   const filePath = vscode.Uri.joinPath(activeFolder.uri, path);
   const fileContent = new TextEncoder().encode(content);
@@ -24,8 +24,8 @@ async function createFile (path, content = "") {
     open: async () => {
       const document = await vscode.workspace.openTextDocument(filePath);
       return await vscode.window.showTextDocument(document);
-    }
-  }
-};
+    },
+  };
+}
 
-module.exports = { createFile }
+module.exports = { createFile };

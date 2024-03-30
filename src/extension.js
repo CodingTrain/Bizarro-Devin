@@ -7,15 +7,15 @@ const CommandLoader = require('./lib/commandLoader');
  * @param {vscode.ExtensionContext} context
  */
 function activate(context) {
-    console.log('Choo choo 🚂!');
+  console.log('Choo choo 🚂!');
 
-    const commandLoader = new CommandLoader(context);
-    commandLoader.load('commands');
+  const commandLoader = new CommandLoader(context);
+  commandLoader.load('commands');
 }
 
 function deactivate() {}
 
 module.exports = {
-    activate,
-    deactivate,
+  activate,
+  deactivate,
 };
