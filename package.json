@@ -40,6 +40,12 @@
         "title": "Pause AI Agent",
         "category": "Bizarro Devin",
         "icon": "$(debug-pause)"
+      },
+      {
+        "command": "bizarro-devin.listenToHuman",
+        "title": "Toggle Listening to Human",
+        "category": "Bizarro Devin",
+        "icon": "$(record)"
       }
     ],
     "menus": {
@@ -54,6 +60,10 @@
         },
         {
           "command": "bizarro-devin.muteAIAgent",
+          "group": "navigation"
+        },
+        {
+          "command": "bizarro-devin.listenToHuman",
           "group": "navigation"
         }
       ]
@@ -77,9 +87,11 @@
   },
   "dependencies": {
     "@xenova/transformers": "^2.16.1",
+    "node-record-lpcm16": "^1.0.1",
     "ollama": "^0.5.0",
     "play-sound": "^1.1.6",
     "replicate": "^0.29.1",
-    "say": "^0.16.0"
+    "say": "^0.16.0",
+    "wavefile": "^11.0.0"
   }
 }
