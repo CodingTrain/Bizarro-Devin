@@ -23,8 +23,9 @@ function play(tempFilePath) {
         console.error('Failed to play:', err);
         reject(err);
       } else {
-        console.log('Audio playback finished.');
-        fs.unlinkSync(tempFilePath);
+        // console.log('Audio playback finished.');
+        // Hanging on this, not sure why
+        // fs.unlinkSync(tempFilePath);
         resolve();
       }
     });
