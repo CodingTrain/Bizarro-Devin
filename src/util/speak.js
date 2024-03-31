@@ -13,7 +13,10 @@ async function speak(txt) {
 
   const tempFilePath = path.join(__dirname, '../../', 'temp_audio.wav');
   await fs.writeFile(tempFilePath, buffer);
+  await play(tempFilePath);
+}
 
+function play(tempFilePath) {
   return new Promise((resolve, reject) => {
     player.play(tempFilePath, (err) => {
       if (err) {
