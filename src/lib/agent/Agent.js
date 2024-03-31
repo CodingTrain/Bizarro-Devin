@@ -1,7 +1,7 @@
 const { typeRealistically } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
-const { speak } = require('../../util/speak');
+const { speak, speakSay } = require('../../util/speak');
 class Agent {
   constructor() {
     this.editor = vscode.window.activeTextEditor;
@@ -131,7 +131,8 @@ class Agent {
     if (step.type === 'EDITOR') {
       await typeRealistically(this.editor, step.content);
     } else if (step.type === 'SPEAK') {
-      await speak(step.content);
+      // await speak(step.content);
+      await speakSay(step.content);
     }
   }
 }

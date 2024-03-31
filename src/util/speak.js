@@ -1,6 +1,7 @@
 const player = require('play-sound')();
 const fs = require('fs/promises');
 const path = require('path');
+const say = require('say');
 
 async function speak(txt) {
   // tts-server --model_name tts_models/en/ljspeech/vits
@@ -32,6 +33,20 @@ function play(tempFilePath) {
   });
 }
 
+const speakSay = async (text) => {
+  return new Promise((resolve) => {
+    if (!text) return resolve();
+    say.speak(text, null, 1, (err) => {
+      if (err) {
+        console.error(err);
+        resolve(); // If we reject here we'd have to still capture the rejection in the caller, but it's not like we are going to actually do something with the error anyways
+      }
+      resolve();
+    });
+  });
+};
+
 module.exports = {
   speak,
+  speakSay,
 };
