@@ -1,4 +1,9 @@
-const { typeImmediately } = require('../../util/realisticTyping');
+import { speak } from '../../util/speak';
+
+const {
+  typeImmediately,
+  typeRealistically,
+} = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
 
@@ -9,8 +14,7 @@ class Agent {
     this.currentAction = 'SPEAK';
 
     // Queues for buffering the speed of the AI
-    this.speechQueue = [];
-    this.writingQueue = [];
+    this.actionsQueue = [];
 
     this.lastCharactersList = '';
   }
@@ -96,15 +100,27 @@ class Agent {
       );
 
       if (previousAction === 'SPEAK') {
-        this.speechQueue.push(previousActionContent);
+        this.actionsQueue.push({
+          type: 'narrate',
+          content: previousActionContent,
+        });
       } else {
-        await typeImmediately(this.editor, previousActionContent);
+        this.actionsQueue.push({
+          type: 'code',
+          content: previousActionContent,
+        });
       }
 
       if (this.currentAction === 'SPEAK') {
-        this.speechQueue.push(newActionContent);
+        this.actionsQueue.push({
+          type: 'narrate',
+          content: newActionContent,
+        });
       } else {
-        await typeImmediately(this.editor, newActionContent);
+        this.actionsQueue.push({
+          type: 'code',
+          content: newActionContent,
+        });
       }
 
       // Reset the buffer
@@ -114,13 +130,27 @@ class Agent {
 
     // If the action hasn't changed, we can just keep adding to the buffer
     if (this.currentAction === 'SPEAK') {
-      this.speechQueue.push(this.lastCharactersList);
+      this.actionsQueue.push({
+        type: 'narrate',
+        content: this.lastCharactersList,
+      });
     } else {
-      await typeImmediately(this.editor, this.lastCharactersList);
+      this.actionsQueue.push({
+        type: 'code',
+        content: this.lastCharactersList,
+      });
     }
 
     // Reset the buffer
     this.lastCharactersList = nextIterationCharacters || '';
+  }
+
+  async processStep(step, editor) {
+    if (step.type === 'code') {
+      await typeRealistically(editor, step.content);
+    } else if (step.type === 'narrate') {
+      await speak(step.content);
+    }
   }
 }
 
