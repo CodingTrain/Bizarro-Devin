@@ -2,8 +2,9 @@ const player = require('play-sound')();
 const fs = require('fs/promises');
 const path = require('path');
 const say = require('say');
+const config = require('../../config');
 
-async function speak(txt) {
+async function speakCoqui(txt) {
   // tts-server --model_name tts_models/en/ljspeech/vits
   const response = await fetch(
     `http://localhost:5002/api/tts?text=${txt}&speaker_id=&style_wav=&language_id=`
@@ -35,7 +36,6 @@ function play(tempFilePath) {
 
 const speakSay = async (text) => {
   return new Promise((resolve) => {
-    if (!text) return resolve();
     say.speak(text, null, 1, (err) => {
       if (err) {
         console.error(err);
@@ -46,7 +46,8 @@ const speakSay = async (text) => {
   });
 };
 
+const speak = config.tts === 'coqui' ? speakCoqui : speakSay;
+
 module.exports = {
   speak,
-  speakSay,
 };
