@@ -2,6 +2,7 @@ const say = require('say');
 
 const speak = async (text) => {
   return new Promise((resolve) => {
+    if (!text) return resolve();
     say.speak(text, null, 1, (err) => {
       if (err) {
         console.error(err);

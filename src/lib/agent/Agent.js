@@ -1,22 +1,19 @@
-import { speak } from '../../util/speak';
-
-const {
-  typeImmediately,
-  typeRealistically,
-} = require('../../util/realisticTyping');
+const { typeRealistically } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
-
+const { speak } = require('../../util/speak');
 class Agent {
   constructor() {
     this.editor = vscode.window.activeTextEditor;
     this.provider = getProvider();
-    this.currentAction = 'SPEAK';
+    this.currentAction = null; //'SPEAK';
 
     // Queues for buffering the speed of the AI
     this.actionsQueue = [];
 
     this.lastCharactersList = '';
+
+    this.processingQueue = false;
   }
 
   /**
@@ -88,67 +85,52 @@ class Agent {
         this.currentAction === 'SPEAK' ? '[SPEAK]' : '[EDITOR]'
       );
 
-      // Anything after the action switch is the start of the new action, this should also take into account the length of the action switch message itself
-      const newActionContent = this.lastCharactersList.slice(
-        actionSwitchIndex + (this.currentAction === 'SPEAK' ? 7 : 8)
-      );
-
       // Anything before the action switch is the end of the previous action
       const previousActionContent = this.lastCharactersList.slice(
         0,
         actionSwitchIndex
       );
+      this.addIntoQueue(previousAction, previousActionContent);
 
-      if (previousAction === 'SPEAK') {
-        this.actionsQueue.push({
-          type: 'narrate',
-          content: previousActionContent,
-        });
-      } else {
-        this.actionsQueue.push({
-          type: 'code',
-          content: previousActionContent,
-        });
-      }
-
-      if (this.currentAction === 'SPEAK') {
-        this.actionsQueue.push({
-          type: 'narrate',
-          content: newActionContent,
-        });
-      } else {
-        this.actionsQueue.push({
-          type: 'code',
-          content: newActionContent,
-        });
-      }
+      // Anything after the action switch is the start of the new action, this should also take into account the length of the action switch message itself
+      const newActionContent = this.lastCharactersList.slice(
+        actionSwitchIndex + (this.currentAction === 'SPEAK' ? 7 : 8)
+      );
+      this.addIntoQueue(this.currentAction, newActionContent);
 
       // Reset the buffer
       this.lastCharactersList = nextIterationCharacters || '';
-      return;
-    }
-
-    // If the action hasn't changed, we can just keep adding to the buffer
-    if (this.currentAction === 'SPEAK') {
-      this.actionsQueue.push({
-        type: 'narrate',
-        content: this.lastCharactersList,
-      });
     } else {
-      this.actionsQueue.push({
-        type: 'code',
-        content: this.lastCharactersList,
-      });
-    }
+      // If the action hasn't changed, we can just keep adding to the buffer
+      this.addIntoQueue(this.currentAction, this.lastCharactersList);
 
-    // Reset the buffer
-    this.lastCharactersList = nextIterationCharacters || '';
+      // Reset the buffer
+      this.lastCharactersList = nextIterationCharacters || '';
+    }
   }
 
-  async processStep(step, editor) {
-    if (step.type === 'code') {
-      await typeRealistically(editor, step.content);
-    } else if (step.type === 'narrate') {
+  addIntoQueue(type, content) {
+    this.actionsQueue.push({ type, content });
+    if (!this.processingQueue) {
+      this.processQueue();
+    }
+  }
+
+  async processQueue() {
+    console.log('Processing queue', this.actionsQueue);
+    this.processingQueue = true;
+    while (this.actionsQueue.length > 0) {
+      const step = this.actionsQueue.shift();
+      await this.processAction(step);
+    }
+    this.processingQueue = false;
+  }
+
+  async processAction(step) {
+    console.log('Processing', step);
+    if (step.type === 'EDITOR') {
+      await typeRealistically(this.editor, step.content);
+    } else if (step.type === 'SPEAK') {
       await speak(step.content);
     }
   }
