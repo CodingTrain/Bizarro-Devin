@@ -38,23 +38,23 @@ class ListenToHumanCommand extends Command {
     super('bizarro-devin.listenToHuman');
     this.listening = false;
     this.recording = null;
+    this.filename = 'temp-record.wav';
   }
 
   async run() {
     if (!this.listening) {
       this.startListening();
-      setTimeout(() => {
-        this.stopListening();
-      }, 3000);
+      // setTimeout(() => {
+      //   this.stopListening();
+      // }, 3000);
     } else {
       this.stopListening();
     }
   }
 
   startListening() {
-    const filename = 'temp-record.wav';
     const file = fs.createWriteStream(
-      path.join(__dirname, '../../', filename),
+      path.join(__dirname, '../../', this.filename),
       { encoding: 'binary' }
     );
     this.recording = record.record({
@@ -70,6 +70,7 @@ class ListenToHumanCommand extends Command {
   stopListening() {
     this.recording.stop();
     vscode.window.showInformationMessage('Stopped listening...');
+    transcribe(path.join(__dirname, '../../', this.filename));
     this.listening = false;
   }
 }
