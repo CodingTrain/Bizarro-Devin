@@ -79,6 +79,7 @@
     "@xenova/transformers": "^2.16.1",
     "ollama": "^0.5.0",
     "replicate": "^0.29.1",
-    "say": "^0.16.0"
+    "say": "^0.16.0",
+    "wavefile": "^11.0.0"
   }
 }
