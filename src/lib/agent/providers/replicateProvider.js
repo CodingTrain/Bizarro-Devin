@@ -27,7 +27,10 @@ class ReplicateProvider extends ModelProvider {
     });
     let fullResponse = '';
     while (true) {
-      const { value } = await stream.next();
+      const { value, done } = await stream.next();
+      if (done) {
+        throw new Error('Stream ended unexpectedly');
+      }
       if (value.event == 'done') break;
       await process({ response: value.data });
       fullResponse += value.data;
@@ -38,7 +41,9 @@ class ReplicateProvider extends ModelProvider {
   createPrompt() {
     const formattedPrompt = this.messageHistory
       .map((msg) => {
-        return msg.role == 'user' ? `[INST] ${msg.content} [/INST]` : msg.content;
+        return msg.role == 'user'
+          ? `[INST] ${msg.content} [/INST]`
+          : msg.content;
       })
       .join('\n');
     return {
@@ -46,7 +51,6 @@ class ReplicateProvider extends ModelProvider {
       prompt_template: `[INST]<<SYS>>\n{system_prompt}\n<</SYS>>[/INST]\n\n{prompt}`,
       max_new_tokens: 2000,
       system_prompt: prompts.systemPrompt,
-
     };
   }
 }
