@@ -44,9 +44,6 @@ class ListenToHumanCommand extends Command {
   async run() {
     if (!this.listening) {
       this.startListening();
-      // setTimeout(() => {
-      //   this.stopListening();
-      // }, 3000);
     } else {
       this.stopListening();
     }

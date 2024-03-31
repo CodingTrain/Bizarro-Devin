@@ -121,6 +121,22 @@ class Agent {
     this.processingQueue = true;
     while (this.actionsQueue.length > 0) {
       const step = this.actionsQueue.shift();
+
+      // If the step is a speaking step, we will grab all the speaking steps until the next editor step and combine them
+      // this will sound more natural and less "chunky"
+      if (step.type === 'SPEAK') {
+        let combinedContent = step.content;
+        while (this.actionsQueue.length > 0) {
+          const nextStep = this.actionsQueue[0];
+          if (nextStep.type === 'SPEAK') {
+            combinedContent += nextStep.content;
+            this.actionsQueue.shift();
+          } else {
+            break;
+          }
+        }
+        step.content = combinedContent;
+      }
       await this.processAction(step);
     }
     this.processingQueue = false;
