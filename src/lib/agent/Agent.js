@@ -42,6 +42,7 @@ class Agent {
     if (event === 'done') {
       // If the stream is done, we need to process the remaining buffer
       this.addIntoQueue(this.currentAction, this.lastCharactersList);
+      this.lastCharactersList = '';
       return;
     }
 
