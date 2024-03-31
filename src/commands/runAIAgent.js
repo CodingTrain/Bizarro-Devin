@@ -19,7 +19,6 @@ class RunAIAgentCommand extends Command {
     }
 
     // const agent = getAgent();
-
     // const startingPrompt = prompts.startingPrompt;
     // agent.prompt(startingPrompt);
   }

@@ -80,10 +80,8 @@ class ListenToHumanCommand extends Command {
 async function transcribe(url) {
   const whisper = await MyTranscriptionPipeline.getInstance();
   const audio = await read_audio(url);
-  const start = performance.now();
   const output = await whisper(audio);
-  const end = performance.now();
-  console.log(`Transcription took ${Math.round(end - start) / 1000} seconds.`);
+  console.log(`Transcribed: ${output}`);
   return output;
 }
 
