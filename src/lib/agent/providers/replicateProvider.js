@@ -31,8 +31,11 @@ class ReplicateProvider extends ModelProvider {
       if (done) {
         throw new Error('Stream ended unexpectedly');
       }
-      if (value.event == 'done') break;
-      await process({ response: value.data });
+      if (value.event == 'done') {
+        await process({ response: '', event: value.event });
+        break;
+      }
+      await process({ response: value.data, event: value.event });
       fullResponse += value.data;
     }
     this.messageHistory.push({ role: 'assistant', content: fullResponse });
