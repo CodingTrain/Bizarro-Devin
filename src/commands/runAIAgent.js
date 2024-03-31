@@ -18,10 +18,10 @@ class RunAIAgentCommand extends Command {
       return;
     }
 
-    const agent = getAgent();
+    // const agent = getAgent();
 
-    const startingPrompt = prompts.startingPrompt;
-    agent.prompt(startingPrompt);
+    // const startingPrompt = prompts.startingPrompt;
+    // agent.prompt(startingPrompt);
   }
 }
 

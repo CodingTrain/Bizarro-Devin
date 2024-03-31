@@ -1,4 +1,4 @@
-// const { getAgent } = require('../lib/agent/Agent');
+const { getAgent } = require('../lib/agent/Agent');
 
 const vscode = require('vscode');
 const wavefile = require('wavefile');
@@ -64,11 +64,16 @@ class ListenToHumanCommand extends Command {
     this.listening = true;
   }
 
-  stopListening() {
+  async stopListening() {
     this.recording.stop();
     vscode.window.showInformationMessage('Stopped listening...');
-    transcribe(path.join(__dirname, '../../', this.filename));
+    let output = await transcribe(
+      path.join(__dirname, '../../', this.filename)
+    );
     this.listening = false;
+    const agent = getAgent();
+    const startingPrompt = output.text;
+    agent.prompt(startingPrompt);
   }
 }
 
@@ -79,7 +84,7 @@ async function transcribe(url) {
   const output = await whisper(audio);
   const end = performance.now();
   console.log(`Transcription took ${Math.round(end - start) / 1000} seconds.`);
-  console.log(output);
+  return output;
 }
 
 async function read_audio(file) {
