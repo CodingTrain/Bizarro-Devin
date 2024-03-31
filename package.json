@@ -40,6 +40,11 @@
         "title": "Pause AI Agent",
         "category": "Bizarro Devin",
         "icon": "$(debug-pause)"
+      },
+      {
+        "command": "bizarro-devin.listenToHuman",
+        "title": "Toggle Listening to Human",
+        "category": "Bizarro Devin"
       }
     ],
     "menus": {
