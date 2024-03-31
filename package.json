@@ -44,7 +44,8 @@
       {
         "command": "bizarro-devin.listenToHuman",
         "title": "Toggle Listening to Human",
-        "category": "Bizarro Devin"
+        "category": "Bizarro Devin",
+        "icon": "$(record)"
       }
     ],
     "menus": {
@@ -59,6 +60,10 @@
         },
         {
           "command": "bizarro-devin.muteAIAgent",
+          "group": "navigation"
+        },
+        {
+          "command": "bizarro-devin.listenToHuman",
           "group": "navigation"
         }
       ]
