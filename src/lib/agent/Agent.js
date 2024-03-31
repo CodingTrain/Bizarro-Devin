@@ -28,6 +28,7 @@ class Agent {
 
   async consumeStream(response) {
     const text = response.response;
+    const event = response.event;
 
     // Check if last character of received text is a space, period or newline
     const isEndOfSentence =
@@ -37,6 +38,13 @@ class Agent {
 
     // We will need to store the latest 30 characters to check for the action starts
     this.lastCharactersList += text;
+
+    if (event === 'done') {
+      // If the stream is done, we need to process the remaining buffer
+      this.addIntoQueue(this.currentAction, this.lastCharactersList);
+      return;
+    }
+
     if (this.lastCharactersList.length < 30) {
       return; // Wait for the buffer to fill up
     }
