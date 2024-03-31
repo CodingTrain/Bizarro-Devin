@@ -15,14 +15,14 @@ const typeRealistically = async (editor, code, delay = 100) => {
     });
     if (char !== ' ') await sleep(delay);
   }
-  // Insert newline
-  await editor.edit((editBuilder) => {
-    editBuilder.insert(editor.selection.active, '\n');
-  });
+  // // Insert newline
+  // await editor.edit((editBuilder) => {
+  //   editBuilder.insert(editor.selection.active, '\n');
+  // });
 
-  // Format document
-  await vscode.commands.executeCommand('vscode.open', editor.document.uri);
-  await vscode.commands.executeCommand('editor.action.formatDocument');
+  // // Format document
+  // await vscode.commands.executeCommand('vscode.open', editor.document.uri);
+  // await vscode.commands.executeCommand('editor.action.formatDocument');
 };
 
 module.exports = {
