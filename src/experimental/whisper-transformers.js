@@ -1,8 +1,34 @@
 const wavefile = require('wavefile');
+const record = require('node-record-lpcm16');
+const fs = require('fs');
+const fsp = require('fs/promises');
 
-transcribe(
-  'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/jfk.wav'
-);
+// transcribe(
+//   'https://huggingface.co/datasets/Xenova/transformers.js-docs/resolve/main/jfk.wav'
+// );
+
+const filename = 'temp-record.wav';
+const file = fs.createWriteStream(filename, { encoding: 'binary' });
+
+const recording = record.record({
+  sampleRate: 16000,
+  verbose: false,
+  recordProgram: 'sox',
+  // stop recording after 3 seconds of silence?!??!?!
+  // silence: '3.0',
+});
+
+setTimeout(() => {
+  recording.stop();
+}, 3000);
+
+recording.stream().pipe(file);
+
+file.on('close', async () => {
+  await transcribe(filename);
+});
+
+// transcribe(filename);
 
 async function transcribe(url) {
   const TransformersApi = Function('return import("@xenova/transformers")')();
@@ -19,8 +45,11 @@ async function transcribe(url) {
 }
 
 async function loadAudio(url) {
-  let buffer = Buffer.from(await fetch(url).then((x) => x.arrayBuffer()));
+  // let buffer = Buffer.from(await fetch(url).then((x) => x.arrayBuffer()));
+  // let wav = new wavefile.WaveFile(buffer);
+  let buffer = await fsp.readFile(url);
   let wav = new wavefile.WaveFile(buffer);
+
   wav.toBitDepth('32f'); // Pipeline expects input as a Float32Array
   wav.toSampleRate(16000); // Whisper expects audio with a sampling rate of 16000
   let audioData = wav.getSamples();
