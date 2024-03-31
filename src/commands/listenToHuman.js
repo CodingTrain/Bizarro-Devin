@@ -1,10 +1,11 @@
 // const { getAgent } = require('../lib/agent/Agent');
 
+const vscode = require('vscode');
 const wavefile = require('wavefile');
 const record = require('node-record-lpcm16');
 const fs = require('fs');
 const fsp = require('fs/promises');
-
+const path = require('path');
 // const vscode = require('vscode');
 const Command = require('../lib/command');
 
@@ -32,37 +33,44 @@ class MyTranscriptionPipeline {
   }
 }
 
-let recording = undefined;
-
 class ListenToHumanCommand extends Command {
   constructor() {
     super('bizarro-devin.listenToHuman');
     this.listening = false;
+    this.recording = null;
   }
 
   async run() {
-    console.log(__dirname);
-    const filename = 'temp-record.wav';
     if (!this.listening) {
-      const file = fs.createWriteStream(filename, { encoding: 'binary' });
-      recording = record.record({
-        sampleRate: 16000,
-        verbose: false,
-        recordProgram: 'sox',
-      });
-      recording.stream().pipe(file);
-      console.log('starting listening');
-      this.listening = true;
+      this.startListening();
       setTimeout(() => {
-        recording.stop();
-        console.log('stopped listening');
+        this.stopListening();
       }, 3000);
     } else {
-      console.log('stopping listening');
-      recording.stop();
-      this.listening = false;
-      //transcribe(filename);
+      this.stopListening();
     }
+  }
+
+  startListening() {
+    const filename = 'temp-record.wav';
+    const file = fs.createWriteStream(
+      path.join(__dirname, '../../', filename),
+      { encoding: 'binary' }
+    );
+    this.recording = record.record({
+      sampleRate: 16000,
+      verbose: false,
+      recordProgram: 'sox',
+    });
+    this.recording.stream().pipe(file);
+    vscode.window.showInformationMessage('Listening...');
+    this.listening = true;
+  }
+
+  stopListening() {
+    this.recording.stop();
+    vscode.window.showInformationMessage('Stopped listening...');
+    this.listening = false;
   }
 }
 
@@ -75,6 +83,7 @@ async function transcribe(url) {
   console.log(`Transcription took ${Math.round(end - start) / 1000} seconds.`);
   console.log(output);
 }
+
 async function read_audio(file) {
   let buffer = await fsp.readFile(file);
   let wav = new wavefile.WaveFile(buffer);
