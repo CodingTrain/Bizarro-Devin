@@ -41,6 +41,7 @@ class ListenToHumanCommand extends Command {
   }
 
   async run() {
+    console.log(__dirname);
     const filename = 'temp-record.wav';
     if (!this.listening) {
       const file = fs.createWriteStream(filename, { encoding: 'binary' });
@@ -52,6 +53,10 @@ class ListenToHumanCommand extends Command {
       recording.stream().pipe(file);
       console.log('starting listening');
       this.listening = true;
+      setTimeout(() => {
+        recording.stop();
+        console.log('stopped listening');
+      }, 3000);
     } else {
       console.log('stopping listening');
       recording.stop();
