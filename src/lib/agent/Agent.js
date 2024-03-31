@@ -1,7 +1,7 @@
 const { typeRealistically } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
-const { speak, speakSay } = require('../../util/speak');
+const { speak } = require('../../util/speak');
 class Agent {
   constructor() {
     this.editor = vscode.window.activeTextEditor;

@@ -46,6 +46,8 @@ const speakSay = async (text) => {
   });
 };
 
+const speak = config.tts === 'coqui' ? speakCoqui : speakSay;
+
 module.exports = {
-  speak: config.tts === 'coqui' ? speakCoqui : speakSay,
+  speak,
 };
