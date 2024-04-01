@@ -6,16 +6,16 @@ const config = require('../../../config');
 
 class Agent {
   constructor() {
-    this.editor = vscode.window.activeTextEditor;
     this.provider = getProvider();
     this.currentAction = 'SPEAK';
 
     // Queues for buffering the speed of the AI
     this.actionsQueue = [];
-
     this.lastCharactersList = '';
-
     this.processingQueue = false;
+    this.isNewPrompt = false;
+    this.promptingTemplate =
+      'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
   }
 
   /**
@@ -23,7 +23,13 @@ class Agent {
    * @param {string} input The prompt to be processed
    */
   prompt(input) {
-    this.provider.queryStream(input, (response) =>
+    const editor = vscode.window.activeTextEditor;
+
+    this.isNewPrompt = true;
+    const prompt = this.promptingTemplate
+      .replace('{prompt}', input)
+      .replace('{currentCode}', editor.document.getText());
+    this.provider.queryStream(prompt, (response) =>
       this.consumeStream(response)
     );
   }
@@ -153,7 +159,26 @@ class Agent {
     console.log('Processing', step);
     if (!step.content) return;
     if (step.type === 'EDITOR') {
-      await typeRealistically(this.editor, step.content);
+      const editor = vscode.window.activeTextEditor;
+      if (this.isNewPrompt) {
+        // Wipe the current editor
+        await editor.edit((editBuilder) => {
+          editBuilder.delete(
+            new vscode.Range(
+              new vscode.Position(0, 0),
+              new vscode.Position(
+                editor.document.lineCount + 1,
+                editor.document.lineAt(
+                  editor.document.lineCount - 1
+                ).text.length
+              )
+            )
+          );
+        });
+        this.isNewPrompt = false;
+      }
+
+      await typeRealistically(editor, step.content);
     } else if (step.type === 'SPEAK') {
       await speak(step.content);
     }
