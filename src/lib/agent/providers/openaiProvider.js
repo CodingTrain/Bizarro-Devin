@@ -3,7 +3,7 @@ const { prompts } = require('../../../prompt');
 const config = require('../../../../config');
 const OpenAI = require('openai');
 
-class OllamaProvider extends ModelProvider {
+class OpenAIProvider extends ModelProvider {
   constructor() {
     super();
     this.openai = new OpenAI({ apiKey: config.openAIApiToken });
@@ -61,4 +61,4 @@ class OllamaProvider extends ModelProvider {
   }
 }
 
-module.exports = OllamaProvider;
+module.exports = OpenAIProvider;
