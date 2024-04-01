@@ -51,7 +51,7 @@ class ReplicateProvider extends ModelProvider {
       .join('\n');
     return {
       prompt: formattedPrompt,
-      prompt_template: `[INST]<<SYS>>\n{system_prompt}\n<</SYS>>[/INST]\n\n{prompt}`,
+      // prompt_template: `[INST]<<SYS>>\n{system_prompt}\n<</SYS>>[/INST]\n\n{prompt}`,
       max_new_tokens: 2000,
       system_prompt: prompts.systemPrompt,
     };
