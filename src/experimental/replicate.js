@@ -1,4 +1,4 @@
-const config = require('../../config');
+// const config = require('../../config');
 const { getProvider } = require('../lib/agent/providers/providerInstance');
 
 const provider = getProvider();
@@ -10,11 +10,19 @@ async function testReplicateStream() {
 }
 
 async function testReplicate() {
-  const response1 = await provider.query('Who are you?');
+  const response1 = await provider.query('Who are you?', console.log);
   console.log(response1);
 
-  const response2 = await provider.query('Can you code a fractal tree?');
-  console.log(response2);
+  const response2 = await provider.queryStream(
+    'Can you code a fractal tree?',
+    (thing) => process.stdout.write(thing.response)
+  );
+
+  const response3 = await provider.queryStream(
+    'Thank you! Could you change the background to blue?',
+    (thing) => process.stdout.write(thing.response)
+  );
+  // console.log(response2);
 }
 // const replicate = new Replicate({
 //   auth: config.replicateApiToken,
