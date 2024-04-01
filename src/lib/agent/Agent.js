@@ -29,14 +29,8 @@ class Agent {
   }
 
   async consumeStream(response) {
-    let text, event;
-    if (config.model == 'ollama') {
-      text = response.message.content;
-      event = response.done ? 'done' : 'blah';
-    } else {
-      text = response.response;
-      event = response.event;
-    }
+    const text = response.response;
+    const event = response.event;
 
     // Check if last character of received text is a space, period or newline
     const isEndOfSentence =

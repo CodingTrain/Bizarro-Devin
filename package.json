@@ -46,6 +46,11 @@
         "title": "Toggle Listening to Human",
         "category": "Bizarro Devin",
         "icon": "$(record)"
+      },
+      {
+        "command": "bizarro-devin.manualPrompt",
+        "title": "Manually Prompt AI Agent",
+        "category": "Bizarro Devin"
       }
     ],
     "menus": {

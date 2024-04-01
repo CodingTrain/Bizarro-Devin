@@ -7,9 +7,9 @@ class OllamaProvider extends ModelProvider {
   }
 
   async query(prompt) {
-    const url = 'http://127.0.0.1:11434/api/generate';
+    const url = 'http://127.0.0.1:11434/api/chat';
     const data = {
-      model: 'llama2',
+      model: 'llama2:70b',
       messages: [
         {
           role: 'system',
@@ -27,8 +27,13 @@ class OllamaProvider extends ModelProvider {
 
     const response = await this.getResponse(url, data);
     const json = await response.json();
-    this.messageHistory.push({ role: 'assistant', content: json.response });
-    return json;
+    this.messageHistory.push({
+      role: 'assistant',
+      content: json.message.content,
+    });
+    return {
+      response: json.message.content,
+    };
   }
   async getResponse(url, data) {
     try {
@@ -43,23 +48,29 @@ class OllamaProvider extends ModelProvider {
     }
   }
   queryStream(prompt, process) {
-    /// TODO: Implement message history
     const url = 'http://127.0.0.1:11434/api/chat';
+    this.messageHistory.push({ role: 'user', content: prompt });
     const data = {
-      model: 'llama2:70b-chat',
+      model: 'llama2:70b',
       messages: [
         {
           role: 'system',
           content: prompts.systemPrompt,
         },
         ...this.messageHistory,
-        {
-          role: 'user',
-          content: prompt,
-        },
       ],
     };
-    this.streamResponse(url, data, process);
+    let fullResponse = '';
+    this.streamResponse(url, data, async (response) => {
+      await process({
+        response: response.message.content,
+        event: response.done ? 'done' : 'output',
+      });
+      fullResponse += response.message.content;
+      if (response.done) {
+        this.messageHistory.push({ role: 'assistant', content: fullResponse });
+      }
+    });
   }
   async streamResponse(url, data, process) {
     try {
