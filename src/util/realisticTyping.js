@@ -7,6 +7,12 @@ const typeImmediately = async (editor, code) => {
   });
 };
 
+/**
+ *
+ * @param {vscode.TextEditor} editor
+ * @param {*} code
+ * @param {*} delay
+ */
 const typeRealistically = async (editor, code, delay = 50) => {
   for (let i = 0; i < code.length; i++) {
     const char = code.charAt(i);
@@ -15,6 +21,17 @@ const typeRealistically = async (editor, code, delay = 50) => {
     });
     if (char !== ' ') await sleep(delay);
   }
+
+  // Scroll to bottom of document where it's typing
+  const position = new vscode.Position(
+    editor.document.lineCount - 2,
+    editor.selection.start.character
+  );
+
+  editor.revealRange(
+    new vscode.Range(position, position),
+    vscode.TextEditorRevealType.Default
+  );
   // // Insert newline
   // await editor.edit((editBuilder) => {
   //   editBuilder.insert(editor.selection.active, '\n');
