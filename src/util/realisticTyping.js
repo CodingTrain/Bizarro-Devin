@@ -7,7 +7,7 @@ const typeImmediately = async (editor, code) => {
   });
 };
 
-const typeRealistically = async (editor, code, delay = 100) => {
+const typeRealistically = async (editor, code, delay = 50) => {
   for (let i = 0; i < code.length; i++) {
     const char = code.charAt(i);
     await editor.edit((editBuilder) => {
