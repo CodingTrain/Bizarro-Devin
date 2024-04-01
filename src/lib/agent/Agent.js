@@ -2,6 +2,8 @@ const { typeRealistically } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
+const config = require('../../../config');
+
 class Agent {
   constructor() {
     this.editor = vscode.window.activeTextEditor;
@@ -27,8 +29,14 @@ class Agent {
   }
 
   async consumeStream(response) {
-    const text = response.response;
-    const event = response.event;
+    let text, event;
+    if (config.model == 'ollama') {
+      text = response.message.content;
+      event = response.done ? 'done' : 'blah';
+    } else {
+      text = response.response;
+      event = response.event;
+    }
 
     // Check if last character of received text is a space, period or newline
     const isEndOfSentence =

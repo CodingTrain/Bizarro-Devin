@@ -1,4 +1,5 @@
 const ModelProvider = require('./genericProvider');
+const { prompts } = require('../../../prompt');
 
 class OllamaProvider extends ModelProvider {
   constructor() {
@@ -10,6 +11,10 @@ class OllamaProvider extends ModelProvider {
     const data = {
       model: 'llama2',
       messages: [
+        {
+          role: 'system',
+          content: prompts.systemPrompt,
+        },
         ...this.messageHistory,
         {
           role: 'user',
@@ -39,10 +44,20 @@ class OllamaProvider extends ModelProvider {
   }
   queryStream(prompt, process) {
     /// TODO: Implement message history
-    const url = 'http://127.0.0.1:11434/api/generate';
+    const url = 'http://127.0.0.1:11434/api/chat';
     const data = {
-      model: 'llama2',
-      prompt,
+      model: 'llama2:70b-chat',
+      messages: [
+        {
+          role: 'system',
+          content: prompts.systemPrompt,
+        },
+        ...this.messageHistory,
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
     };
     this.streamResponse(url, data, process);
   }

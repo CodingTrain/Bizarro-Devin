@@ -5,11 +5,8 @@ const provider = getProvider();
 testReplicate();
 
 async function testReplicate() {
-  const response1 = await provider.query('Who are you?');
-  console.log(response1);
-
-  const response2 = await provider.query('Can you code a fractal tree?');
-  console.log(response2);
+  await provider.query('Who are you?', console.log);
+  await provider.queryStream('Can you code a fractal tree?', console.log);
 }
 // const replicate = new Replicate({
 //   auth: config.replicateApiToken,
