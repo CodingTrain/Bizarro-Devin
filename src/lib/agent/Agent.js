@@ -6,7 +6,7 @@ class Agent {
   constructor() {
     this.editor = vscode.window.activeTextEditor;
     this.provider = getProvider();
-    this.currentAction = null; //'SPEAK';
+    this.currentAction = 'SPEAK';
 
     // Queues for buffering the speed of the AI
     this.actionsQueue = [];
@@ -31,10 +31,7 @@ class Agent {
     const event = response.event;
 
     // Check if last character of received text is a space, period or newline
-    const isEndOfSentence =
-      text.slice(-1) === ' ' ||
-      text.slice(-1) === '.' ||
-      text.slice(-1) === '\n';
+    const isEndOfSentence = [' ', '.', '\n'].includes(text.slice(-1));
 
     // We will need to store the latest 30 characters to check for the action starts
     this.lastCharactersList += text;
@@ -56,11 +53,7 @@ class Agent {
     if (!isEndOfSentence) {
       let i = this.lastCharactersList.length - 1;
       while (i >= 0) {
-        if (
-          this.lastCharactersList[i] === ' ' ||
-          this.lastCharactersList[i] === '.' ||
-          this.lastCharactersList[i] === '\n'
-        ) {
+        if ([' ', '.', '\n'].includes(this.lastCharactersList[i])) {
           break;
         }
         i--;
@@ -75,24 +68,27 @@ class Agent {
         // We will have to wait for the next chunk of text
         return;
       }
+
+      // If current batch of characters has multiple ```, then we can cut off the string early, so as to only process one ``` at a time
+      if (this.lastCharactersList.split('```').length > 2) {
+        const cutOffIndex = this.lastCharactersList.indexOf('```');
+        nextIterationCharacters =
+          this.lastCharactersList.slice(cutOffIndex) + nextIterationCharacters;
+        this.lastCharactersList = this.lastCharactersList.slice(0, cutOffIndex);
+      }
     }
 
     // If we have reached the end of a sentence, we can process the buffer
     let previousAction = this.currentAction;
 
     // Check if the action has changed
-    if (this.lastCharactersList.includes('[SPEAK]')) {
-      this.currentAction = 'SPEAK';
-    }
-    if (this.lastCharactersList.includes('[EDITOR]')) {
-      this.currentAction = 'EDITOR';
+    if (this.lastCharactersList.includes('```')) {
+      this.currentAction = previousAction === 'SPEAK' ? 'EDITOR' : 'SPEAK';
     }
 
     if (previousAction !== this.currentAction) {
       // Find the index of the action switch
-      const actionSwitchIndex = this.lastCharactersList.lastIndexOf(
-        this.currentAction === 'SPEAK' ? '[SPEAK]' : '[EDITOR]'
-      );
+      const actionSwitchIndex = this.lastCharactersList.lastIndexOf('```');
 
       // Anything before the action switch is the end of the previous action
       const previousActionContent = this.lastCharactersList.slice(
@@ -103,7 +99,7 @@ class Agent {
 
       // Anything after the action switch is the start of the new action, this should also take into account the length of the action switch message itself
       const newActionContent = this.lastCharactersList.slice(
-        actionSwitchIndex + (this.currentAction === 'SPEAK' ? 7 : 8)
+        actionSwitchIndex + 3
       );
       this.addIntoQueue(this.currentAction, newActionContent);
 
@@ -126,7 +122,7 @@ class Agent {
   }
 
   async processQueue() {
-    console.log('Processing queue', this.actionsQueue);
+    // console.log('Processing queue', this.actionsQueue);
     this.processingQueue = true;
     while (this.actionsQueue.length > 0) {
       const step = this.actionsQueue.shift();
