@@ -2,7 +2,12 @@
 const { getProvider } = require('../lib/agent/providers/providerInstance');
 
 const provider = getProvider();
-testReplicate();
+testReplicateStream();
+
+async function testReplicateStream() {
+  await provider.query('Who are you?', console.log);
+  await provider.queryStream('Can you code a fractal tree?', console.log);
+}
 
 async function testReplicate() {
   const response1 = await provider.query('Who are you?', console.log);

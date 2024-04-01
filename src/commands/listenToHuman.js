@@ -81,7 +81,7 @@ async function transcribe(url) {
   const whisper = await MyTranscriptionPipeline.getInstance();
   const audio = await read_audio(url);
   const output = await whisper(audio);
-  console.log(`Transcribed: ${output.text}`);
+  console.log(`Transcribed:`, output);
   return output;
 }
 
