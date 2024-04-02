@@ -2,6 +2,7 @@ const ModelProvider = require('./genericProvider');
 const { prompts } = require('../../../prompt');
 const config = require('../../../../config');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const vscode = require('vscode');
 
 class GeminiProvider extends ModelProvider {
   constructor() {
@@ -47,6 +48,13 @@ class GeminiProvider extends ModelProvider {
     const result = await this.chat.sendMessageStream(prompt);
     let fullResponse = '';
     for await (const chunk of result.stream) {
+      if (chunk.promptFeedback?.blockReason) {
+        // prompt blocked
+        this.messageHistory.pop();
+        return vscode.window.showErrorMessage(
+          `Prompt blocked due to ${chunk.promptFeedback.blockReason}`
+        );
+      }
       const text = chunk.text();
       fullResponse += text;
       await process({ response: text, event: 'output' });

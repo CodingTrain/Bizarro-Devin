@@ -16,6 +16,7 @@ class Agent {
     this.isNewPrompt = false;
     this.promptingTemplate =
       'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
+    this.isStreaming = false;
   }
 
   /**
@@ -23,18 +24,26 @@ class Agent {
    * @param {string} input The prompt to be processed
    */
   prompt(input) {
+    if (this.isStreaming || this.actionsQueue.length > 0) {
+      return vscode.window.showErrorMessage(
+        'Please wait for the current prompt to finish processing before sending another one.'
+      );
+    }
     const editor = vscode.window.activeTextEditor;
 
     this.isNewPrompt = true;
     const prompt = this.promptingTemplate
       .replace('{prompt}', input)
       .replace('{currentCode}', editor.document.getText());
-    this.provider.queryStream(prompt, (response) =>
-      this.consumeStream(response)
-    );
+    this.isStreaming = true;
+    this.provider
+      .queryStream(prompt, (response) => this.consumeStream(response))
+      .then(() => {
+        this.isStreaming = false;
+      });
   }
 
-  async consumeStream(response) {
+  consumeStream(response) {
     const text = response.response;
     const event = response.event;
 
