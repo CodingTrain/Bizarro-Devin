@@ -1,3 +1,4 @@
+const { getWebserver } = require('../web/webserver');
 const { typeRealistically } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
@@ -21,6 +22,7 @@ class Agent {
 
     this.receivedErrorList = [];
     this.ignoreErrors = false;
+    this.webserver = getWebserver();
   }
 
   /**
@@ -175,6 +177,9 @@ class Agent {
       await this.processAction(step);
     }
     this.processingQueue = false;
+    if (!this.isStreaming) {
+      this.webserver.broadcastReload(); // Trigger a browser reload for the errors to appear
+    }
   }
 
   async processAction(step) {
