@@ -61,6 +61,9 @@ class GeminiProvider extends ModelProvider {
     }
     await process({ response: '', event: 'done' });
     this.messageHistory.push({ role: 'assistant', content: fullResponse });
+    return {
+      success: true,
+    };
   }
 }
 
