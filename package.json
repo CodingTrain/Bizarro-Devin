@@ -91,6 +91,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.3.1",
     "@xenova/transformers": "^2.16.1",
     "node-record-lpcm16": "^1.0.1",
     "ollama": "^0.5.0",
