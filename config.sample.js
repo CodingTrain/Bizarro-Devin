@@ -5,5 +5,5 @@ module.exports = {
   replicateApiToken: 'your-replicate-api-token-here',
   openAIApiToken: 'your-openai-api-token-here',
   geminiApiToken: 'your-gemini-api-token-here',
-  tts: 'say', // say, coqui
+  tts: 'piper', // say, coqui, piper
 };
