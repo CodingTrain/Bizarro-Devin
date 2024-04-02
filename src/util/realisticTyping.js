@@ -24,7 +24,6 @@ const typeRealistically = async (editor, code, delay = 50) => {
     scrollToBottom(editor);
   }
 
-
   // // Insert newline
   // await editor.edit((editBuilder) => {
   //   editBuilder.insert(editor.selection.active, '\n');
@@ -35,7 +34,7 @@ const typeRealistically = async (editor, code, delay = 50) => {
   // await vscode.commands.executeCommand('editor.action.formatDocument');
 };
 
-const scrollToBottom = (editor) => {
+function scrollToBottom(editor) {
   // Scroll to bottom of document where it's typing
   const position = new vscode.Position(
     editor.document.lineCount - 2,
