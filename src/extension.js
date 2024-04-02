@@ -1,5 +1,7 @@
-const CommandLoader = require('./lib/commandLoader');
+const { getWebserver } = require('./lib/web/webserver');
 
+const CommandLoader = require('./lib/commandLoader');
+require('./lib/web/webserver');
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 
