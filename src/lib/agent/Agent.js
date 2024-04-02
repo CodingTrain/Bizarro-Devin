@@ -2,7 +2,6 @@ const { typeRealistically } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
-const config = require('../../../config');
 
 class Agent {
   constructor() {
@@ -38,8 +37,11 @@ class Agent {
     this.isStreaming = true;
     this.provider
       .queryStream(prompt, (response) => this.consumeStream(response))
-      .then(() => {
+      .then((out) => {
         this.isStreaming = false;
+        if (out.blocked) {
+          vscode.window.showErrorMessage(`Prompt blocked: ${out.blockReason}`);
+        }
       });
   }
 

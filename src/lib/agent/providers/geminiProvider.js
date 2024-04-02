@@ -2,7 +2,6 @@ const ModelProvider = require('./genericProvider');
 const { prompts } = require('../../../prompt');
 const config = require('../../../../config');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
-const vscode = require('vscode');
 
 class GeminiProvider extends ModelProvider {
   constructor() {
@@ -51,9 +50,10 @@ class GeminiProvider extends ModelProvider {
       if (chunk.promptFeedback?.blockReason) {
         // prompt blocked
         this.messageHistory.pop();
-        return vscode.window.showErrorMessage(
-          `Prompt blocked due to ${chunk.promptFeedback.blockReason}`
-        );
+        return {
+          blocked: true,
+          blockReason: chunk.promptFeedback.blockReason,
+        };
       }
       const text = chunk.text();
       fullResponse += text;
