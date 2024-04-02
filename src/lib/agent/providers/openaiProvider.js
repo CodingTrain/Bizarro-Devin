@@ -35,6 +35,7 @@ class OpenAIProvider extends ModelProvider {
     this.messageHistory.push({ role: 'user', content: prompt });
     const stream = await this.openai.chat.completions.create({
       model: 'gpt-4-turbo-preview',
+      max_tokens: 2000,
       messages: [
         {
           role: 'system',
