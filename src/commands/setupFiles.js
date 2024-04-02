@@ -10,6 +10,7 @@ class SetupFilesCommand extends Command {
     // create index.html
     await this.createIndexHtml();
     // create sketch.js && opening it
+    await this.createErrorCatcherFile();
     const doc = await createFile('sketch.js');
     await doc.open();
   }
