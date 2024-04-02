@@ -58,6 +58,7 @@ class OpenAIProvider extends ModelProvider {
         fullResponse += chunk.choices[0]?.delta?.content;
       }
     }
+    return { success: true };
   }
 }
 
