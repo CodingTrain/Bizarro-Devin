@@ -47,12 +47,23 @@ class GeminiProvider extends ModelProvider {
     const result = await this.chat.sendMessageStream(prompt);
     let fullResponse = '';
     for await (const chunk of result.stream) {
+      if (chunk.promptFeedback?.blockReason) {
+        // prompt blocked
+        this.messageHistory.pop();
+        return {
+          blocked: true,
+          blockReason: chunk.promptFeedback.blockReason,
+        };
+      }
       const text = chunk.text();
       fullResponse += text;
       await process({ response: text, event: 'output' });
     }
     await process({ response: '', event: 'done' });
     this.messageHistory.push({ role: 'assistant', content: fullResponse });
+    return {
+      success: true,
+    };
   }
 }
 
