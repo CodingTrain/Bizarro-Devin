@@ -1,8 +1,8 @@
-const { getAgent } = require('../agent/Agent');
 const { Server } = require('socket.io');
 
 class SocketServer {
-  constructor() {
+  constructor(agent) {
+    this.agent = agent;
     this.io = new Server({
       cors: {
         origin: '*',
@@ -20,8 +20,7 @@ class SocketServer {
   }
 
   handleIncomingMessage(message) {
-    const agent = getAgent();
-    agent.receiveBrowserMessage(message);
+    this.agent.receiveBrowserMessage(message);
   }
 
   broadcastReload() {
@@ -29,20 +28,6 @@ class SocketServer {
   }
 }
 
-// Singleton instance of the webserver
-let webserver = null;
-
-/**
- * Get the agent instance
- * @returns {SocketServer} The agent instance
- */
-const getWebserver = () => {
-  if (!webserver) {
-    webserver = new SocketServer();
-  }
-  return webserver;
-};
-
 module.exports = {
-  getWebserver,
+  SocketServer,
 };

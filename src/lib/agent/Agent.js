@@ -1,4 +1,4 @@
-const { getWebserver } = require('../web/webserver');
+const { SocketServer } = require('../web/webserver');
 const { typeRealistically } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
@@ -22,7 +22,9 @@ class Agent {
 
     this.receivedErrorList = [];
     this.ignoreErrors = false;
-    this.webserver = getWebserver();
+
+    this.webserver = new SocketServer(this);
+    this.webserver.start();
   }
 
   /**

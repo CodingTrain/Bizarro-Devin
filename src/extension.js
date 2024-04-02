@@ -13,9 +13,6 @@ function activate(context) {
 
   const commandLoader = new CommandLoader(context);
   commandLoader.load('commands');
-
-  const webserver = getWebserver();
-  webserver.start();
 }
 
 function deactivate() {}
