@@ -19,7 +19,7 @@ class ModelProvider {
    * @param {string} prompt Prompt to send to the model
    * @param {function} process Function to process the response
    */
-  queryStream(prompt, process) {
+  async queryStream(prompt, process) {
     throw new Error('Not implemented');
   }
 }

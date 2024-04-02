@@ -46,6 +46,11 @@
         "title": "Toggle Listening to Human",
         "category": "Bizarro Devin",
         "icon": "$(record)"
+      },
+      {
+        "command": "bizarro-devin.manualPrompt",
+        "title": "Manually Prompt AI Agent",
+        "category": "Bizarro Devin"
       }
     ],
     "menus": {
@@ -89,6 +94,7 @@
     "@xenova/transformers": "^2.16.1",
     "node-record-lpcm16": "^1.0.1",
     "ollama": "^0.5.0",
+    "openai": "^4.31.0",
     "play-sound": "^1.1.6",
     "replicate": "^0.29.1",
     "say": "^0.16.0",
