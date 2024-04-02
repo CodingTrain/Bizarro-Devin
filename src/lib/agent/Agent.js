@@ -15,7 +15,12 @@ class Agent {
     this.isNewPrompt = false;
     this.promptingTemplate =
       'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
+    this.errorPromptingTemplate =
+      'It appears like you have made some errors in the code. Please fix them. The errors are as follows:\n{errors}\nCurrent code in the editor:\n```\n{currentCode}\n```';
     this.isStreaming = false;
+
+    this.receivedErrorList = [];
+    this.ignoreErrors = false;
   }
 
   /**
@@ -28,17 +33,23 @@ class Agent {
         'Please wait for the current prompt to finish processing before sending another one.'
       );
     }
-    const editor = vscode.window.activeTextEditor;
 
-    this.isNewPrompt = true;
+    const editor = vscode.window.activeTextEditor;
     const prompt = this.promptingTemplate
       .replace('{prompt}', input)
       .replace('{currentCode}', editor.document.getText());
+
+    this.processPrompt(prompt);
+  }
+
+  processPrompt(prompt) {
+    this.isNewPrompt = true;
     this.isStreaming = true;
     this.provider
       .queryStream(prompt, (response) => this.consumeStream(response))
       .then((out) => {
         this.isStreaming = false;
+        this.receivedErrorList = []; // Reset the error list
         if (out.blocked) {
           vscode.window.showErrorMessage(`Prompt blocked: ${out.blockReason}`);
         }
@@ -193,6 +204,49 @@ class Agent {
     } else if (step.type === 'SPEAK') {
       await speak(step.content);
     }
+  }
+
+  async receiveBrowserMessage(message) {
+    // If the AI is still streaming a response, we want to ignore all incoming messages.
+    // This is because we cannot be certain the code is in a 'finished' state as it can still be writing code.
+    if (this.isStreaming || this.actionsQueue.length > 0 || this.ignoreErrors) {
+      return;
+    }
+
+    // Add formatted message to the error list
+    if (message.type === 'error') {
+      this.receivedErrorList.push(
+        `${message.data.msg} at line ${message.data.lineNumber} and column ${message.data.columnNo}`
+      );
+    }
+
+    console.log('Received error!');
+    // Schedule a timeout if there isn't one, replace the existing timeout if there is one
+    if (this.errorTimeout) {
+      console.log('Cleared previous timeout');
+      clearTimeout(this.errorTimeout);
+    }
+
+    this.errorTimeout = setTimeout(() => {
+      this.triggerErrorResponse();
+    }, 1000);
+    console.log('Set new timeout with id ' + this.errorTimeout);
+  }
+
+  async triggerErrorResponse() {
+    // Supply a prompt to the AI to respond to the errors
+    const prompt = this.errorPromptingTemplate
+      .replace(
+        '{errors}',
+        this.receivedErrorList.map((error) => '- ' + error).join('\n')
+      )
+      .replace(
+        '{currentCode}',
+        vscode.window.activeTextEditor.document.getText()
+      );
+    console.log('Triggering error response!', prompt);
+
+    this.processPrompt(prompt);
   }
 }
 

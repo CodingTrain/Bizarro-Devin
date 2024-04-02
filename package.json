@@ -51,6 +51,11 @@
         "command": "bizarro-devin.manualPrompt",
         "title": "Manually Prompt AI Agent",
         "category": "Bizarro Devin"
+      },
+      {
+        "command": "bizarro-devin.ignoreErrors",
+        "title": "Enable error ignoring for the AI Agent",
+        "category": "Bizarro Devin"
       }
     ],
     "menus": {
@@ -101,6 +106,7 @@
     "play-sound": "^1.1.6",
     "replicate": "^0.29.1",
     "say": "^0.16.0",
+    "socket.io": "^4.7.5",
     "wavefile": "^11.0.0"
   }
 }
