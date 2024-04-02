@@ -18,6 +18,17 @@ async function speakCoqui(txt) {
   await play(tempFilePath);
 }
 
+async function speakPiper(txt) {
+  // python3 -m piper.http_server --model en_GB-alan-medium.onnx --port 5001
+  const response = await fetch(`http://127.0.0.1:5001/?text=${txt}`);
+  const blob = await response.blob();
+  const arrayBuffer = await blob.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  const tempFilePath = path.join(__dirname, '../../', 'temp_audio.wav');
+  await fs.writeFile(tempFilePath, buffer);
+  await play(tempFilePath);
+}
+
 function play(tempFilePath) {
   return new Promise((resolve, reject) => {
     player.play(tempFilePath, (err) => {
@@ -46,7 +57,13 @@ const speakSay = async (text) => {
   });
 };
 
-const speak = config.tts === 'coqui' ? speakCoqui : speakSay;
+const speakFunctions = {
+  coqui: speakCoqui,
+  piper: speakPiper,
+  say: speakSay,
+};
+
+const speak = speakFunctions[config.tts];
 
 module.exports = {
   speak,
