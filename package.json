@@ -78,7 +78,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "pretest": "npm run lint",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "test-ai": "node ./src/experimental/test-provider.js"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
@@ -93,6 +94,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.3.1",
     "@xenova/transformers": "^2.16.1",
+    "inquirer": "^8.0.0",
     "node-record-lpcm16": "^1.0.1",
     "ollama": "^0.5.0",
     "openai": "^4.31.0",
