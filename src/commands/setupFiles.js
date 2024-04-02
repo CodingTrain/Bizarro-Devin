@@ -76,6 +76,8 @@ class SetupFilesCommand extends Command {
               data,
           });
       }
+
+      socket.on('reload', () => window.location.reload());
       `
     );
   }
