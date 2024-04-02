@@ -8,7 +8,7 @@ class GeminiProvider extends ModelProvider {
     super();
     this.genAI = new GoogleGenerativeAI(config.geminiApiToken);
     this.model = this.genAI.getGenerativeModel({
-      model: 'gemini-1.5-pro',
+      model: 'gemini-pro',
     });
 
     // Gemini manages its own chat history
@@ -24,7 +24,7 @@ class GeminiProvider extends ModelProvider {
         },
       ],
       generationConfig: {
-        // maxOutputTokens:
+        maxOutputTokens: 2000,
       },
     });
   }
