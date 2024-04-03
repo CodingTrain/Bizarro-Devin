@@ -28,7 +28,7 @@ class Agent {
         'Please wait for the current prompt to finish processing before sending another one.'
       );
     }
-    const editor = vscode.window.activeTextEditor;
+    const editor = vscode.window.visibleTextEditors[0];
 
     this.isNewPrompt = true;
     const prompt = this.promptingTemplate
@@ -190,11 +190,11 @@ class Agent {
     console.log('Processing', step);
     if (!step.content) return;
     if (step.type === 'EDITOR') {
-      const editor = vscode.window.activeTextEditor;
+      const editor = vscode.window.visibleTextEditors[0];
 
       const doc = editor.document.getText().replace(/\r\n/g, '\n');
 
-      const diffs = Diff.diffChars(doc, step.content);
+      const diffs = Diff.diffWordsWithSpace(doc, step.content);
 
       await applyDiffs(editor, diffs);
 

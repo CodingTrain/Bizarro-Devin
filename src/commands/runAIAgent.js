@@ -12,7 +12,7 @@ class RunAIAgentCommand extends Command {
 
   // TODO: Receive a prompt to get started
   async run() {
-    let editor = vscode.window.activeTextEditor;
+    let editor = vscode.window.visibleTextEditors[0];
     if (!editor) {
       vscode.window.showInformationMessage('Create a text file first!');
       return;

@@ -21,7 +21,7 @@ const typeRealistically = async (editor, code, delay = 50) => {
     });
     if (char !== ' ') await sleep(delay);
 
-    scrollToBottom(editor);
+    scrollToCursor(editor);
   }
 
   // // Insert newline
@@ -33,18 +33,13 @@ const typeRealistically = async (editor, code, delay = 50) => {
   // await vscode.commands.executeCommand('vscode.open', editor.document.uri);
   // await vscode.commands.executeCommand('editor.action.formatDocument');
 };
-
-function scrollToBottom(editor) {
-  // Scroll to bottom of document where it's typing
-  const position = new vscode.Position(
-    editor.document.lineCount - 1,
-    editor.selection.start.character
-  );
-
-  editor.revealRange(
-    new vscode.Range(position, position),
-    vscode.TextEditorRevealType.Default
-  );
+/**
+ *
+ * @param {vscode.TextEditor} editor
+ */
+function scrollToCursor(editor) {
+  // Scroll to cursor
+  editor.revealRange(editor.selection);
 }
 
 /**
@@ -65,7 +60,6 @@ async function applyDiffs(editor, diffs) {
   };
 
   for (const diff of diffs) {
-    console.log(diff);
     if (diff.added) {
       await typeRealistically(editor, diff.value);
     } else if (diff.removed) {
@@ -74,15 +68,21 @@ async function applyDiffs(editor, diffs) {
       const newPosition = move(position, diff.value);
       const range = new vscode.Range(position, newPosition);
       await sleep(10 * diff.count);
+      editor.selection = new vscode.Selection(position, newPosition);
+      scrollToCursor(editor);
+      await sleep(200);
       await editor.edit((editBuilder) => {
         editBuilder.delete(range);
       });
+      scrollToCursor(editor);
     } else {
       // shift cursor to end of diff
       const position = editor.selection.active;
       const newPosition = move(position, diff.value);
       await sleep(10 * diff.count);
       editor.selection = new vscode.Selection(newPosition, newPosition);
+      scrollToCursor(editor);
+      await sleep(10 * diff.count);
     }
 
     await sleep(100);

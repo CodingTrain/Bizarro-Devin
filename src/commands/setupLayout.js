@@ -13,7 +13,7 @@ class SetupLayoutCommand extends Command {
     // Also, set up the window panes properly
 
     // get active text editor
-    let editor = vscode.window.activeTextEditor;
+    let editor = vscode.window.visibleTextEditors[0];
     if (!editor) {
       vscode.window.showInformationMessage('Create a text file first!');
       return; // No open text editor
