@@ -1,7 +1,8 @@
-const { typeRealistically } = require('../../util/realisticTyping');
+const { applyDiffs } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
+const Diff = require('diff');
 
 class Agent {
   constructor() {
@@ -28,7 +29,7 @@ class Agent {
         'Please wait for the current prompt to finish processing before sending another one.'
       );
     }
-    const editor = vscode.window.activeTextEditor;
+    const editor = vscode.window.visibleTextEditors[0];
 
     this.isNewPrompt = true;
     const prompt = this.promptingTemplate
@@ -89,8 +90,11 @@ class Agent {
       }
 
       // If current batch of characters has multiple ```, then we can cut off the string early, so as to only process one ``` at a time
+      // The chance of this actually happening is very low but we should account for it.
+      // It could in theory still break if there are 3 or more ``` in a single chunk of text
+      // or if there are multiple ``` in the final chunk sent. This is a very rare edge case so we just ignore it
       if (this.lastCharactersList.split('```').length > 2) {
-        const cutOffIndex = this.lastCharactersList.indexOf('```');
+        const cutOffIndex = this.lastCharactersList.lastIndexOf('```');
         nextIterationCharacters =
           this.lastCharactersList.slice(cutOffIndex) + nextIterationCharacters;
         this.lastCharactersList = this.lastCharactersList.slice(0, cutOffIndex);
@@ -161,6 +165,36 @@ class Agent {
         }
         step.content = combinedContent;
       }
+
+      // If the step is an editor step, we have to make sure that the upcoming editor steps are the whole chunk of code.
+      // We can do this by combining all the editor steps until the next speak step and combining them. Unless the final step is
+      // an editor step and the stream is finished in which case we can just process until the final editor step.
+      if (step.type === 'EDITOR') {
+        let combinedContent = step.content;
+        let hasFoundSpeakingStep = false;
+        while (this.actionsQueue.length > 0) {
+          const nextStep = this.actionsQueue[0];
+          if (nextStep.type === 'EDITOR') {
+            combinedContent += nextStep.content;
+            this.actionsQueue.shift();
+          } else {
+            hasFoundSpeakingStep = true;
+            break;
+          }
+        }
+
+        // If we haven't found a speaking step and we are still streaming code, we need to wait for the next chunk of code
+        if (!hasFoundSpeakingStep && this.isStreaming) {
+          this.actionsQueue.unshift({
+            type: 'EDITOR',
+            content: combinedContent,
+          });
+          break;
+        }
+
+        step.content = combinedContent;
+      }
+
       await this.processAction(step);
     }
     this.processingQueue = false;
@@ -170,26 +204,12 @@ class Agent {
     console.log('Processing', step);
     if (!step.content) return;
     if (step.type === 'EDITOR') {
-      const editor = vscode.window.activeTextEditor;
-      if (this.isNewPrompt) {
-        // Wipe the current editor
-        await editor.edit((editBuilder) => {
-          editBuilder.delete(
-            new vscode.Range(
-              new vscode.Position(0, 0),
-              new vscode.Position(
-                editor.document.lineCount + 1,
-                editor.document.lineAt(
-                  editor.document.lineCount - 1
-                ).text.length
-              )
-            )
-          );
-        });
-        this.isNewPrompt = false;
-      }
-
-      await typeRealistically(editor, step.content);
+      const editor = vscode.window.visibleTextEditors[0];
+      const currentEditorCode = editor.document
+        .getText()
+        .replace(/\r\n/g, '\n');
+      const diffs = Diff.diffWordsWithSpace(currentEditorCode, step.content);
+      await applyDiffs(editor, diffs);
     } else if (step.type === 'SPEAK') {
       await speak(step.content);
       this.isNewPrompt = true;
