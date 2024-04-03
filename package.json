@@ -62,18 +62,6 @@
     "menus": {
       "editor/title": [
         {
-          "command": "bizarro-devin.runAIAgent",
-          "group": "navigation"
-        },
-        {
-          "command": "bizarro-devin.pauseAIAgent",
-          "group": "navigation"
-        },
-        {
-          "command": "bizarro-devin.muteAIAgent",
-          "group": "navigation"
-        },
-        {
           "command": "bizarro-devin.listenToHuman",
           "group": "navigation"
         },
