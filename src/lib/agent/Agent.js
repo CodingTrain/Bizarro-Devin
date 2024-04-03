@@ -219,6 +219,7 @@ class Agent {
       // await typeRealistically(editor, step.content);
     } else if (step.type === 'SPEAK') {
       await speak(step.content);
+      this.isNewPrompt = true;
     }
   }
 }
