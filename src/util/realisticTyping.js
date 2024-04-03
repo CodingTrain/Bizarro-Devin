@@ -1,6 +1,13 @@
 const { sleep } = require('./sleep');
 const vscode = require('vscode');
 
+const delays = {
+  typeCharacter: 50,
+  deleteRange: 200,
+  moveCursor: 100,
+  applyDiff: 100,
+};
+
 const typeImmediately = async (editor, code) => {
   await editor.edit((editBuilder) => {
     editBuilder.insert(editor.selection.active, code);
@@ -13,7 +20,11 @@ const typeImmediately = async (editor, code) => {
  * @param {*} code
  * @param {*} delay
  */
-const typeRealistically = async (editor, code, delay = 50) => {
+const typeRealistically = async (
+  editor,
+  code,
+  delay = delays.typeCharacter
+) => {
   for (let i = 0; i < code.length; i++) {
     const char = code.charAt(i);
     await editor.edit((editBuilder) => {
@@ -59,10 +70,9 @@ async function applyDiffs(editor, diffs) {
       const position = editor.selection.active;
       const newPosition = move(position, diff.value);
       const range = new vscode.Range(position, newPosition);
-      await sleep(10 * diff.count);
       editor.selection = new vscode.Selection(position, newPosition);
       scrollToCursor(editor);
-      await sleep(200);
+      await sleep(delays.deleteRange);
       await editor.edit((editBuilder) => {
         editBuilder.delete(range);
       });
@@ -74,13 +84,12 @@ async function applyDiffs(editor, diffs) {
       if (diff == diffs.at(-1)) continue;
       const position = editor.selection.active;
       const newPosition = move(position, diff.value);
-      if (diff !== diffs[0]) await sleep(100);
+      if (diff !== diffs[0]) await sleep(delays.moveCursor);
       editor.selection = new vscode.Selection(newPosition, newPosition);
       scrollToCursor(editor);
-      await sleep(100);
     }
 
-    await sleep(100);
+    await sleep(delays.applyDiff);
   }
 }
 
