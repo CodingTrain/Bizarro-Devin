@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.2/p5.min.js"
+      integrity="sha512-eu9vkh+EbAsW3fMmPTj/DP5W3UegIdu0Z/OABMocvoofx43MYBkcQ9hRIVxZndV1vcCYQwBg+U1PkWl04TD0Jg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+      integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
+      crossorigin="anonymous"
+    ></script>
+    <script src="animator.js" defer></script>
+    <script src="sketch.js" defer></script>
+    <title>P5.JS Sketch</title>
+    <style>
+      #matt-animator {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        height: 100px;
+        transform-origin: 50% 100%;
+      }
+
+      /* Talking animation using rotation */
+      @keyframes talking {
+        0% {
+          transform: rotate(0deg);
+        }
+        50% {
+          transform: rotate(10deg);
+        }
+        100% {
+          transform: rotate(0deg);
+        }
+      }
+
+      /* Writing animation using vertical transform */
+      @keyframes writing {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(5px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      /* Thinking animation which is pulsing in size */
+      @keyframes thinking {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.1);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    </style>
+  </head>
+  <body style="position: relative">
+    <img src="/matt-pending.png" id="matt-animator" ="Google Logo" />
+  </body>
+</html>
