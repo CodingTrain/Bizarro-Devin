@@ -55,7 +55,7 @@ async function applyDiffs(editor, diffs) {
     if (diff.added) {
       await typeRealistically(editor, diff.value);
     } else if (diff.removed) {
-      // delete diff.count characters
+      // delete characters
       const position = editor.selection.active;
       const newPosition = move(position, diff.value);
       const range = new vscode.Range(position, newPosition);
@@ -69,9 +69,12 @@ async function applyDiffs(editor, diffs) {
       scrollToCursor(editor);
     } else {
       // shift cursor to end of diff
+
+      // don't bother moving cursor to end of document
+      if (diff == diffs.at(-1)) continue;
       const position = editor.selection.active;
       const newPosition = move(position, diff.value);
-      await sleep(100);
+      if (diff !== diffs[0]) await sleep(100);
       editor.selection = new vscode.Selection(newPosition, newPosition);
       scrollToCursor(editor);
       await sleep(100);
