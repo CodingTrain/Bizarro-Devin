@@ -1,7 +1,7 @@
-const { getProvider } = require('../lib/agent/providers/providerInstance');
+const { Provider } = require('../lib/agent/providers/providerInstance');
 const inquirer = require('inquirer');
 
-const provider = getProvider();
+const provider = new Provider();
 testReplicateStream();
 
 async function testReplicateStream() {

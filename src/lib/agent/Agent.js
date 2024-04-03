@@ -1,12 +1,12 @@
 const { applyDiffs } = require('../../util/realisticTyping');
 const vscode = require('vscode');
-const { getProvider } = require('./providers/providerInstance');
+const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
 const Diff = require('diff');
 
 class Agent {
   constructor() {
-    this.provider = getProvider();
+    this.provider = new Provider();
     this.currentAction = 'SPEAK';
 
     // Queues for buffering the speed of the AI
@@ -214,6 +214,20 @@ class Agent {
       await speak(step.content);
       this.isNewPrompt = true;
     }
+  }
+
+  async refresh() {
+    this.provider = new Provider();
+
+    const editor = vscode.window.visibleTextEditors[0];
+    editor.edit((editBuilder) => {
+      editBuilder.delete(
+        new vscode.Range(
+          new vscode.Position(0, 0),
+          new vscode.Position(editor.document.lineCount, 0)
+        )
+      );
+    });
   }
 }
 
