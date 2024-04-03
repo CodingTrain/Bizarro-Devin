@@ -71,10 +71,10 @@ async function applyDiffs(editor, diffs) {
       // shift cursor to end of diff
       const position = editor.selection.active;
       const newPosition = move(position, diff.value);
-      await sleep(10 * diff.count);
+      await sleep(100);
       editor.selection = new vscode.Selection(newPosition, newPosition);
       scrollToCursor(editor);
-      await sleep(10 * diff.count);
+      await sleep(100);
     }
 
     await sleep(100);
