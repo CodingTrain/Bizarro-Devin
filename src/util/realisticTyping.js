@@ -57,8 +57,9 @@ async function applyDiffs(editor, diffs) {
   const position = new vscode.Position(0, 0);
   editor.selection = new vscode.Selection(position, position);
 
-  const move = (position, value) => {
+  const move = (/** @type {vscode.Position} */ position, value) => {
     let deltaLine = (value.match(/\n/g) || []).length;
+    if (deltaLine === 0) return position.translate(0, value.length);
     let charPos = value.split('\n').pop().length;
     return position.translate(deltaLine).with({ character: charPos });
   };

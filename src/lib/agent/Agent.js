@@ -161,7 +161,7 @@ class Agent {
   }
 
   async processQueue() {
-    console.log('Processing queue', this.actionsQueue);
+    // console.log('Processing queue', this.actionsQueue);
     this.processingQueue = true;
     while (this.actionsQueue.length > 0) {
       const step = this.actionsQueue.shift();
