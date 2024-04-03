@@ -1,8 +1,8 @@
-const { typeRealistically } = require('../../util/realisticTyping');
+const { applyDiffs } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { getProvider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
-
+const Diff = require('diff');
 class Agent {
   constructor() {
     this.provider = getProvider();
@@ -35,17 +35,29 @@ class Agent {
       .replace('{prompt}', input)
       .replace('{currentCode}', editor.document.getText());
     this.isStreaming = true;
-    this.provider
-      .queryStream(prompt, (response) => this.consumeStream(response))
-      .then((out) => {
-        this.isStreaming = false;
-        if (out.blocked) {
-          vscode.window.showErrorMessage(`Prompt blocked: ${out.blockReason}`);
-        }
+    // this.provider
+    //   .queryStream(prompt, (response) => this.consumeStream(response))
+    //   .then((out) => {
+    //     this.isStreaming = false;
+    //     if (out.blocked) {
+    //       vscode.window.showErrorMessage(`Prompt blocked: ${out.blockReason}`);
+    //     }
+    //   });
+    this.provider.query(prompt).then((response) => {
+      // this.consumeStream(response);
+      this.currentAction = 'SPEAK';
+      response.response.split('```').forEach((chunk) => {
+        this.addIntoQueue(this.currentAction, chunk);
+        this.currentAction =
+          this.currentAction === 'SPEAK' ? 'EDITOR' : 'SPEAK';
       });
+      // this.consumeStream({ response: '', event: 'done' });
+      this.isStreaming = false;
+    });
   }
 
   consumeStream(response) {
+    console.log(response);
     const text = response.response;
     const event = response.event;
 
@@ -87,14 +99,22 @@ class Agent {
         // We will have to wait for the next chunk of text
         return;
       }
+    }
 
-      // If current batch of characters has multiple ```, then we can cut off the string early, so as to only process one ``` at a time
-      if (this.lastCharactersList.split('```').length > 2) {
-        const cutOffIndex = this.lastCharactersList.indexOf('```');
-        nextIterationCharacters =
-          this.lastCharactersList.slice(cutOffIndex) + nextIterationCharacters;
-        this.lastCharactersList = this.lastCharactersList.slice(0, cutOffIndex);
-      }
+    if (event === 'done') {
+      this.lastCharactersList;
+    }
+
+    // If current batch of characters has multiple ```, then we can cut off the string early, so as to only process one ``` at a time
+    while (this.lastCharactersList.split('```').length > 2) {
+      const actionSwitchIndex = this.lastCharactersList.lastIndexOf('```');
+      nextIterationCharacters =
+        this.lastCharactersList.slice(actionSwitchIndex) +
+        (nextIterationCharacters || '');
+      this.lastCharactersList = this.lastCharactersList.slice(
+        0,
+        actionSwitchIndex
+      );
     }
 
     // If we have reached the end of a sentence, we can process the buffer
@@ -141,7 +161,7 @@ class Agent {
   }
 
   async processQueue() {
-    // console.log('Processing queue', this.actionsQueue);
+    console.log('Processing queue', this.actionsQueue);
     this.processingQueue = true;
     while (this.actionsQueue.length > 0) {
       const step = this.actionsQueue.shift();
@@ -171,25 +191,32 @@ class Agent {
     if (!step.content) return;
     if (step.type === 'EDITOR') {
       const editor = vscode.window.activeTextEditor;
-      if (this.isNewPrompt) {
-        // Wipe the current editor
-        await editor.edit((editBuilder) => {
-          editBuilder.delete(
-            new vscode.Range(
-              new vscode.Position(0, 0),
-              new vscode.Position(
-                editor.document.lineCount + 1,
-                editor.document.lineAt(
-                  editor.document.lineCount - 1
-                ).text.length
-              )
-            )
-          );
-        });
-        this.isNewPrompt = false;
-      }
 
-      await typeRealistically(editor, step.content);
+      const doc = editor.document.getText().replace(/\r\n/g, '\n');
+
+      const diffs = Diff.diffChars(doc, step.content);
+
+      await applyDiffs(editor, diffs);
+
+      // if (this.isNewPrompt) {
+      //   // Wipe the current editor
+      //   await editor.edit((editBuilder) => {
+      //     editBuilder.delete(
+      //       new vscode.Range(
+      //         new vscode.Position(0, 0),
+      //         new vscode.Position(
+      //           editor.document.lineCount + 1,
+      //           editor.document.lineAt(
+      //             editor.document.lineCount - 1
+      //           ).text.length
+      //         )
+      //       )
+      //     );
+      //   });
+      //   this.isNewPrompt = false;
+      // }
+
+      // await typeRealistically(editor, step.content);
     } else if (step.type === 'SPEAK') {
       await speak(step.content);
     }

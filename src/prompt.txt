@@ -17,6 +17,10 @@ function setup() {
 Now I am going to draw a circle in the center of the canvas.
 
 ```
+function setup() {
+  createCanvas(400, 400);
+}
+
 function draw() {
   circle(200, 200, 50);
 }

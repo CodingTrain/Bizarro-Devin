@@ -37,7 +37,7 @@ const typeRealistically = async (editor, code, delay = 50) => {
 function scrollToBottom(editor) {
   // Scroll to bottom of document where it's typing
   const position = new vscode.Position(
-    editor.document.lineCount - 2,
+    editor.document.lineCount - 1,
     editor.selection.start.character
   );
 
@@ -47,7 +47,49 @@ function scrollToBottom(editor) {
   );
 }
 
+/**
+ * Apply diffs to the editor
+ * @param {vscode.TextEditor} editor
+ * @param {Diff.Change[]} diffs
+ */
+async function applyDiffs(editor, diffs) {
+  // move cursor to start of document
+  const position = new vscode.Position(0, 0);
+  editor.selection = new vscode.Selection(position, position);
+
+  const move = (position, value) => {
+    let deltaLine = (value.match(/\n/g) || []).length;
+    let charPos = value.split('\n').pop().length;
+    return position.translate(deltaLine).with({ character: charPos });
+  };
+
+  for (const diff of diffs) {
+    console.log(diff);
+    if (diff.added) {
+      await typeRealistically(editor, diff.value);
+    } else if (diff.removed) {
+      // delete diff.count characters
+      const position = editor.selection.active;
+      const newPosition = move(position, diff.value);
+      const range = new vscode.Range(position, newPosition);
+      await sleep(10 * diff.count);
+      await editor.edit((editBuilder) => {
+        editBuilder.delete(range);
+      });
+    } else {
+      // shift cursor to end of diff
+      const position = editor.selection.active;
+      const newPosition = move(position, diff.value);
+      await sleep(10 * diff.count);
+      editor.selection = new vscode.Selection(newPosition, newPosition);
+    }
+
+    await sleep(100);
+  }
+}
+
 module.exports = {
   typeRealistically,
   typeImmediately,
+  applyDiffs,
 };
