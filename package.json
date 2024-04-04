@@ -51,24 +51,22 @@
         "command": "bizarro-devin.manualPrompt",
         "title": "Manually Prompt AI Agent",
         "category": "Bizarro Devin"
+      },
+      {
+        "command": "bizarro-devin.refreshAgent",
+        "title": "Refresh AI Agent",
+        "category": "Bizarro Devin",
+        "icon": "$(sync)"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "bizarro-devin.runAIAgent",
-          "group": "navigation"
-        },
-        {
-          "command": "bizarro-devin.pauseAIAgent",
-          "group": "navigation"
-        },
-        {
-          "command": "bizarro-devin.muteAIAgent",
-          "group": "navigation"
-        },
-        {
           "command": "bizarro-devin.listenToHuman",
+          "group": "navigation"
+        },
+        {
+          "command": "bizarro-devin.refreshAgent",
           "group": "navigation"
         }
       ]

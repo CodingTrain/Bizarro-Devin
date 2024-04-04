@@ -24,10 +24,10 @@ class OpenAIProvider extends ModelProvider {
 
     this.messageHistory.push({
       role: 'assistant',
-      content: response.choices[0]?.delta?.content,
+      content: response.choices[0]?.message?.content,
     });
     return {
-      response: response.choices[0]?.delta?.content,
+      response: response.choices[0]?.message?.content,
     };
   }
 
