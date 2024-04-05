@@ -1,7 +1,7 @@
 const { sleep } = require('./sleep');
 const vscode = require('vscode');
 
-let delays = {
+const delays = {
   typeCharacter: 50,
   deleteRange: 200,
   moveCursor: 100,
