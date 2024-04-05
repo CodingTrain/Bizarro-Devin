@@ -6,7 +6,7 @@ const delays = {
   deleteRange: 200,
   moveCursor: 100,
   applyDiff: 100,
-  punctuationDelay: 150,
+  typePunctuation: 150,
 };
 
 const typeImmediately = async (editor, code) => {
