@@ -34,7 +34,7 @@ const typeRealistically = async (
     });
 
     const isPunctuation = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/;
-    if (isPunctuation.test(char)) await sleep(delays.punctuationDelay);
+    if (isPunctuation.test(char)) await sleep(delays.typePunctuation);
     else if (char !== ' ') await sleep(delay);
 
     scrollToCursor(editor);
