@@ -1,5 +1,7 @@
 const Command = require('../lib/command');
-const { createFile } = require('../util/createFile');
+const { createFile, copyFile } = require('../util/createFile');
+const fs = require('fs');
+const path = require('path');
 
 class SetupFilesCommand extends Command {
   constructor() {
@@ -7,29 +9,30 @@ class SetupFilesCommand extends Command {
   }
 
   async run() {
-    // create index.html
-    await this.createIndexHtml();
+    // create index.html and animator.js
+
+    await copyFile(this.getPathToAssetsFolder('index.html'), 'index.html');
+    await copyFile(this.getPathToAssetsFolder('animator.js'), 'animator.js');
+    await copyFile(
+      this.getPathToAssetsFolder('matt-pending.png'),
+      'matt-pending.png'
+    );
+    await copyFile(
+      this.getPathToAssetsFolder('matt-thinking.png'),
+      'matt-thinking.png'
+    );
+    await copyFile(
+      this.getPathToAssetsFolder('matt-typing.png'),
+      'matt-typing.png'
+    );
+
     // create sketch.js && opening it
     const doc = await createFile('sketch.js');
     await doc.open();
   }
 
-  async createIndexHtml() {
-    await createFile(
-      'index.html',
-      `<!DOCTYPE html>
-      <html lang="en">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
-        <script src="https://cdn.jsdelivr.net/npm/p5@1.9.2/lib/p5.js"></script>
-        <script src="sketch.js"></script>
-      </head>
-      <body>
-      </body>
-      </html>`
-    );
+  getPathToAssetsFolder(fileName) {
+    return path.join(__dirname, '../../', 'assets', fileName);
   }
 }
 
