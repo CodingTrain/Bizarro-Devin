@@ -6,7 +6,6 @@ const record = require('node-record-lpcm16');
 const fs = require('fs');
 const fsp = require('fs/promises');
 const path = require('path');
-// const vscode = require('vscode');
 const Command = require('../lib/command');
 
 class MyTranscriptionPipeline {
@@ -41,6 +40,16 @@ class ListenToHumanCommand extends Command {
     this.filename = 'temp-record.wav';
   }
 
+  load(context) {
+    this.statusBarItem = vscode.window.createStatusBarItem(
+      vscode.StatusBarAlignment.Left,
+      -1000
+    );
+    this.statusBarItem.text = '$(mute) Not listening';
+    this.statusBarItem.show();
+    context.subscriptions.push(this.statusBarItem);
+  }
+
   async run() {
     if (!this.listening) {
       this.startListening();
@@ -60,12 +69,14 @@ class ListenToHumanCommand extends Command {
       recordProgram: 'sox',
     });
     this.recording.stream().pipe(file);
+    this.statusBarItem.text = '$(unmute) Currently listening';
     vscode.window.showInformationMessage('Listening...');
     this.listening = true;
   }
 
   async stopListening() {
     this.recording.stop();
+    this.statusBarItem.text = '$(mute) Not listening';
     vscode.window.showInformationMessage('Stopped listening...');
     let output = await transcribe(
       path.join(__dirname, '../../', this.filename)
