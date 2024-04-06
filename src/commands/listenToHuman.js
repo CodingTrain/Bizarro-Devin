@@ -70,14 +70,12 @@ class ListenToHumanCommand extends Command {
     });
     this.recording.stream().pipe(file);
     this.statusBarItem.text = '$(unmute) Currently listening';
-    vscode.window.showInformationMessage('Listening...');
     this.listening = true;
   }
 
   async stopListening() {
     this.recording.stop();
     this.statusBarItem.text = '$(mute) Not listening';
-    vscode.window.showInformationMessage('Stopped listening...');
     let output = await transcribe(
       path.join(__dirname, '../../', this.filename)
     );
