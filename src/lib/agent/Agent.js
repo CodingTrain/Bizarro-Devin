@@ -1,21 +1,22 @@
-const { typeRealistically } = require('../../util/realisticTyping');
+const { applyDiffs } = require('../../util/realisticTyping');
 const vscode = require('vscode');
-const { getProvider } = require('./providers/providerInstance');
+const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
-const config = require('../../../config');
+const Diff = require('diff');
 
 class Agent {
   constructor() {
-    this.editor = vscode.window.activeTextEditor;
-    this.provider = getProvider();
+    this.provider = new Provider();
     this.currentAction = 'SPEAK';
 
     // Queues for buffering the speed of the AI
     this.actionsQueue = [];
-
     this.lastCharactersList = '';
-
     this.processingQueue = false;
+    this.isNewPrompt = false;
+    this.promptingTemplate =
+      'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
+    this.isStreaming = false;
   }
 
   /**
@@ -23,12 +24,29 @@ class Agent {
    * @param {string} input The prompt to be processed
    */
   prompt(input) {
-    this.provider.queryStream(input, (response) =>
-      this.consumeStream(response)
-    );
+    if (this.isStreaming || this.actionsQueue.length > 0) {
+      return vscode.window.showErrorMessage(
+        'Please wait for the current prompt to finish processing before sending another one.'
+      );
+    }
+    const editor = vscode.window.visibleTextEditors[0];
+
+    this.isNewPrompt = true;
+    const prompt = this.promptingTemplate
+      .replace('{prompt}', input)
+      .replace('{currentCode}', editor.document.getText());
+    this.isStreaming = true;
+    this.provider
+      .queryStream(prompt, (response) => this.consumeStream(response))
+      .then((out) => {
+        this.isStreaming = false;
+        if (out.blocked) {
+          vscode.window.showErrorMessage(`Prompt blocked: ${out.blockReason}`);
+        }
+      });
   }
 
-  async consumeStream(response) {
+  consumeStream(response) {
     const text = response.response;
     const event = response.event;
 
@@ -38,21 +56,21 @@ class Agent {
     // We will need to store the latest 30 characters to check for the action starts
     this.lastCharactersList += text;
 
-    if (event === 'done') {
-      // If the stream is done, we need to process the remaining buffer
-      this.addIntoQueue(this.currentAction, this.lastCharactersList);
-      this.lastCharactersList = '';
-      return;
-    }
+    // if (event === 'done') {
+    //   // If the stream is done, we need to process the remaining buffer
+    //   this.addIntoQueue(this.currentAction, this.lastCharactersList);
+    //   this.lastCharactersList = '';
+    //   return;
+    // }
 
-    if (this.lastCharactersList.length < 30) {
+    if (this.lastCharactersList.length < 30 && event !== 'done') {
       return; // Wait for the buffer to fill up
     }
 
     let nextIterationCharacters = null;
 
     // Walk back to the last space, period or newline. This is to prevent cutting off words
-    if (!isEndOfSentence) {
+    if (!isEndOfSentence && event !== 'done') {
       let i = this.lastCharactersList.length - 1;
       while (i >= 0) {
         if ([' ', '.', '\n'].includes(this.lastCharactersList[i])) {
@@ -72,8 +90,11 @@ class Agent {
       }
 
       // If current batch of characters has multiple ```, then we can cut off the string early, so as to only process one ``` at a time
+      // The chance of this actually happening is very low but we should account for it.
+      // It could in theory still break if there are 3 or more ``` in a single chunk of text
+      // or if there are multiple ``` in the final chunk sent. This is a very rare edge case so we just ignore it
       if (this.lastCharactersList.split('```').length > 2) {
-        const cutOffIndex = this.lastCharactersList.indexOf('```');
+        const cutOffIndex = this.lastCharactersList.lastIndexOf('```');
         nextIterationCharacters =
           this.lastCharactersList.slice(cutOffIndex) + nextIterationCharacters;
         this.lastCharactersList = this.lastCharactersList.slice(0, cutOffIndex);
@@ -144,6 +165,36 @@ class Agent {
         }
         step.content = combinedContent;
       }
+
+      // If the step is an editor step, we have to make sure that the upcoming editor steps are the whole chunk of code.
+      // We can do this by combining all the editor steps until the next speak step and combining them. Unless the final step is
+      // an editor step and the stream is finished in which case we can just process until the final editor step.
+      if (step.type === 'EDITOR') {
+        let combinedContent = step.content;
+        let hasFoundSpeakingStep = false;
+        while (this.actionsQueue.length > 0) {
+          const nextStep = this.actionsQueue[0];
+          if (nextStep.type === 'EDITOR') {
+            combinedContent += nextStep.content;
+            this.actionsQueue.shift();
+          } else {
+            hasFoundSpeakingStep = true;
+            break;
+          }
+        }
+
+        // If we haven't found a speaking step and we are still streaming code, we need to wait for the next chunk of code
+        if (!hasFoundSpeakingStep && this.isStreaming) {
+          this.actionsQueue.unshift({
+            type: 'EDITOR',
+            content: combinedContent,
+          });
+          break;
+        }
+
+        step.content = combinedContent;
+      }
+
       await this.processAction(step);
     }
     this.processingQueue = false;
@@ -153,10 +204,30 @@ class Agent {
     console.log('Processing', step);
     if (!step.content) return;
     if (step.type === 'EDITOR') {
-      await typeRealistically(this.editor, step.content);
+      const editor = vscode.window.visibleTextEditors[0];
+      const currentEditorCode = editor.document
+        .getText()
+        .replace(/\r\n/g, '\n');
+      const diffs = Diff.diffWordsWithSpace(currentEditorCode, step.content);
+      await applyDiffs(editor, diffs);
     } else if (step.type === 'SPEAK') {
       await speak(step.content);
+      this.isNewPrompt = true;
     }
+  }
+
+  async refresh() {
+    this.provider = new Provider();
+
+    const editor = vscode.window.visibleTextEditors[0];
+    editor.edit((editBuilder) => {
+      editBuilder.delete(
+        new vscode.Range(
+          new vscode.Position(0, 0),
+          new vscode.Position(editor.document.lineCount, 0)
+        )
+      );
+    });
   }
 }
 

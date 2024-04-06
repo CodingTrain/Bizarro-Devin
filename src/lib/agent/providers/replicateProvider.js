@@ -39,6 +39,7 @@ class ReplicateProvider extends ModelProvider {
       fullResponse += value.data;
     }
     this.messageHistory.push({ role: 'assistant', content: fullResponse });
+    return { success: true };
   }
 
   createPrompt() {

@@ -51,24 +51,22 @@
         "command": "bizarro-devin.manualPrompt",
         "title": "Manually Prompt AI Agent",
         "category": "Bizarro Devin"
+      },
+      {
+        "command": "bizarro-devin.refreshAgent",
+        "title": "Refresh AI Agent",
+        "category": "Bizarro Devin",
+        "icon": "$(sync)"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "bizarro-devin.runAIAgent",
-          "group": "navigation"
-        },
-        {
-          "command": "bizarro-devin.pauseAIAgent",
-          "group": "navigation"
-        },
-        {
-          "command": "bizarro-devin.muteAIAgent",
-          "group": "navigation"
-        },
-        {
           "command": "bizarro-devin.listenToHuman",
+          "group": "navigation"
+        },
+        {
+          "command": "bizarro-devin.refreshAgent",
           "group": "navigation"
         }
       ]
@@ -78,7 +76,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "pretest": "npm run lint",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "test-ai": "node ./src/experimental/test-provider.js"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
@@ -91,7 +90,10 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.3.1",
     "@xenova/transformers": "^2.16.1",
+    "diff": "^5.2.0",
+    "inquirer": "^8.0.0",
     "node-record-lpcm16": "^1.0.1",
     "ollama": "^0.5.0",
     "openai": "^4.31.0",
