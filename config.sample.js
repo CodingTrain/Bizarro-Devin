@@ -9,6 +9,8 @@ module.exports = {
     apiKey: 'your-eleven-labs-api-key-here',
     voiceId: 'your-eleven-labs-voice-id-here',
     model: 'eleven_turbo_v2',
+    outputFormat: 'pcm_16000',
+    sampleRate: 16000,
   },
   playHT: {
     secret: 'your-playht-secret-here',
