@@ -4,6 +4,7 @@ const fs = require('fs');
 speak(`Hello! I'm MattGPT, ready to battle with Dan Shiffman!`);
 
 async function speak(txt) {
+  // export DYLD_LIBRARY_PATH=/System/Volumes/Data/Users/shiffman/Repos/codingtrain/pp/install/lib:$DYLD_LIBRARY_PATH
   // python3 -m piper.http_server --model en_GB-alan-medium.onnx --port 5001
   const response = await fetch(`http://127.0.0.1:5001/?text=${txt}`);
   const blob = await response.blob();
