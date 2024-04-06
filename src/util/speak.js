@@ -1,3 +1,4 @@
+const { ElevenLabsProvider } = require('./voice/ElevenLabsProvider');
 const player = require('play-sound')();
 const fs = require('fs/promises');
 const path = require('path');
@@ -84,6 +85,28 @@ const speakElevenLabs = async (text) => {
   });
 };
 
+let currentlySpeaking = false;
+/** @type {ElevenLabsProvider} */
+let currentWebsocketClient = null;
+
+const speakElevenLabsWebsocket = async (text, isFinished = false) => {
+  if (!currentlySpeaking && !isFinished) {
+    currentlySpeaking = true;
+    currentWebsocketClient = new ElevenLabsProvider();
+    await currentWebsocketClient.startSpeaking();
+  }
+
+  if (isFinished) {
+    console.log('Finished sending audio');
+    currentWebsocketClient.stopSpeaking();
+    currentlySpeaking = false;
+    await currentWebsocketClient.waitAudioFinished();
+    return;
+  }
+
+  currentWebsocketClient.sendChunk(text);
+};
+
 const speakPlayht = async (text) => {
   return new Promise(async (resolve) => {
     playHT.init({
@@ -116,6 +139,7 @@ const speakFunctions = {
   piper: speakPiper,
   say: speakSay,
   elevenlabs: speakElevenLabs,
+  elevenlabsWebsocket: speakElevenLabsWebsocket,
   playht: speakPlayht,
 };
 

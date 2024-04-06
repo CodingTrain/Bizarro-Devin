@@ -8,6 +8,11 @@ module.exports = {
   elevenLabs: {
     apiKey: 'your-eleven-labs-api-key-here',
     voiceId: 'your-eleven-labs-voice-id-here',
+    model: 'eleven_turbo_v2',
+  },
+  playHT: {
+    secret: 'your-playht-secret-here',
+    userId: 'your-playht-user-id-here',
   },
   tts: 'piper', // say, coqui, piper, elevenlabs
 };

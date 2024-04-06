@@ -1,3 +1,4 @@
+const config = require('../../../config');
 const { SocketServer } = require('../web/webserver');
 const { applyDiffs } = require('../../util/realisticTyping');
 const vscode = require('vscode');
@@ -199,6 +200,14 @@ class Agent {
     }
     this.processingQueue = false;
 
+    // If the previous action was speaking, we can stop speaking now
+    if (
+      this.previousAction === 'SPEAK' &&
+      config.tts === 'elevenlabsWebsocket'
+    ) {
+      await speak('', true);
+    }
+
     // If we have reached the end of the queue and are no longer streaming, we can let the user know
     // that the agent is idle, we cannot always send this because we might break the loop if we are waiting for a next chunk
     // in which case we are thinking, not idle
@@ -211,6 +220,14 @@ class Agent {
     console.log('Processing', step);
     if (!step.content) return;
     if (step.type === 'EDITOR') {
+      // For the voice system to let it know it can stop speaking if the previous step was speaking
+      if (
+        this.previousAction === 'SPEAK' &&
+        config.tts === 'elevenlabsWebsocket'
+      ) {
+        await speak('', true);
+      }
+
       const editor = vscode.window.visibleTextEditors[0];
       const currentEditorCode = editor.document
         .getText()
@@ -223,6 +240,7 @@ class Agent {
       this.webserver.sendStatus('talking');
       await speak(step.content);
     }
+    this.previousAction = step.type;
   }
 
   async refresh() {
