@@ -93,14 +93,17 @@
     "@google/generative-ai": "^0.3.1",
     "@xenova/transformers": "^2.16.1",
     "diff": "^5.2.0",
+    "elevenlabs": "^0.2.2",
     "inquirer": "^8.0.0",
     "node-record-lpcm16": "^1.0.1",
     "ollama": "^0.5.0",
     "openai": "^4.31.0",
     "play-sound": "^1.1.6",
+    "playht": "^0.9.8",
     "replicate": "^0.29.1",
     "say": "^0.16.0",
     "socket.io": "^4.7.5",
+    "speaker": "^0.5.4",
     "wavefile": "^11.0.0"
   }
 }
