@@ -66,7 +66,7 @@ const speakElevenLabs = async (text) => {
     const speaker = new Speaker({
       channels: 1,
       bitDepth: 16,
-      sampleRate: 16000,
+      sampleRate: config.elevenLabs.sampleRate,
     });
 
     const elevenLabs = new ElevenLabsClient({
@@ -76,8 +76,8 @@ const speakElevenLabs = async (text) => {
       stream: true,
       voice: config.elevenLabs.voiceId,
       text: text,
-      model_id: 'eleven_multilingual_v2',
-      output_format: 'pcm_16000',
+      model_id: config.elevenLabs.model,
+      output_format: config.elevenLabs.outputFormat,
     });
 
     stream.pipe(speaker);
