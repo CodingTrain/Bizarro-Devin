@@ -17,7 +17,7 @@ class CommandLoader {
         path.join(__dirname, '../', loadingPath, file)
       );
       const command = new CommandClass();
-      command.load();
+      command.load(this.context);
 
       const vscodeCommand = vscode.commands.registerCommand(
         command.id,
