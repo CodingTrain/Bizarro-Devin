@@ -56,15 +56,9 @@ class Agent {
     // We will need to store the latest 30 characters to check for the action starts
     this.lastCharactersList += text;
 
-    // if (event === 'done') {
-    //   // If the stream is done, we need to process the remaining buffer
-    //   this.addIntoQueue(this.currentAction, this.lastCharactersList);
-    //   this.lastCharactersList = '';
-    //   return;
-    // }
-
+    // Make sure we have enough characters to process the next action
     if (this.lastCharactersList.length < 30 && event !== 'done') {
-      return; // Wait for the buffer to fill up
+      return;
     }
 
     let nextIterationCharacters = null;
@@ -129,7 +123,7 @@ class Agent {
       // Reset the buffer
       this.lastCharactersList = nextIterationCharacters || '';
     } else {
-      // If the action hasn't changed, we can just keep adding to the buffer
+      // If the action hasn't changed, we can just keep adding into the queue of our current action
       this.addIntoQueue(this.currentAction, this.lastCharactersList);
 
       // Reset the buffer
