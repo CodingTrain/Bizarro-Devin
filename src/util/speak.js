@@ -3,6 +3,9 @@ const fs = require('fs/promises');
 const path = require('path');
 const say = require('say');
 const config = require('../../config');
+const Speaker = require('speaker');
+const { ElevenLabsClient, play: playElevenLabs } = require('elevenlabs');
+const playHT = require('playht');
 
 async function speakCoqui(txt) {
   // tts-server --model_name tts_models/en/ljspeech/vits
@@ -57,10 +60,80 @@ const speakSay = async (text) => {
   });
 };
 
+const speakElevenLabs = async (text) => {
+  return new Promise(async (resolve) => {
+    const speaker = new Speaker({
+      channels: 1,
+      bitDepth: 16,
+      sampleRate: config.elevenLabs.sampleRate,
+    });
+
+    const elevenLabs = new ElevenLabsClient({
+      apiKey: config.elevenLabs.apiKey,
+    });
+    const stream = await elevenLabs.generate({
+      stream: true,
+      voice: config.elevenLabs.voiceId,
+      text: text,
+      model_id: config.elevenLabs.model,
+      output_format: config.elevenLabs.outputFormat,
+    });
+
+    stream.pipe(speaker);
+    speaker.on('close', () => resolve());
+  });
+};
+
+const speakElevenLabsSync = async (text) => {
+  return new Promise(async (resolve, reject) => {
+    const elevenLabs = new ElevenLabsClient({
+      apiKey: config.elevenLabs.apiKey,
+    });
+    const audio = await elevenLabs.generate({
+      voice: config.elevenLabs.voiceId,
+      text: text,
+      model_id: config.elevenLabs.model,
+    });
+
+    await playElevenLabs(audio);
+    resolve();
+  });
+};
+
+const speakPlayht = async (text) => {
+  return new Promise(async (resolve) => {
+    playHT.init({
+      apiKey: config.playHT.secret,
+      userId: config.playHT.userId,
+    });
+
+    const streamingOptions = {
+      voiceEngine: 'PlayHT2.0-turbo',
+      voiceId:
+        's3://voice-cloning-zero-shot/d6c00308-54a8-4e18-83d0-855892508cd8/original/manifest.json',
+      sampleRate: 44100,
+      outputFormat: 'wav',
+      speed: 1,
+    };
+
+    const stream = await playHT.stream(text, streamingOptions);
+    const speaker = new Speaker({
+      channels: 1,
+      bitDepth: 16,
+      sampleRate: 44100,
+    });
+    stream.pipe(speaker);
+    stream.on('end', () => resolve());
+  });
+};
+
 const speakFunctions = {
   coqui: speakCoqui,
   piper: speakPiper,
   say: speakSay,
+  elevenlabs: speakElevenLabs,
+  elevenlabsSync: speakElevenLabsSync,
+  playht: speakPlayht,
 };
 
 const speak = speakFunctions[config.tts];
