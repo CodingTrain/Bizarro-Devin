@@ -47,6 +47,12 @@ class Agent {
       .queryStream(prompt, (response) => this.consumeStream(response))
       .then((out) => {
         this.isStreaming = false;
+
+        // If there are still chunks in our queue, try to process them
+        if (!this.processingQueue && this.actionsQueue.length > 0) {
+          this.processQueue();
+        }
+
         if (out.blocked) {
           vscode.window.showErrorMessage(`Prompt blocked: ${out.blockReason}`);
         }
@@ -151,25 +157,37 @@ class Agent {
     while (this.actionsQueue.length > 0) {
       const step = this.actionsQueue.shift();
 
-      // If the step is a speaking step, we will grab all the speaking steps until the next editor step and combine them
-      // this will sound more natural and less "chunky"
+      // If the step is a speaking step, we have to make sure that the upcoming speaking steps are the whole chunk of text.
+      // We can do this by combining all the speaking steps until the next editor step and combining them. Unless the final step is
+      // a speaking step and the stream is finished in which case we can just process until the final speaking step.
       if (step.type === 'SPEAK') {
         let combinedContent = step.content;
+        let hasFoundEditingStep = false;
         while (this.actionsQueue.length > 0) {
           const nextStep = this.actionsQueue[0];
           if (nextStep.type === 'SPEAK') {
             combinedContent += nextStep.content;
             this.actionsQueue.shift();
           } else {
+            hasFoundEditingStep = true;
             break;
           }
         }
+
+        // If we haven't found a editing step and we are still streaming text, we need to wait for the next chunk of text
+        if (!hasFoundEditingStep && this.isStreaming) {
+          this.actionsQueue.unshift({
+            type: 'SPEAK',
+            content: combinedContent,
+          });
+          this.webserver.sendStatus('thinking'); // Let the user know we are still processing
+          break;
+        }
+
         step.content = combinedContent;
       }
 
-      // If the step is an editor step, we have to make sure that the upcoming editor steps are the whole chunk of code.
-      // We can do this by combining all the editor steps until the next speak step and combining them. Unless the final step is
-      // an editor step and the stream is finished in which case we can just process until the final editor step.
+      // Same idea as the speaking steps, combine all until the next speaking step unless the stream has ended.
       if (step.type === 'EDITOR') {
         let combinedContent = step.content;
         let hasFoundSpeakingStep = false;
@@ -232,6 +250,7 @@ class Agent {
       await speak(content);
       this.webserver.sendCaption({ status: 'end' });
     }
+    this.previousAction = step.type;
   }
 
   async refresh() {
