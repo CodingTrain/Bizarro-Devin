@@ -26,7 +26,7 @@ class SocketServer {
   }
 
   sendCaption(caption) {
-    this.io.emit('caption', caption);
+    if (config.showSubtitles) this.io.emit('caption', caption);
   }
 }
 
