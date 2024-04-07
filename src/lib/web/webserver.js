@@ -24,6 +24,10 @@ class SocketServer {
     this.status = status;
     this.io.emit('status', status);
   }
+
+  sendCaption(caption) {
+    if (config.showSubtitles) this.io.emit('caption', caption);
+  }
 }
 
 module.exports = {
