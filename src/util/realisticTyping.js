@@ -3,6 +3,7 @@ const vscode = require('vscode');
 
 const delays = {
   typeCharacter: 50,
+  typePunctuation: 150,
   deleteRange: 200,
   moveCursor: 100,
   applyDiff: 100,
@@ -27,22 +28,17 @@ const typeRealistically = async (
 ) => {
   for (let i = 0; i < code.length; i++) {
     const char = code.charAt(i);
+
     await editor.edit((editBuilder) => {
       editBuilder.insert(editor.selection.active, char);
     });
-    if (char !== ' ') await sleep(delay);
+
+    const isPunctuation = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/;
+    if (isPunctuation.test(char)) await sleep(delays.typePunctuation);
+    else if (char !== ' ') await sleep(delay);
 
     scrollToCursor(editor);
   }
-
-  // // Insert newline
-  // await editor.edit((editBuilder) => {
-  //   editBuilder.insert(editor.selection.active, '\n');
-  // });
-
-  // // Format document
-  // await vscode.commands.executeCommand('vscode.open', editor.document.uri);
-  // await vscode.commands.executeCommand('editor.action.formatDocument');
 };
 
 function scrollToCursor(editor) {

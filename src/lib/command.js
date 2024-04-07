@@ -1,3 +1,5 @@
+const vscode = require('vscode');
+
 class Command {
   /**
    * Create a new command
@@ -9,8 +11,9 @@ class Command {
 
   /**
    * Load the command, gets run once when the command is registered
+   * @param {vscode.ExtensionContext} context The extension context
    */
-  load() {
+  load(context) {
     // Do nothing by default
   }
 

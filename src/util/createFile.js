@@ -28,4 +28,25 @@ async function createFile(path, content = '') {
   };
 }
 
-module.exports = { createFile };
+/**
+ * Copies a file from the given source path to the given relative destination path
+ *
+ * @param {string} source - The path of the file to be copied
+ * @param {string} path - The relative destination path of the file to be copied.
+ * @return {Promise<document>} - A promise that resolves to a {@link document} wtth .path and .open() methods.
+ */
+async function copyFile(source, path) {
+  const activeFolder = vscode.workspace.workspaceFolders[0];
+  const filePath = vscode.Uri.joinPath(activeFolder.uri, path);
+  const sourcePath = vscode.Uri.file(source);
+  await vscode.workspace.fs.copy(sourcePath, filePath);
+  return {
+    path: filePath,
+    open: async () => {
+      const document = await vscode.workspace.openTextDocument(filePath);
+      return await vscode.window.showTextDocument(document);
+    },
+  };
+}
+
+module.exports = { createFile, copyFile };
