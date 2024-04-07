@@ -1,12 +1,11 @@
 const { getAgent } = require('../lib/agent/Agent');
-
-const vscode = require('vscode');
 const wavefile = require('wavefile');
 const record = require('node-record-lpcm16');
 const fs = require('fs');
 const fsp = require('fs/promises');
 const path = require('path');
 const Command = require('../lib/command');
+const { setStatusbarText } = require('../extension');
 
 class MyTranscriptionPipeline {
   static task = 'automatic-speech-recognition';
@@ -40,16 +39,6 @@ class ListenToHumanCommand extends Command {
     this.filename = 'temp-record.wav';
   }
 
-  load(context) {
-    this.statusBarItem = vscode.window.createStatusBarItem(
-      vscode.StatusBarAlignment.Left,
-      -1000
-    );
-    this.statusBarItem.text = '$(mute) Not listening';
-    this.statusBarItem.show();
-    context.subscriptions.push(this.statusBarItem);
-  }
-
   async run() {
     if (!this.listening) {
       this.startListening();
@@ -69,13 +58,14 @@ class ListenToHumanCommand extends Command {
       recordProgram: 'sox',
     });
     this.recording.stream().pipe(file);
-    this.statusBarItem.text = '$(unmute) Currently listening';
+    setStatusbarText('$(unmute) Currently listening');
     this.listening = true;
   }
 
   async stopListening() {
     this.recording.stop();
-    this.statusBarItem.text = '$(mute) Not listening';
+    // this.statusBarItem.text = '$(mute) Not listening';
+    setStatusbarText('$(loading~spin) Transcribing...');
     let output = await transcribe(
       path.join(__dirname, '../../', this.filename)
     );

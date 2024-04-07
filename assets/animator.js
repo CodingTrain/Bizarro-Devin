@@ -30,7 +30,7 @@ class Animator {
 }
 
 const animator = new Animator();
-const socket = io('http://127.0.0.1:4025');
+const socket = io('http://127.0.0.1:11434');
 socket.on('status', (status) => {
   animator.setState(status);
 });
