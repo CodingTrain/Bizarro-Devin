@@ -17,7 +17,7 @@ class SocketServer {
     this.io.on('connection', (socket) => {
       socket.emit('status', this.status); // Send the current status to the client
     });
-    console.log('Socket server started on port ' + config.socketServerPort);
+    console.log('🚀 Socket server started on port ' + config.socketServerPort);
   }
 
   sendStatus(status) {
