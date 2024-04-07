@@ -1,4 +1,5 @@
 const { Server } = require('socket.io');
+const config = require('../../../config');
 
 class SocketServer {
   constructor(agent) {
@@ -12,11 +13,11 @@ class SocketServer {
   }
 
   start() {
-    this.io.listen(4025);
+    this.io.listen(config.socketServerPort);
     this.io.on('connection', (socket) => {
       socket.emit('status', this.status); // Send the current status to the client
     });
-    console.log('Socket server started');
+    console.log('🚀 Socket server started on port ' + config.socketServerPort);
   }
 
   sendStatus(status) {

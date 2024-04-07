@@ -4,6 +4,7 @@ const vscode = require('vscode');
 const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
 const Diff = require('diff');
+const { setStatusbarText } = require('../../extension');
 
 class Agent {
   constructor() {
@@ -40,6 +41,7 @@ class Agent {
 
     this.isStreaming = true;
     this.webserver.sendStatus('thinking');
+    setStatusbarText('$(loading~spin) Prompting model...');
 
     this.provider
       .queryStream(prompt, (response) => this.consumeStream(response))
@@ -204,6 +206,7 @@ class Agent {
     // in which case we are thinking, not idle
     if (!this.isStreaming) {
       this.webserver.sendStatus('pending');
+      setStatusbarText('$(circle-slash) Awaiting input');
     }
   }
 
@@ -218,12 +221,14 @@ class Agent {
       const diffs = Diff.diffWordsWithSpace(currentEditorCode, step.content);
 
       this.webserver.sendStatus('writing');
+      setStatusbarText('$(record-keys) Writing code...');
       await applyDiffs(editor, diffs);
     } else if (step.type === 'SPEAK') {
       let content = step.content.trim();
       if (!content) return;
       this.webserver.sendStatus('talking');
       this.webserver.sendCaption({ status: 'start', content: content });
+      setStatusbarText('$(mic) Talking...');
       await speak(content);
       this.webserver.sendCaption({ status: 'end' });
     }
