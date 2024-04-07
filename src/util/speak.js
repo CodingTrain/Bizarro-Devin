@@ -4,7 +4,7 @@ const path = require('path');
 const say = require('say');
 const config = require('../../config');
 const Speaker = require('speaker');
-const { ElevenLabsClient } = require('elevenlabs');
+const { ElevenLabsClient, play: playElevenLabs } = require('elevenlabs');
 const playHT = require('playht');
 
 async function speakCoqui(txt) {
@@ -84,6 +84,22 @@ const speakElevenLabs = async (text) => {
   });
 };
 
+const speakElevenLabsSync = async (text) => {
+  return new Promise(async (resolve, reject) => {
+    const elevenLabs = new ElevenLabsClient({
+      apiKey: config.elevenLabs.apiKey,
+    });
+    const audio = await elevenLabs.generate({
+      voice: config.elevenLabs.voiceId,
+      text: text,
+      model_id: config.elevenLabs.model,
+    });
+
+    await playElevenLabs(audio);
+    resolve();
+  });
+};
+
 const speakPlayht = async (text) => {
   return new Promise(async (resolve) => {
     playHT.init({
@@ -116,6 +132,7 @@ const speakFunctions = {
   piper: speakPiper,
   say: speakSay,
   elevenlabs: speakElevenLabs,
+  elevenlabsSync: speakElevenLabsSync,
   playht: speakPlayht,
 };
 

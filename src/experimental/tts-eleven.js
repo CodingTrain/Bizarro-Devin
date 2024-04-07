@@ -1,38 +1,30 @@
 const fs = require('fs');
 const config = require('../../config');
 const { WaveFile } = require('wavefile');
-const { ElevenLabsClient } = require('elevenlabs');
+const { ElevenLabsClient, play } = require('elevenlabs');
 
 const elevenTTS = async (text, filePath) => {
   return new Promise(async (resolve, reject) => {
     const elevenLabs = new ElevenLabsClient({
       apiKey: config.elevenLabs.apiKey,
     });
-
-    let audioData = [];
-
-    const stream = await elevenLabs.generate({
-      stream: true,
+    const audio = await elevenLabs.generate({
       voice: config.elevenLabs.voiceId,
       text: text,
       model_id: config.elevenLabs.model,
-      output_format: config.elevenLabs.outputFormat,
+      // output_format: config.elevenLabs.outputFormat,
     });
 
-    stream.on('data', (chunk) => {
-      audioData.push(chunk);
-    });
+    await play(audio);
 
-    stream.on('end', () => {
-      const audioBuffer = Buffer.concat(audioData);
-      let wav = new WaveFile();
-      wav.fromScratch(1, config.elevenLabs.sampleRate, '32', audioBuffer);
-      fs.writeFileSync(filePath, wav.toBuffer());
-      resolve();
-    });
+    // fs.writeFileSync(filePath);
+    // let wav = new WaveFile();
+    // wav.fromScratch(1, config.elevenLabs.sampleRate, 16, audio);
+    // fs.writeFileSync(filePath, wav.toBuffer());
+    resolve();
   });
 };
 
-elevenTTS('Hello, World!', 'parker.wav').then(() => {
+elevenTTS('Hello, World! I am Matt Parker!', 'parker.wav').then(() => {
   console.log('Done!');
 });
