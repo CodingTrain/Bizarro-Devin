@@ -64,7 +64,7 @@ class ListenToHumanCommand extends Command {
 
   async stopListening() {
     this.recording.stop();
-    this.statusBarItem.text = '$(mute) Not listening';
+    // this.statusBarItem.text = '$(mute) Not listening';
     setStatusbarText('$(loading~spin) Transcribing...');
     let output = await transcribe(
       path.join(__dirname, '../../', this.filename)
