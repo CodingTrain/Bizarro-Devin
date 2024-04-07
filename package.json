@@ -103,7 +103,7 @@
     "replicate": "^0.29.1",
     "say": "^0.16.0",
     "socket.io": "^4.7.5",
-    "speaker": "^0.5.4",
+    "speaker": "github:ItsJustMeChris/node-speaker#master",
     "wavefile": "^11.0.0"
   }
 }
