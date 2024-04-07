@@ -242,9 +242,13 @@ class Agent {
       setStatusbarText('$(record-keys) Writing code...');
       await applyDiffs(editor, diffs);
     } else if (step.type === 'SPEAK') {
+      let content = step.content.trim();
+      if (!content) return;
       this.webserver.sendStatus('talking');
+      this.webserver.sendCaption({ status: 'start', content: content });
       setStatusbarText('$(mic) Talking...');
-      await speak(step.content);
+      await speak(content);
+      this.webserver.sendCaption({ status: 'end' });
     }
     this.previousAction = step.type;
   }
