@@ -220,8 +220,12 @@ class Agent {
       this.webserver.sendStatus('writing');
       await applyDiffs(editor, diffs);
     } else if (step.type === 'SPEAK') {
+      let content = step.content.trim();
+      if (!content) return;
       this.webserver.sendStatus('talking');
-      await speak(step.content);
+      this.webserver.sendCaption({ status: 'start', content: content });
+      await speak(content);
+      this.webserver.sendCaption({ status: 'end' });
     }
   }
 

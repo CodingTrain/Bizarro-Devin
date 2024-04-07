@@ -20,8 +20,12 @@ class SocketServer {
   }
 
   sendStatus(status) {
-    this.status = 'status';
+    this.status = status;
     this.io.emit('status', status);
+  }
+
+  sendCaption(caption) {
+    this.io.emit('caption', caption);
   }
 }
 

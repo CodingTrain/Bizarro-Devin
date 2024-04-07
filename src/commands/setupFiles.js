@@ -1,6 +1,5 @@
 const Command = require('../lib/command');
 const { createFile, copyFile } = require('../util/createFile');
-const fs = require('fs');
 const path = require('path');
 
 class SetupFilesCommand extends Command {

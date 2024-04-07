@@ -29,8 +29,40 @@ class Animator {
   }
 }
 
+class CaptionManager {
+  constructor() {
+    this.elt = document.getElementById('captions');
+  }
+
+  setCaption(caption) {
+    this.elt.innerText = caption;
+    this.show();
+  }
+
+  show() {
+    this.elt.style.display = 'block';
+  }
+
+  hide() {
+    this.elt.style.display = 'none';
+  }
+
+  clear() {
+    this.elt.innerText = '';
+    this.hide();
+  }
+}
+
 const animator = new Animator();
+const captionManager = new CaptionManager();
 const socket = io('http://127.0.0.1:4025');
 socket.on('status', (status) => {
   animator.setState(status);
+});
+socket.on('caption', (caption) => {
+  if (caption.status === 'start') {
+    captionManager.setCaption(caption.content);
+  } else {
+    captionManager.clear();
+  }
 });

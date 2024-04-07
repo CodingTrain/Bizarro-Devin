@@ -39,7 +39,9 @@ async function copyFile(source, path) {
   const activeFolder = vscode.workspace.workspaceFolders[0];
   const filePath = vscode.Uri.joinPath(activeFolder.uri, path);
   const sourcePath = vscode.Uri.file(source);
-  await vscode.workspace.fs.copy(sourcePath, filePath);
+  await vscode.workspace.fs.copy(sourcePath, filePath, {
+    overwrite: true,
+  });
   return {
     path: filePath,
     open: async () => {

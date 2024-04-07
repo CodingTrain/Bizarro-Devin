@@ -18,12 +18,35 @@
     <script src="sketch.js" defer></script>
     <title>P5.JS Sketch</title>
     <style>
+      * {
+        /* box-sizing: border-box; */
+      }
+      body {
+        /* height: 90vh; */
+      }
+
       #matt-animator {
         position: absolute;
         top: 10px;
         right: 10px;
         height: 100px;
         transform-origin: 50% 100%;
+      }
+
+      #captions {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+
+        background-color: rgba(0, 0, 0, 0.75);
+        border-radius: 10px;
+        border: 2px solid black;
+        padding: 10px;
+        color: white;
+        font-family: sans-serif;
+        font-size: large;
       }
 
       /* Talking animation using rotation */
@@ -67,6 +90,7 @@
     </style>
   </head>
   <body style="position: relative">
-    <img src="/matt-pending.png" id="matt-animator" ="Google Logo" />
+    <img src="/matt-pending.png" id="matt-animator" />
+    <div id="captions" style="display: none">Captions go here</div>
   </body>
 </html>
