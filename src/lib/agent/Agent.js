@@ -244,10 +244,22 @@ class Agent {
     } else if (step.type === 'SPEAK') {
       let content = step.content.trim();
       if (!content) return;
-      this.webserver.sendStatus('talking');
-      this.webserver.sendCaption({ status: 'start', content: content });
-      setStatusbarText('$(mic) Talking...');
-      await speak(content);
+
+      if (speak.length === 2) {
+        console.log('Arguments are 2');
+        // It supports a callback function that gets called when it actually starts talking
+        await speak(content, () => {
+          setStatusbarText('$(mic) Talking...');
+          this.webserver.sendStatus('talking');
+          this.webserver.sendCaption({ status: 'start', content: content });
+        });
+      } else {
+        setStatusbarText('$(mic) Talking...');
+        this.webserver.sendStatus('talking');
+        this.webserver.sendCaption({ status: 'start', content: content });
+        await speak(content);
+      }
+
       this.webserver.sendCaption({ status: 'end' });
     }
     this.previousAction = step.type;
