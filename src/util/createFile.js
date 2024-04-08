@@ -8,6 +8,17 @@ const vscode = require('vscode');
  */
 
 /**
+ * Reads file content from the given source path
+ * @param {string} source Source file path
+ * @returns File content
+ */
+async function readFile(source) {
+  const sourcePath = vscode.Uri.file(source);
+  const fileContent = await vscode.workspace.fs.readFile(sourcePath);
+  return new TextDecoder().decode(fileContent);
+}
+
+/**
  * Creates a file with the given relative path and optional content.
  *
  * @param {string} path - The relative path of the file to be created.
@@ -51,4 +62,4 @@ async function copyFile(source, path) {
   };
 }
 
-module.exports = { createFile, copyFile };
+module.exports = { createFile, copyFile, readFile };
