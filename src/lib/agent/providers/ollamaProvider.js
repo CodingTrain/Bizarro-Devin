@@ -73,7 +73,7 @@ class OllamaProvider extends ModelProvider {
             role: 'assistant',
             content: fullResponse,
           });
-          resolve();
+          resolve({ success: true });
         }
       });
     });
