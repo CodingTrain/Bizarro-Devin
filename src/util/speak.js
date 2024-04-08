@@ -84,7 +84,7 @@ const speakElevenLabs = async (text) => {
   });
 };
 
-const speakElevenLabsSync = async (text) => {
+const speakElevenLabsSync = async (text, onStartTalking) => {
   return new Promise(async (resolve, reject) => {
     const elevenLabs = new ElevenLabsClient({
       apiKey: config.elevenLabs.apiKey,
@@ -95,6 +95,7 @@ const speakElevenLabsSync = async (text) => {
       model_id: config.elevenLabs.model,
     });
 
+    onStartTalking();
     await playElevenLabs(audio);
     resolve();
   });
