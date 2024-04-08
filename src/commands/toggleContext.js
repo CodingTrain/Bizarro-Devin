@@ -28,10 +28,10 @@ class ToggleContextCommand extends Command {
       : '$(close) Context excluded';
 
     // Show an info message
-    const message = `Including context in prompt is now ${
-      agent.includeContextFromEmbeddings ? 'enabled' : 'disabled'
-    }.`;
-    vscode.window.showInformationMessage(message);
+    // const message = `Including context in prompt is now ${
+    //   agent.includeContextFromEmbeddings ? 'enabled' : 'disabled'
+    // }.`;
+    // vscode.window.showInformationMessage(message);
   }
 }
 
