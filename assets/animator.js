@@ -55,7 +55,7 @@ class CaptionManager {
 
 const animator = new Animator();
 const captionManager = new CaptionManager();
-const socket = io('http://127.0.0.1:11434');
+const socket = io('http://127.0.0.1:$$PORT$$');
 
 socket.on('status', (status) => {
   animator.setState(status);

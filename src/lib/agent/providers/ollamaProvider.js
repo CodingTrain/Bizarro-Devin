@@ -47,29 +47,35 @@ class OllamaProvider extends ModelProvider {
       console.error('Failed to fetch:', error);
     }
   }
-  queryStream(prompt, process) {
-    const url = 'http://127.0.0.1:11434/api/chat';
-    this.messageHistory.push({ role: 'user', content: prompt });
-    const data = {
-      model: 'llama2:70b',
-      messages: [
-        {
-          role: 'system',
-          content: prompts.systemPrompt,
-        },
-        ...this.messageHistory,
-      ],
-    };
-    let fullResponse = '';
-    this.streamResponse(url, data, async (response) => {
-      await process({
-        response: response.message.content,
-        event: response.done ? 'done' : 'output',
+  async queryStream(prompt, process) {
+    return new Promise((resolve) => {
+      const url = 'http://127.0.0.1:11434/api/chat';
+      this.messageHistory.push({ role: 'user', content: prompt });
+      const data = {
+        model: 'llama2:70b',
+        messages: [
+          {
+            role: 'system',
+            content: prompts.systemPrompt,
+          },
+          ...this.messageHistory,
+        ],
+      };
+      let fullResponse = '';
+      this.streamResponse(url, data, async (response) => {
+        await process({
+          response: response.message.content,
+          event: response.done ? 'done' : 'output',
+        });
+        fullResponse += response.message.content;
+        if (response.done) {
+          this.messageHistory.push({
+            role: 'assistant',
+            content: fullResponse,
+          });
+          resolve({ success: true });
+        }
       });
-      fullResponse += response.message.content;
-      if (response.done) {
-        this.messageHistory.push({ role: 'assistant', content: fullResponse });
-      }
     });
   }
   async streamResponse(url, data, process) {

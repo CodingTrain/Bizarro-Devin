@@ -1,7 +1,7 @@
 const Command = require('../lib/command');
-const { createFile, copyFile } = require('../util/createFile');
+const { createFile, copyFile, readFile } = require('../util/createFile');
 const path = require('path');
-
+const config = require('../../config');
 class SetupFilesCommand extends Command {
   constructor() {
     super('bizarro-devin.setupFiles');
@@ -11,7 +11,10 @@ class SetupFilesCommand extends Command {
     // create index.html and animator.js
 
     await copyFile(this.getPathToAssetsFolder('index.html'), 'index.html');
-    await copyFile(this.getPathToAssetsFolder('animator.js'), 'animator.js');
+    // await copyFile(this.getPathToAssetsFolder('animator.js'), 'animator.js');
+    let animator = await readFile(this.getPathToAssetsFolder('animator.js'));
+    animator = animator.replace('$$PORT$$', config.socketServerPort);
+    await createFile('animator.js', animator);
     await copyFile(
       this.getPathToAssetsFolder('matt-pending.png'),
       'matt-pending.png'
