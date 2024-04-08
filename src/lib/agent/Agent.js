@@ -5,6 +5,7 @@ const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
 const Diff = require('diff');
 const { setStatusbarText } = require('../../extension');
+const { query: queryForContext } = require('../../util/semantic-retrieval');
 
 class Agent {
   constructor() {
@@ -17,7 +18,10 @@ class Agent {
     this.processingQueue = false;
     this.promptingTemplate =
       'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
+    this.promptingWithContextTemplate =
+      'Dan says: {prompt}\nAdditional context you can use from most relevant to less relevant:\n{context}\n\nCurrent code in the editor:\n```\n{currentCode}\n```';
     this.isStreaming = false;
+    this.includeContextFromEmbeddings = true;
 
     this.webserver = new SocketServer();
     this.webserver.start();
@@ -27,7 +31,7 @@ class Agent {
    * Prompt something to the AI
    * @param {string} input The prompt to be processed
    */
-  prompt(input) {
+  async prompt(input) {
     if (this.isStreaming || this.actionsQueue.length > 0) {
       return vscode.window.showErrorMessage(
         'Please wait for the current prompt to finish processing before sending another one.'
@@ -35,9 +39,24 @@ class Agent {
     }
     const editor = vscode.window.visibleTextEditors[0];
 
-    const prompt = this.promptingTemplate
-      .replace('{prompt}', input)
-      .replace('{currentCode}', editor.document.getText());
+    let prompt;
+    if (this.includeContextFromEmbeddings) {
+      // Get context form embeddings
+      const context = await queryForContext(input);
+      prompt = this.promptingWithContextTemplate
+        .replace('{prompt}', input)
+        .replace(
+          '{context}',
+          context.map((item) => `- ${item.text}`).join('\n')
+        )
+        .replace('{currentCode}', editor.document.getText());
+    } else {
+      prompt = this.promptingTemplate
+        .replace('{prompt}', input)
+        .replace('{currentCode}', editor.document.getText());
+    }
+
+    console.log('Prompting', prompt);
 
     this.isStreaming = true;
     this.webserver.sendStatus('thinking');
@@ -244,10 +263,21 @@ class Agent {
     } else if (step.type === 'SPEAK') {
       let content = step.content.trim();
       if (!content) return;
-      this.webserver.sendStatus('talking');
-      this.webserver.sendCaption({ status: 'start', content: content });
-      setStatusbarText('$(mic) Talking...');
-      await speak(content);
+
+      if (speak.length === 2) {
+        // It supports a callback function that gets called when it actually starts talking
+        await speak(content, () => {
+          setStatusbarText('$(mic) Talking...');
+          this.webserver.sendStatus('talking');
+          this.webserver.sendCaption({ status: 'start', content: content });
+        });
+      } else {
+        setStatusbarText('$(mic) Talking...');
+        this.webserver.sendStatus('talking');
+        this.webserver.sendCaption({ status: 'start', content: content });
+        await speak(content);
+      }
+
       this.webserver.sendCaption({ status: 'end' });
     }
     this.previousAction = step.type;

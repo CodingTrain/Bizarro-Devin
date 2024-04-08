@@ -57,6 +57,12 @@
         "title": "Refresh AI Agent",
         "category": "Bizarro Devin",
         "icon": "$(sync)"
+      },
+      {
+        "command": "bizarro-devin.toggleContext",
+        "title": "Toggle including context in prompt",
+        "category": "Bizarro Devin",
+        "icon": "$(code-oss)"
       }
     ],
     "menus": {
@@ -67,6 +73,10 @@
         },
         {
           "command": "bizarro-devin.refreshAgent",
+          "group": "navigation"
+        },
+        {
+          "command": "bizarro-devin.toggleContext",
           "group": "navigation"
         }
       ]
