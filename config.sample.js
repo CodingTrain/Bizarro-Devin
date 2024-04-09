@@ -16,8 +16,8 @@ module.exports = {
     outputFormat: 'pcm_16000',
     sampleRate: 16000,
     voiceSettings: {
-      stability: 30, // default is 50
-      similarity_boost: 80, // default is 80
+      stability: 0.2, // default is 50
+      similarity_boost: 0.8, // default is 80
     },
   },
   playHT: {
