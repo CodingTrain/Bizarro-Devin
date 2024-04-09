@@ -77,6 +77,7 @@ const speakElevenLabs = async (text) => {
       text: text,
       model_id: config.elevenLabs.model,
       output_format: config.elevenLabs.outputFormat,
+      voice_settings: config.elevenLabs.voiceSettings,
     });
 
     stream.pipe(speaker);
@@ -93,6 +94,10 @@ const speakElevenLabsSync = async (text, onStartTalking) => {
       voice: config.elevenLabs.voiceId,
       text: text,
       model_id: config.elevenLabs.model,
+      voice_settings: {
+        stability: config.elevenLabs.voiceSettings.stability,
+        similarity_boost: config.elevenLabs.voiceSettings.similarity_boost,
+      },
     });
 
     onStartTalking();

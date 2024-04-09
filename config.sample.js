@@ -15,6 +15,10 @@ module.exports = {
     model: 'eleven_turbo_v2',
     outputFormat: 'pcm_16000',
     sampleRate: 16000,
+    voiceSettings: {
+      stability: 30, // default is 50
+      similarity_boost: 80, // default is 80
+    },
   },
   playHT: {
     secret: 'your-playht-secret-here',
