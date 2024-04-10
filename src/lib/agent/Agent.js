@@ -6,6 +6,7 @@ const { speak } = require('../../util/speak');
 const Diff = require('diff');
 const { setStatusbarText } = require('../../extension');
 const { query: queryForContext } = require('../../util/semantic-retrieval');
+const { playSound } = require('../../util/sound-effects');
 
 class Agent {
   constructor() {
@@ -251,6 +252,7 @@ class Agent {
     console.log('Processing', step);
     if (!step.content) return;
     if (step.type === 'EDITOR') {
+      playSound('typing');
       const editor = vscode.window.visibleTextEditors[0];
       const currentEditorCode = editor.document
         .getText()

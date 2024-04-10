@@ -6,6 +6,7 @@ const fsp = require('fs/promises');
 const path = require('path');
 const Command = require('../lib/command');
 const { setStatusbarText } = require('../extension');
+const { playSound } = require('../util/sound-effects');
 
 class MyTranscriptionPipeline {
   static task = 'automatic-speech-recognition';
@@ -64,13 +65,16 @@ class ListenToHumanCommand extends Command {
 
   async stopListening() {
     this.recording.stop();
+    const agent = getAgent();
+    agent.webserver.sendStatus('thinking');
+    playSound('thinking');
+
     // this.statusBarItem.text = '$(mute) Not listening';
     setStatusbarText('$(loading~spin) Transcribing...');
     let output = await transcribe(
       path.join(__dirname, '../../', this.filename)
     );
     this.listening = false;
-    const agent = getAgent();
     const startingPrompt = output.text;
     agent.prompt(startingPrompt);
   }
