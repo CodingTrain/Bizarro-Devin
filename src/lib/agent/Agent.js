@@ -1,14 +1,30 @@
+const StateMachine = require('../../util/statemachine/stateMachine');
 const { SocketServer } = require('../web/webserver');
 const { applyDiffs } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
 const Diff = require('diff');
-const { setStatusbarText } = require('../../extension');
 const { query: queryForContext } = require('../../util/semantic-retrieval');
 
-class Agent {
+// States
+const IdleState = require('./states/IdleState');
+const PromptingState = require('./states/promptingState');
+const WritingState = require('./states/writingState');
+const ThinkingState = require('./states/thinkingState');
+const TalkingState = require('./states/talkingState');
+
+class Agent extends StateMachine {
   constructor() {
+    super();
+
+    // Registering states
+    this.addState(new IdleState(this));
+    this.addState(new PromptingState(this));
+    this.addState(new WritingState(this));
+    this.addState(new ThinkingState(this));
+    this.addState(new TalkingState(this));
+
     this.provider = new Provider();
     this.currentAction = 'SPEAK';
 
@@ -59,8 +75,7 @@ class Agent {
     console.log('Prompting', prompt);
 
     this.isStreaming = true;
-    this.webserver.sendStatus('thinking');
-    setStatusbarText('$(loading~spin) Prompting model...');
+    this.goToState('prompting');
 
     this.provider
       .queryStream(prompt, (response) => this.consumeStream(response))
@@ -199,7 +214,7 @@ class Agent {
             type: 'SPEAK',
             content: combinedContent,
           });
-          this.webserver.sendStatus('thinking'); // Let the user know we are still processing
+          this.goToState('thinking'); // Let the user know we are still processing
           break;
         }
 
@@ -227,7 +242,7 @@ class Agent {
             type: 'EDITOR',
             content: combinedContent,
           });
-          this.webserver.sendStatus('thinking'); // Let the user know we are still processing
+          this.goToState('thinking'); // Let the user know we are still processing
           break;
         }
 
@@ -242,8 +257,7 @@ class Agent {
     // that the agent is idle, we cannot always send this because we might break the loop if we are waiting for a next chunk
     // in which case we are thinking, not idle
     if (!this.isStreaming) {
-      this.webserver.sendStatus('pending');
-      setStatusbarText('$(circle-slash) Awaiting input');
+      this.goToState('idle');
     }
   }
 
@@ -257,8 +271,7 @@ class Agent {
         .replace(/\r\n/g, '\n');
       const diffs = Diff.diffWordsWithSpace(currentEditorCode, step.content);
 
-      this.webserver.sendStatus('writing');
-      setStatusbarText('$(record-keys) Writing code...');
+      this.goToState('writing');
       await applyDiffs(editor, diffs);
     } else if (step.type === 'SPEAK') {
       let content = step.content.trim();
@@ -267,13 +280,11 @@ class Agent {
       if (speak.length === 2) {
         // It supports a callback function that gets called when it actually starts talking
         await speak(content, () => {
-          setStatusbarText('$(mic) Talking...');
-          this.webserver.sendStatus('talking');
+          this.goToState('talking');
           this.webserver.sendCaption({ status: 'start', content: content });
         });
       } else {
-        setStatusbarText('$(mic) Talking...');
-        this.webserver.sendStatus('talking');
+        this.goToState('talking');
         this.webserver.sendCaption({ status: 'start', content: content });
         await speak(content);
       }
@@ -296,10 +307,15 @@ class Agent {
       );
     });
   }
+
+  onActivate() {
+    this.goToState('idle');
+  }
 }
 
 // Singleton instance of the agent
 let agent = new Agent();
+agent.activate();
 
 /**
  * Get the agent instance

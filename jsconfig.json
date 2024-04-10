@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "Node16",
+    "module": "CommonJS",
     "target": "ES2022",
     "checkJs": false /* Typecheck .js files. */,
     "lib": ["ES2022"]
