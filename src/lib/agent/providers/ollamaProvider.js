@@ -1,29 +1,27 @@
 const ModelProvider = require('./genericProvider');
 const { prompts } = require('../../../prompt');
+const config = require('../../../../config');
 
 class OllamaProvider extends ModelProvider {
   constructor() {
     super();
+    this.modelName = config.ollamaModel || 'llama2:70b';
   }
 
   async query(prompt) {
     const url = 'http://127.0.0.1:11434/api/chat';
+    this.messageHistory.push({ role: 'user', content: prompt });
     const data = {
-      model: 'llama2:70b',
+      model: this.modelName,
       messages: [
         {
           role: 'system',
           content: prompts.systemPrompt,
         },
         ...this.messageHistory,
-        {
-          role: 'user',
-          content: prompt,
-        },
       ],
       stream: 'false',
     };
-    this.messageHistory.push({ role: 'user', content: prompt });
 
     const response = await this.getResponse(url, data);
     const json = await response.json();
@@ -52,7 +50,7 @@ class OllamaProvider extends ModelProvider {
       const url = 'http://127.0.0.1:11434/api/chat';
       this.messageHistory.push({ role: 'user', content: prompt });
       const data = {
-        model: 'llama2:70b',
+        model: this.modelName,
         messages: [
           {
             role: 'system',
@@ -64,7 +62,7 @@ class OllamaProvider extends ModelProvider {
       let fullResponse = '';
       this.streamResponse(url, data, async (response) => {
         await process({
-          response: response.message.content,
+          response: response.message?.content || '',
           event: response.done ? 'done' : 'output',
         });
         fullResponse += response.message.content;
@@ -73,7 +71,7 @@ class OllamaProvider extends ModelProvider {
             role: 'assistant',
             content: fullResponse,
           });
-          resolve();
+          resolve({ success: true });
         }
       });
     });
@@ -96,8 +94,13 @@ class OllamaProvider extends ModelProvider {
             if (done) break;
             const chunk = new TextDecoder('utf-8').decode(value);
             try {
-              const json = JSON.parse(chunk);
-              await process(json);
+              // sometimes chunk can contain multiple JSON objects (ndjson)
+              chunk.split('\n').forEach((jsonStr) => {
+                if (jsonStr) {
+                  const json = JSON.parse(jsonStr);
+                  process(json);
+                }
+              });
             } catch (error) {
               console.error('Error parsing chunk to JSON', error);
             }

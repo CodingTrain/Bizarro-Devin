@@ -6,3 +6,5 @@ node_modules
 *.bin
 *.npy
 config.js
+embeddings.json
+transcripts/
