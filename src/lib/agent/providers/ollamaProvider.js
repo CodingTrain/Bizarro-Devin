@@ -94,8 +94,13 @@ class OllamaProvider extends ModelProvider {
             if (done) break;
             const chunk = new TextDecoder('utf-8').decode(value);
             try {
-              const json = JSON.parse(chunk);
-              await process(json);
+              // sometimes chunk can contain multiple JSON objects (ndjson)
+              chunk.split('\n').forEach((jsonStr) => {
+                if (jsonStr) {
+                  const json = JSON.parse(jsonStr);
+                  process(json);
+                }
+              });
             } catch (error) {
               console.error('Error parsing chunk to JSON', error);
             }
