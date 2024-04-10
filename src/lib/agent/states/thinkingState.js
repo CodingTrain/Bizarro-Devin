@@ -1,5 +1,5 @@
 const { setStatusbarText } = require('../../../extension');
-const State = require('../../../util/statemachine/state');
+const State = require('../../../util/statemachine/State');
 
 class ThinkingState extends State {
   onActivate() {

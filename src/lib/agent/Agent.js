@@ -1,4 +1,4 @@
-const StateMachine = require('../../util/statemachine/stateMachine');
+const StateMachine = require('../../util/statemachine/StateMachine');
 const { SocketServer } = require('../web/webserver');
 const { applyDiffs } = require('../../util/realisticTyping');
 const vscode = require('vscode');

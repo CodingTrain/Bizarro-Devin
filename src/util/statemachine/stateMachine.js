@@ -1,4 +1,4 @@
-const State = require('./state');
+const State = require('./State');
 
 class StateMachine extends State {
   constructor() {
