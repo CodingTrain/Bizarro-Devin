@@ -10,6 +10,10 @@ let sounds = {
     __dirname,
     '../../sounds/ES_Keyboard Typing 3 - SFX Producer.mp3'
   ),
+  challenge: join(
+    __dirname,
+    '../../sounds/ES_Boxing Bell Ring 2 - SFX Producer.mp3'
+  ),
 };
 
 function playSound(sound) {
