@@ -17,7 +17,7 @@ module.exports = {
     sampleRate: 16000,
     voiceSettings: {
       stability: 0.2, // default is 50
-      similarity_boost: 0.8, // default is 80
+      similarity_boost: 0.8, // default is 80,
     },
   },
   playHT: {
