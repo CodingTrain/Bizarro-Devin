@@ -34,6 +34,9 @@ class StateMachine extends State {
     );
     if (!state) throw new Error(`StateMachine: State ${stateName} not found`);
 
+    // Ignore if we are already in this state
+    if (this.activeState === state) return;
+
     if (this.activeState !== null) {
       this.activeState.deactivate();
     }
