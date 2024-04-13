@@ -9,6 +9,14 @@ const delays = {
   applyDiff: 100,
 };
 
+// Lower values = faster!! (0.25 is 4x speed)
+// Maybe we have a toggle button for fast vs. regular?
+const speedFactor = 1.0;
+
+function noise(val = 10) {
+  return Math.random() * val - val / 2;
+}
+
 const typeImmediately = async (editor, code) => {
   await editor.edit((editBuilder) => {
     editBuilder.insert(editor.selection.active, code);
@@ -24,7 +32,7 @@ const typeImmediately = async (editor, code) => {
 const typeRealistically = async (
   editor,
   code,
-  delay = delays.typeCharacter
+  delay = delays.typeCharacter * speedFactor
 ) => {
   for (let i = 0; i < code.length; i++) {
     const char = code.charAt(i);
@@ -34,8 +42,9 @@ const typeRealistically = async (
     });
 
     const isPunctuation = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/;
-    if (isPunctuation.test(char)) await sleep(delays.typePunctuation);
-    else if (char !== ' ') await sleep(delay);
+    if (isPunctuation.test(char))
+      await sleep(delays.typePunctuation * speedFactor + noise());
+    else if (char !== ' ') await sleep(delay * speedFactor + noise());
 
     scrollToCursor(editor);
   }
@@ -68,7 +77,7 @@ async function applyDiffs(editor, diffs) {
       const range = new vscode.Range(position, newPosition);
       editor.selection = new vscode.Selection(position, newPosition);
       scrollToCursor(editor);
-      await sleep(delays.deleteRange);
+      await sleep(delays.deleteRange * speedFactor + noise());
       await editor.edit((editBuilder) => {
         editBuilder.delete(range);
       });
@@ -80,12 +89,13 @@ async function applyDiffs(editor, diffs) {
       if (diff == diffs.at(-1)) continue;
       const position = editor.selection.active;
       const newPosition = move(position, diff.value);
-      if (diff !== diffs[0]) await sleep(delays.moveCursor);
+      if (diff !== diffs[0])
+        await sleep(delays.moveCursor * speedFactor + noise());
       editor.selection = new vscode.Selection(newPosition, newPosition);
       scrollToCursor(editor);
     }
 
-    await sleep(delays.applyDiff);
+    await sleep(delays.applyDiff * speedFactor + noise());
   }
 }
 
