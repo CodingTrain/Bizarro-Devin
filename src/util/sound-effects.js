@@ -16,24 +16,51 @@ let sounds = {
   ),
 };
 
-function playSound(sound) {
+let currentSound = null;
+let looping = false;
+let muted = false;
+
+function playSound(sound, loop = false) {
+  if (muted) return Promise.resolve();
+
   const filepath = sounds[sound];
+  looping = loop;
   return new Promise((resolve, reject) => {
-    player.play(filepath, (err) => {
-      if (err) {
-        console.error('Failed to play:', err);
-        reject(err);
-      } else {
-        // console.log('Audio playback finished.');
-        // Hanging on this, not sure why
-        // fs.unlinkSync(tempFilePath);
-        resolve();
-      }
-    });
+    function startSound() {
+      currentSound = player.play(filepath, (err) => {
+        if (err) {
+          console.error('Failed to play:', err);
+          reject(err);
+        } else {
+          if (looping && !muted) {
+            startSound();
+          } else {
+            // Hanging on this, not sure why
+            // fs.unlinkSync(tempFilePath);
+            resolve();
+          }
+        }
+      });
+    }
+    startSound();
   });
+}
+
+function stopSound() {
+  if (currentSound && looping) {
+    currentSound.kill();
+    looping = false;
+  }
+}
+
+function toggleMuted() {
+  muted = !muted;
+  return muted;
 }
 
 module.exports = {
   // sounds,
   playSound,
+  stopSound,
+  toggleMuted,
 };

@@ -88,6 +88,10 @@
           "group": "navigation"
         },
         {
+          "command": "bizarro-devin.muteAIAgent",
+          "group": "navigation"
+        },
+        {
           "command": "bizarro-devin.toggleSpeed",
           "group": "navigation"
         }
