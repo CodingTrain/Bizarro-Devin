@@ -35,7 +35,7 @@ class Agent extends StateMachine {
     this.promptingTemplate =
       'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
     this.promptingWithContextTemplate =
-      'Dan says: {prompt}\nHere are some things that real Matt Parker has said in a video that you should use as a model for crafting the style and references for your response. You can use them but remember, you still need to provide a concise and snappy response full of puns.\n{context}\n\nCurrent code in the editor:\n```\n{currentCode}\n```';
+      'Dan says: {prompt}\nHere are some things that real Matt Parker has said that you should use as a model for crafting the style and vocabulary of your response. You can use them but remember, you the priority is a concise and snappy response full of puns.\n{context}\n\nCurrent code in the editor:\n```\n{currentCode}\n```';
     this.isStreaming = false;
     this.includeContextFromEmbeddings = true;
 
