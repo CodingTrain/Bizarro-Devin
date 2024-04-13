@@ -13,7 +13,7 @@ class ToggleContextCommand extends Command {
       vscode.StatusBarAlignment.Left,
       -1001
     );
-    this.contextStatusItem.text = '$(check) Context included';
+    this.contextStatusItem.text = '$(check) Context';
     this.contextStatusItem.show();
     context.subscriptions.push(this.contextStatusItem);
   }
@@ -24,8 +24,8 @@ class ToggleContextCommand extends Command {
 
     // Update the status bar
     this.contextStatusItem.text = agent.includeContextFromEmbeddings
-      ? '$(check) Context included'
-      : '$(close) Context excluded';
+      ? '$(check) Context'
+      : '$(close) Context';
 
     // Show an info message
     // const message = `Including context in prompt is now ${
