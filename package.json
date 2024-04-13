@@ -71,10 +71,20 @@
         "title": "Toggle typing speed",
         "category": "Bizarro Devin",
         "icon": "$(watch)"
+      },
+      {
+        "command": "bizarro-devin.challengeBell",
+        "title": "Play the challenge bell!",
+        "category": "Bizarro Devin",
+        "icon": "$(bell)"
       }
     ],
     "menus": {
       "editor/title": [
+        {
+          "command": "bizarro-devin.challengeBell",
+          "group": "navigation"
+        },
         {
           "command": "bizarro-devin.listenToHuman",
           "group": "navigation"

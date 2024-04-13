@@ -13,7 +13,7 @@ class MuteAIAgentCommand extends Command {
       vscode.StatusBarAlignment.Left,
       -999
     );
-    this.contextStatusItem.text = '$(unmute) Sounds enabled';
+    this.contextStatusItem.text = '$(unmute) enabled';
     this.contextStatusItem.show();
     context.subscriptions.push(this.contextStatusItem);
   }
@@ -21,8 +21,8 @@ class MuteAIAgentCommand extends Command {
   async run() {
     const mutedValue = toggleMuted();
     this.contextStatusItem.text = mutedValue
-      ? '$(mute) Sounds disabled'
-      : '$(unmute) Sounds enabled';
+      ? '$(mute) disabled'
+      : '$(unmute) enabled';
     stopSound();
   }
 }
