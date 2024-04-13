@@ -19,8 +19,9 @@ let sounds = {
 let currentSound = null;
 let looping = false;
 
-function playSound(sound) {
+function playSound(sound, loop = false) {
   const filepath = sounds[sound];
+  looping = loop;
   return new Promise((resolve, reject) => {
     function startSound() {
       currentSound = player.play(filepath, (err) => {
