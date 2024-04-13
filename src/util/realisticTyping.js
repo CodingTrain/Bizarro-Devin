@@ -22,11 +22,10 @@ const typeImmediately = async (editor, code) => {
 /**
  *
  * @param {vscode.TextEditor} editor
- * @param {*} code
- * @param {*} delay
+ * @param {string} code
+ * @param {number} delay
  */
 const typeRealistically = async (editor, code, speedFactor = 1.0) => {
-  const delay = delays.typeCharacter * speedFactor;
   for (let i = 0; i < code.length; i++) {
     const char = code.charAt(i);
 
@@ -37,7 +36,8 @@ const typeRealistically = async (editor, code, speedFactor = 1.0) => {
     const isPunctuation = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/;
     if (isPunctuation.test(char))
       await sleep(delays.typePunctuation * speedFactor + noise());
-    else if (char !== ' ') await sleep(delay * speedFactor + noise());
+    else if (char !== ' ')
+      await sleep(delays.typeCharacter * speedFactor + noise());
 
     scrollToCursor(editor);
   }
