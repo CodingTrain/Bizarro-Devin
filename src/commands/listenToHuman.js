@@ -64,13 +64,15 @@ class ListenToHumanCommand extends Command {
 
   async stopListening() {
     this.recording.stop();
+    const agent = getAgent();
+    agent.webserver.sendStatus('thinking');
+
     // this.statusBarItem.text = '$(mute) Not listening';
     setStatusbarText('$(loading~spin) Transcribing...');
     let output = await transcribe(
       path.join(__dirname, '../../', this.filename)
     );
     this.listening = false;
-    const agent = getAgent();
     const startingPrompt = output.text;
     agent.prompt(startingPrompt);
   }

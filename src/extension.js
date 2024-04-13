@@ -13,15 +13,15 @@ let statusBarItem = null;
 function activate(context) {
   console.log('Choo choo 🚂!');
 
-  const commandLoader = new CommandLoader(context);
-  commandLoader.load('commands');
-
   statusBarItem = vscode.window.createStatusBarItem(
     vscode.StatusBarAlignment.Left,
     -1000
   );
   statusBarItem.show();
   context.subscriptions.push(statusBarItem);
+
+  const commandLoader = new CommandLoader(context);
+  commandLoader.load('commands');
 
   setStatusbarText('$(circle-slash) Awaiting input');
 }
