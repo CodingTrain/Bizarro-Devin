@@ -1,6 +1,5 @@
 const { sleep } = require('./sleep');
 const vscode = require('vscode');
-const { getAgent } = require('../lib/agent/Agent');
 
 const delays = {
   typeCharacter: 50,
@@ -9,10 +8,6 @@ const delays = {
   moveCursor: 100,
   applyDiff: 100,
 };
-
-// Lower values = faster!! (0.25 is 4x speed)
-// Maybe we have a toggle button for fast vs. regular?
-let speedFactor = 1.0;
 
 function noise(val = 10) {
   return Math.random() * val - val / 2;
@@ -30,18 +25,8 @@ const typeImmediately = async (editor, code) => {
  * @param {*} code
  * @param {*} delay
  */
-const typeRealistically = async (
-  editor,
-  code,
-  delay = delays.typeCharacter * speedFactor
-) => {
-  const agent = getAgent();
-  if (!agent.speed) {
-    speedFactor = 1;
-  } else {
-    speedFactor = 0.25;
-  }
-
+const typeRealistically = async (editor, code, speedFactor = 1.0) => {
+  const delay = delays.typeCharacter * speedFactor;
   for (let i = 0; i < code.length; i++) {
     const char = code.charAt(i);
 
@@ -63,7 +48,7 @@ function scrollToCursor(editor) {
   editor.revealRange(editor.selection);
 }
 
-async function applyDiffs(editor, diffs) {
+async function applyDiffs(editor, diffs, speedFactor = 1.0) {
   // move cursor to start of document
   const position = new vscode.Position(0, 0);
   editor.selection = new vscode.Selection(position, position);
@@ -77,7 +62,7 @@ async function applyDiffs(editor, diffs) {
 
   for (const diff of diffs) {
     if (diff.added) {
-      await typeRealistically(editor, diff.value);
+      await typeRealistically(editor, diff.value, speedFactor);
     } else if (diff.removed) {
       // delete characters
       const position = editor.selection.active;

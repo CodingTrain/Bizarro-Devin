@@ -276,7 +276,8 @@ class Agent extends StateMachine {
       const diffs = Diff.diffWordsWithSpace(currentEditorCode, step.content);
 
       this.goToState('typing');
-      await applyDiffs(editor, diffs);
+      const speedFactor = this.speed ? 1.0 : 0.25;
+      await applyDiffs(editor, diffs, speedFactor);
     } else if (step.type === 'SPEAK') {
       let content = step.content.trim();
       if (!content) return;
