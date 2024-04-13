@@ -80,6 +80,10 @@
         {
           "command": "bizarro-devin.toggleContext",
           "group": "navigation"
+        },
+        {
+          "command": "bizarro-devin.muteAIAgent",
+          "group": "navigation"
         }
       ]
     }

@@ -18,8 +18,11 @@ let sounds = {
 
 let currentSound = null;
 let looping = false;
+let muted = false;
 
 function playSound(sound, loop = false) {
+  if (muted) return Promise.resolve();
+
   const filepath = sounds[sound];
   looping = loop;
   return new Promise((resolve, reject) => {
@@ -29,7 +32,7 @@ function playSound(sound, loop = false) {
           console.error('Failed to play:', err);
           reject(err);
         } else {
-          if (looping) {
+          if (looping && !muted) {
             startSound();
           } else {
             // Hanging on this, not sure why
@@ -50,8 +53,14 @@ function stopSound() {
   }
 }
 
+function toggleMuted() {
+  muted = !muted;
+  return muted;
+}
+
 module.exports = {
   // sounds,
   playSound,
   stopSound,
+  toggleMuted,
 };
