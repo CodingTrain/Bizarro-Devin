@@ -65,6 +65,12 @@
         "title": "Toggle including context in prompt",
         "category": "Bizarro Devin",
         "icon": "$(code-oss)"
+      },
+      {
+        "command": "bizarro-devin.toggleSpeed",
+        "title": "Toggle typing speed",
+        "category": "Bizarro Devin",
+        "icon": "$(watch)"
       }
     ],
     "menus": {
@@ -83,6 +89,10 @@
         },
         {
           "command": "bizarro-devin.muteAIAgent",
+          "group": "navigation"
+        },
+        {
+          "command": "bizarro-devin.toggleSpeed",
           "group": "navigation"
         }
       ]
