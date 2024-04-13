@@ -12,7 +12,7 @@ class OpenAIProvider extends ModelProvider {
   async query(prompt) {
     this.messageHistory.push({ role: 'user', content: prompt });
     const response = await this.openai.chat.completions.create({
-      model: 'gpt-4-turbo-preview',
+      model: config.openAImodel,
       messages: [
         {
           role: 'system',

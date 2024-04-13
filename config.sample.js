@@ -6,6 +6,7 @@ module.exports = {
   tts: 'piper', // say, coqui, piper, elevenlabs, elevenlabsSync, playht
   showSubtitles: false, // show subtitles of what is being said
   ollamaModel: 'llama2:70b', // model to use with ollama provider (only used if model is ollama)
+  openAImodel: 'gpt-4-turbo', // replace with fine-tuned model (only used if model is openai)
   replicateApiToken: 'your-replicate-api-token-here',
   openAIApiToken: 'your-openai-api-token-here',
   geminiApiToken: 'your-gemini-api-token-here',

@@ -18,9 +18,9 @@ class Animator {
       this.img.src = '/matt-pending.png';
       this.img.style.animation = 'talking 0.25s infinite';
     }
-    if (this.state === 'writing') {
+    if (this.state === 'typing') {
       this.img.src = '/matt-typing.png';
-      this.img.style.animation = 'writing 0.25s infinite';
+      this.img.style.animation = 'typing 0.25s infinite';
     }
     if (this.state === 'thinking') {
       this.img.src = '/matt-thinking.png';

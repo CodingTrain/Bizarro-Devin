@@ -10,7 +10,7 @@ const { query: queryForContext } = require('../../util/semantic-retrieval');
 // States
 const IdleState = require('./states/IdleState');
 const PromptingState = require('./states/promptingState');
-const WritingState = require('./states/writingState');
+const TypingState = require('./states/typingState');
 const ThinkingState = require('./states/thinkingState');
 const TalkingState = require('./states/talkingState');
 
@@ -21,7 +21,7 @@ class Agent extends StateMachine {
     // Registering states
     this.addState(new IdleState(this));
     this.addState(new PromptingState(this));
-    this.addState(new WritingState(this));
+    this.addState(new TypingState(this));
     this.addState(new ThinkingState(this));
     this.addState(new TalkingState(this));
 
@@ -271,7 +271,7 @@ class Agent extends StateMachine {
         .replace(/\r\n/g, '\n');
       const diffs = Diff.diffWordsWithSpace(currentEditorCode, step.content);
 
-      this.goToState('writing');
+      this.goToState('typing');
       await applyDiffs(editor, diffs);
     } else if (step.type === 'SPEAK') {
       let content = step.content.trim();
