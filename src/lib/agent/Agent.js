@@ -28,6 +28,10 @@ class Agent extends StateMachine {
     this.provider = new Provider();
     this.currentAction = 'SPEAK';
 
+    // True is normal
+    // False is fast
+    this.speed = true;
+
     // Queues for buffering the speed of the AI
     this.actionsQueue = [];
     this.lastCharactersList = '';

@@ -1,5 +1,6 @@
 const { sleep } = require('./sleep');
 const vscode = require('vscode');
+const { getAgent } = require('../lib/agent/Agent');
 
 const delays = {
   typeCharacter: 50,
@@ -11,7 +12,7 @@ const delays = {
 
 // Lower values = faster!! (0.25 is 4x speed)
 // Maybe we have a toggle button for fast vs. regular?
-const speedFactor = 1.0;
+let speedFactor = 1.0;
 
 function noise(val = 10) {
   return Math.random() * val - val / 2;
@@ -34,6 +35,13 @@ const typeRealistically = async (
   code,
   delay = delays.typeCharacter * speedFactor
 ) => {
+  const agent = getAgent();
+  if (!agent.speed) {
+    speedFactor = 1;
+  } else {
+    speedFactor = 0.25;
+  }
+
   for (let i = 0; i < code.length; i++) {
     const char = code.charAt(i);
 
