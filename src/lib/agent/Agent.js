@@ -11,6 +11,7 @@ const { query: queryForContext } = require('../../util/semantic-retrieval');
 const IdleState = require('./states/IdleState');
 const PromptingState = require('./states/promptingState');
 const TypingState = require('./states/typingState');
+const TypingFastState = require('./states/typingFastState');
 const ThinkingState = require('./states/thinkingState');
 const TalkingState = require('./states/talkingState');
 
@@ -22,6 +23,7 @@ class Agent extends StateMachine {
     this.addState(new IdleState(this));
     this.addState(new PromptingState(this));
     this.addState(new TypingState(this));
+    this.addState(new TypingFastState(this));
     this.addState(new ThinkingState(this));
     this.addState(new TalkingState(this));
 
@@ -275,7 +277,7 @@ class Agent extends StateMachine {
         .replace(/\r\n/g, '\n');
       const diffs = Diff.diffWordsWithSpace(currentEditorCode, step.content);
 
-      this.goToState('typing');
+      this.goToState(this.speed ? 'typing' : 'typingfast');
       const speedFactor = this.speed ? 1.25 : 0.3;
       await applyDiffs(editor, diffs, speedFactor);
     } else if (step.type === 'SPEAK') {
