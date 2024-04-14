@@ -29,8 +29,25 @@
         position: absolute;
         top: 10px;
         right: 10px;
-        height: 100px;
+        width: 200px;
         transform-origin: 50% 100%;
+      }
+
+      #matt-top {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 200px;
+        transform-origin: 50% 100%;
+      }
+
+      #matt-bottom {
+        position: absolute;
+        top: 9px;
+        right: 10px;
+        width: 200px;
+        transform-origin: 50% 100%;
+        animation: 'typing 0.25s infinite';
       }
 
       #captions {
@@ -87,10 +104,42 @@
           transform: scale(1);
         }
       }
+
+      @keyframes talking-up {
+        0% {
+          transform: translateY(0px);
+          /* transform: rotate(0deg); */
+        }
+        50% {
+          transform: translateY(-15px);
+          /* transform: rotate(30deg); */
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
+
+      @keyframes talking-down {
+        0% {
+          transform: translateY(0px);
+          /* transform: rotate(0deg); */
+        }
+        50% {
+          transform: translateY(15px);
+          /* transform: rotate(30deg); */
+        }
+        100% {
+          transform: translateY(0px);
+          /* transform: rotate(0deg); */
+        }
+      }
     </style>
   </head>
   <body style="position: relative">
     <img src="/matt-pending.png" id="matt-animator" />
+    <img src="/matt-top.png" id="matt-top" />
+    <img src="/matt-bottom.png" id="matt-bottom" />
+
     <div id="captions" style="display: none">Captions go here</div>
   </body>
 </html>
