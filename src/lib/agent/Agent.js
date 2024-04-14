@@ -41,7 +41,7 @@ class Agent extends StateMachine {
     this.promptingTemplate =
       'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
     this.promptingWithContextTemplate =
-      'Dan says: {prompt}\nHere are some things that real Matt Parker has said that you should use as a model for crafting the style and vocabulary of your response. You can use them but remember, you the priority is a concise and snappy response full of puns.\n{context}\n\nCurrent code in the editor:\n```\n{currentCode}\n```';
+      'Dan says: {prompt}\nHere are some things that real Matt Parker has said that you should use as a model for crafting the style and vocabulary of your response. You can use them but remember, the priority is a concise and snappy response full of puns.\n{context}\n\nCurrent code in the editor:\n```\n{currentCode}\n```\nRemember, your response should be no longer than just a few sentences and full of puns.';
     this.isStreaming = false;
     this.includeContextFromEmbeddings = true;
 
@@ -278,7 +278,7 @@ class Agent extends StateMachine {
       const diffs = Diff.diffWordsWithSpace(currentEditorCode, step.content);
 
       this.goToState(this.speed ? 'typing' : 'typingfast');
-      const speedFactor = this.speed ? 1.0 : 0.25;
+      const speedFactor = this.speed ? 1.25 : 0.3;
       await applyDiffs(editor, diffs, speedFactor);
     } else if (step.type === 'SPEAK') {
       let content = step.content.trim();
