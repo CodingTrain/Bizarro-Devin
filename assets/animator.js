@@ -16,6 +16,7 @@ class Animator {
     if (this.state === 'pending') {
       this.fullMatt.src = '/matt-pending.png';
       this.fullMatt.style.animation = 'none';
+      this.fullMatt.style.display = 'block';
       this.topMatt.style.display = 'none';
       this.bottomMatt.style.display = 'none';
     }
