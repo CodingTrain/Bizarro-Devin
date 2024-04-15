@@ -1,30 +1,46 @@
 class Animator {
   constructor() {
-    this.img = document.getElementById('matt-animator');
+    this.fullMatt = document.getElementById('matt-animator');
+    this.topMatt = document.getElementById('matt-top');
+    this.bottomMatt = document.getElementById('matt-bottom');
     this.state = 'pending';
   }
 
   setState(state) {
     this.state = state;
+    console.log(this.state);
     this.update();
   }
 
   update() {
     if (this.state === 'pending') {
-      this.img.src = '/matt-pending.png';
-      this.img.style.animation = 'none';
+      this.fullMatt.src = '/matt-pending.png';
+      this.fullMatt.style.display = 'block';
+      this.fullMatt.style.animation = 'none';
+      this.topMatt.style.display = 'none';
+      this.bottomMatt.style.display = 'none';
     }
     if (this.state === 'talking') {
-      this.img.src = '/matt-pending.png';
-      this.img.style.animation = 'talking 0.25s infinite';
+      this.fullMatt.src = '/matt-pending.png';
+      this.fullMatt.style.display = 'none';
+      this.topMatt.style.display = 'block';
+      this.topMatt.style.animation = 'talking-up 0.2s infinite';
+      this.bottomMatt.style.display = 'block';
+      this.bottomMatt.style.animation = 'talking-down 0.2s infinite';
     }
     if (this.state === 'typing') {
-      this.img.src = '/matt-typing.png';
-      this.img.style.animation = 'typing 0.25s infinite';
+      this.fullMatt.src = '/matt-typing.png';
+      this.fullMatt.style.display = 'block';
+      this.fullMatt.style.animation = 'typing 0.25s infinite';
+      this.topMatt.style.display = 'none';
+      this.bottomMatt.style.display = 'none';
     }
     if (this.state === 'thinking') {
-      this.img.src = '/matt-thinking.png';
-      this.img.style.animation = 'thinking 1s ease-in-out infinite';
+      this.fullMatt.src = '/matt-thinking.png';
+      this.fullMatt.style.display = 'block';
+      this.fullMatt.style.animation = 'thinking 1s ease-in-out infinite';
+      this.topMatt.style.display = 'none';
+      this.bottomMatt.style.display = 'none';
     }
   }
 }
