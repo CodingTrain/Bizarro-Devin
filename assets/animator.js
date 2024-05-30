@@ -14,14 +14,14 @@ class Animator {
 
   update() {
     if (this.state === 'pending') {
-      this.fullMatt.src = '/matt-pending.png';
+      this.fullMatt.src = '/dan.png';
       this.fullMatt.style.display = 'block';
       this.fullMatt.style.animation = 'none';
       this.topMatt.style.display = 'none';
       this.bottomMatt.style.display = 'none';
     }
     if (this.state === 'talking') {
-      this.fullMatt.src = '/matt-pending.png';
+      this.fullMatt.src = '/dan.png';
       this.fullMatt.style.display = 'none';
       this.topMatt.style.display = 'block';
       this.topMatt.style.animation = 'talking-up 0.2s infinite';
@@ -29,14 +29,14 @@ class Animator {
       this.bottomMatt.style.animation = 'talking-down 0.2s infinite';
     }
     if (this.state === 'typing') {
-      this.fullMatt.src = '/matt-typing.png';
+      this.fullMatt.src = '/dan.png';
       this.fullMatt.style.display = 'block';
       this.fullMatt.style.animation = 'typing 0.25s infinite';
       this.topMatt.style.display = 'none';
       this.bottomMatt.style.display = 'none';
     }
     if (this.state === 'thinking') {
-      this.fullMatt.src = '/matt-thinking.png';
+      this.fullMatt.src = '/dan.png';
       this.fullMatt.style.display = 'block';
       this.fullMatt.style.animation = 'thinking 1s ease-in-out infinite';
       this.topMatt.style.display = 'none';
