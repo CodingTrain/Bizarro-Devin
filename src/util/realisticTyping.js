@@ -2,11 +2,11 @@ const { sleep } = require('./sleep');
 const vscode = require('vscode');
 
 const delays = {
-  typeCharacter: 50,
-  typePunctuation: 150,
-  deleteRange: 200,
-  moveCursor: 100,
-  applyDiff: 100,
+  typeCharacter: 25,
+  typePunctuation: 100,
+  deleteRange: 100,
+  moveCursor: 50,
+  applyDiff: 50,
 };
 
 function noise(val = 10) {

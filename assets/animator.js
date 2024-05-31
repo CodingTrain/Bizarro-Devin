@@ -1,8 +1,8 @@
 class Animator {
   constructor() {
-    this.fullMatt = document.getElementById('matt-animator');
-    this.topMatt = document.getElementById('matt-top');
-    this.bottomMatt = document.getElementById('matt-bottom');
+    this.fullMatt = document.getElementById('dan-animator');
+    this.topMatt = document.getElementById('dan-top');
+    this.bottomMatt = document.getElementById('dan-bottom');
     this.state = 'pending';
   }
 
