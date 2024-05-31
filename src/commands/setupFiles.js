@@ -15,18 +15,15 @@ class SetupFilesCommand extends Command {
     let animator = await readFile(this.getPathToAssetsFolder('animator.js'));
     animator = animator.replace('$$PORT$$', config.socketServerPort);
     await createFile('animator.js', animator);
-    await copyFile(
-      this.getPathToAssetsFolder('matt-pending.png'),
-      'matt-pending.png'
-    );
-    await copyFile(
-      this.getPathToAssetsFolder('matt-thinking.png'),
-      'matt-thinking.png'
-    );
-    await copyFile(
-      this.getPathToAssetsFolder('matt-typing.png'),
-      'matt-typing.png'
-    );
+    await copyFile(this.getPathToAssetsFolder('dan.png'), 'dan.png');
+    // await copyFile(
+    //   this.getPathToAssetsFolder('matt-thinking.png'),
+    //   'matt-thinking.png'
+    // );
+    // await copyFile(
+    //   this.getPathToAssetsFolder('matt-typing.png'),
+    //   'matt-typing.png'
+    // );
 
     // create sketch.js && opening it
     const doc = await createFile('sketch.js');

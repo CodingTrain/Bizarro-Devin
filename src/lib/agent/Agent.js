@@ -14,6 +14,7 @@ const TypingState = require('./states/typingState');
 const TypingFastState = require('./states/typingFastState');
 const ThinkingState = require('./states/thinkingState');
 const TalkingState = require('./states/talkingState');
+const { prompts } = require('../../prompt');
 
 class Agent extends StateMachine {
   constructor() {
@@ -38,10 +39,8 @@ class Agent extends StateMachine {
     this.actionsQueue = [];
     this.lastCharactersList = '';
     this.processingQueue = false;
-    this.promptingTemplate =
-      'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
-    this.promptingWithContextTemplate =
-      'Dan says: {prompt}\nHere are some things that real Matt Parker has said that you should use as a model for crafting the style and vocabulary of your response. You can use them but remember, the priority is a concise and snappy response full of puns.\n{context}\n\nCurrent code in the editor:\n```\n{currentCode}\n```\nRemember, your response should be no longer than just a few sentences and full of puns.';
+    this.promptingTemplate = prompts.promptingTemplate;
+    this.promptingWithContextTemplate = prompts.promptingWithContextTemplate;
     this.isStreaming = false;
     this.includeContextFromEmbeddings = true;
 
