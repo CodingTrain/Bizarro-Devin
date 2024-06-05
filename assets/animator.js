@@ -1,8 +1,7 @@
 class Animator {
   constructor() {
-    this.fullMatt = document.getElementById('dan-animator');
-    this.topMatt = document.getElementById('dan-top');
-    this.bottomMatt = document.getElementById('dan-bottom');
+    this.animator = document.getElementById('animator');
+
     this.state = 'pending';
   }
 
@@ -14,34 +13,24 @@ class Animator {
 
   update() {
     if (this.state === 'pending') {
-      this.fullMatt.src = '/dan.png';
-      this.fullMatt.style.display = 'block';
-      this.fullMatt.style.animation = 'none';
-      this.topMatt.style.display = 'none';
-      this.bottomMatt.style.display = 'none';
+      // this.animator.src = "/dan-360.png";
+      // this.animator.style.display = "block";
+      this.animator.style.animation = 'play-8fr 1s steps(8) infinite;';
     }
-    if (this.state === 'talking') {
-      this.fullMatt.src = '/dan.png';
-      this.fullMatt.style.display = 'none';
-      this.topMatt.style.display = 'block';
-      this.topMatt.style.animation = 'talking-up 0.2s infinite';
-      this.bottomMatt.style.display = 'block';
-      this.bottomMatt.style.animation = 'talking-down 0.2s infinite';
-    }
-    if (this.state === 'typing') {
-      this.fullMatt.src = '/dan.png';
-      this.fullMatt.style.display = 'block';
-      this.fullMatt.style.animation = 'typing 0.25s infinite';
-      this.topMatt.style.display = 'none';
-      this.bottomMatt.style.display = 'none';
-    }
-    if (this.state === 'thinking') {
-      this.fullMatt.src = '/dan.png';
-      this.fullMatt.style.display = 'block';
-      this.fullMatt.style.animation = 'thinking 1s ease-in-out infinite';
-      this.topMatt.style.display = 'none';
-      this.bottomMatt.style.display = 'none';
-    }
+    // if (this.state === "talking") {
+    //   this.animator.src = "/dan.png";
+    //   this.animator.style.display = "none";
+    // }
+    // if (this.state === "typing") {
+    //   this.animator.src = "/dan.png";
+    //   this.animator.style.display = "block";
+    //   this.animator.style.animation = "typing 0.25s infinite";
+    // }
+    // if (this.state === "thinking") {
+    //   this.animator.src = "/dan.png";
+    //   this.animator.style.display = "block";
+    //   this.animator.style.animation = "thinking 1s ease-in-out infinite";
+    // }
   }
 }
 
@@ -71,7 +60,7 @@ class CaptionManager {
 
 const animator = new Animator();
 const captionManager = new CaptionManager();
-const socket = io('http://127.0.0.1:$$PORT$$');
+const socket = io('http://127.0.0.1:3300');
 
 socket.on('status', (status) => {
   animator.setState(status);

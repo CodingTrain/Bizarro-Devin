@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -18,35 +18,15 @@
     <script src="sketch.js" defer></script>
     <title>P5.JS Sketch</title>
     <style>
-      * {
-        /* box-sizing: border-box; */
-      }
-      body {
-        /* height: 90vh; */
-      }
-
-      #dan-animator {
+      #animator {
         position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 245px;
-        transform-origin: 50% 100%;
-      }
-
-      #dan-top {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        width: 245px;
-        transform-origin: 50% 100%;
-      }
-
-      #dan-bottom {
-        position: absolute;
-        top: 9px;
-        right: 10px;
-        width: 245px;
-        transform-origin: 50% 100%;
+        display: inline-block;
+        top: 0px;
+        right: 0px;
+        width: 100px;
+        height: 100px;
+        background: url(animations/360-A.png);
+        animation: play-8fr 1s steps(8) infinite;
       }
 
       #captions {
@@ -65,79 +45,35 @@
         font-size: large;
       }
 
-      /* Talking animation using rotation */
-      @keyframes talking {
+      @keyframes play-8fr {
         0% {
-          transform: rotate(0deg);
-        }
-        50% {
-          transform: rotate(10deg);
+          background-position: 0px 0;
         }
         100% {
-          transform: rotate(0deg);
+          background-position: -800px 0;
         }
       }
-
-      /* Typing animation using vertical transform */
-      @keyframes typing {
+      @keyframes play-12fr {
         0% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(5px);
+          background-position: 0px 0;
         }
         100% {
-          transform: translateY(0px);
+          background-position: -1200px 0;
         }
       }
-
-      /* Thinking animation which is pulsing in size */
-      @keyframes thinking {
+      @keyframes play-16fr {
         0% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.1);
+          background-position: 0px 0;
         }
         100% {
-          transform: scale(1);
-        }
-      }
-
-      @keyframes talking-up {
-        0% {
-          transform: translateY(0px);
-          /* transform: rotate(0deg); */
-        }
-        50% {
-          transform: translateY(-15px);
-          /* transform: rotate(30deg); */
-        }
-        100% {
-          transform: translateY(0px);
-        }
-      }
-
-      @keyframes talking-down {
-        0% {
-          transform: translateY(0px);
-          /* transform: rotate(0deg); */
-        }
-        50% {
-          transform: translateY(15px);
-          /* transform: rotate(30deg); */
-        }
-        100% {
-          transform: translateY(0px);
-          /* transform: rotate(0deg); */
+          background-position: -1600px 0;
         }
       }
     </style>
   </head>
+
   <body style="position: relative">
-    <img src="/dan.png" id="dan-animator" />
-    <img src="/dan.png" id="dan-top" />
-    <img src="/dan.png" id="dan-bottom" />
+    <div id="animator"></div>
 
     <div id="captions" style="display: none">Captions go here</div>
   </body>
