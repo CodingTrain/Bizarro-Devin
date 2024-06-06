@@ -11,26 +11,31 @@ class Animator {
     this.update();
   }
 
+  setAnimation(name, play = true) {
+    this.animator.style.background = `url(animations/${name}.png)`;
+    if (play) {
+      const numFrames = animations.find(
+        (a) => a.sprites === `${name}.png`
+      ).frames;
+      this.animator.style.animation = `play-${numFrames}fr 1s steps(${numFrames}) infinite`;
+    } else {
+      this.animator.style.animation = 'none';
+    }
+  }
+
   update() {
     if (this.state === 'pending') {
-      // this.animator.src = "/dan-360.png";
-      // this.animator.style.display = "block";
-      this.animator.style.animation = 'play-8fr 1s steps(8) infinite;';
+      this.setAnimation('Neutral-A');
     }
-    // if (this.state === "talking") {
-    //   this.animator.src = "/dan.png";
-    //   this.animator.style.display = "none";
-    // }
-    // if (this.state === "typing") {
-    //   this.animator.src = "/dan.png";
-    //   this.animator.style.display = "block";
-    //   this.animator.style.animation = "typing 0.25s infinite";
-    // }
-    // if (this.state === "thinking") {
-    //   this.animator.src = "/dan.png";
-    //   this.animator.style.display = "block";
-    //   this.animator.style.animation = "thinking 1s ease-in-out infinite";
-    // }
+    if (this.state === 'talking') {
+      this.setAnimation('Excited-A');
+    }
+    if (this.state === 'typing') {
+      this.setAnimation('Coffee');
+    }
+    if (this.state === 'thinking') {
+      this.setAnimation('360-A');
+    }
   }
 }
 
@@ -60,7 +65,7 @@ class CaptionManager {
 
 const animator = new Animator();
 const captionManager = new CaptionManager();
-const socket = io('http://127.0.0.1:3300');
+const socket = io('http://127.0.0.1:$$PORT$$');
 
 socket.on('status', (status) => {
   animator.setState(status);

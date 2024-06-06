@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -15,18 +15,17 @@
       crossorigin="anonymous"
     ></script>
     <script src="animator.js" defer></script>
+    <script src="data.js" defer></script>
     <script src="sketch.js" defer></script>
     <title>P5.JS Sketch</title>
     <style>
       #animator {
-        position: absolute;
+        position: fixed;
         display: inline-block;
         top: 0px;
         right: 0px;
         width: 100px;
         height: 100px;
-        background: url(animations/360-A.png);
-        animation: play-8fr 1s steps(8) infinite;
       }
 
       #captions {
