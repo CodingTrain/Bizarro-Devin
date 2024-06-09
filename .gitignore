@@ -3,6 +3,7 @@ node_modules
 .vscode-test/
 *.vsix
 *.wav
+*.mp3
 *.bin
 *.npy
 *.psd
