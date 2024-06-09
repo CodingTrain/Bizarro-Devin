@@ -6,6 +6,7 @@ const config = require('../../config');
 const Speaker = require('speaker');
 const { ElevenLabsClient, play: playElevenLabs } = require('elevenlabs');
 const playHT = require('playht');
+const EmotionManager = require('./emotionManager');
 
 async function speakCoqui(txt) {
   // tts-server --model_name tts_models/en/ljspeech/vits
@@ -94,15 +95,51 @@ const speakElevenLabsSync = async (text, onStartTalking) => {
       voice: config.elevenLabs.voiceId,
       text: text,
       model_id: config.elevenLabs.model,
-      voice_settings: {
-        stability: config.elevenLabs.voiceSettings.stability,
-        similarity_boost: config.elevenLabs.voiceSettings.similarity_boost,
-      },
+      voice_settings: config.elevenLabs.voiceSettings,
     });
-
     onStartTalking();
     await playElevenLabs(audio);
     resolve();
+  });
+};
+
+const elevenlabsSyncWithTimestamps = async (text, onStartTalking, agent) => {
+  return new Promise(async (resolve, reject) => {
+    const url = `https://api.elevenlabs.io/v1/text-to-speech/${config.elevenLabs.voiceId}/with-timestamps`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': config.elevenLabs.apiKey,
+      },
+      body: JSON.stringify({
+        text,
+        model_id: config.elevenLabs.model,
+        voice_settings: config.elevenLabs.voiceSettings,
+      }),
+    }).then((res) => res.json());
+    console.log(response);
+
+    const audio = Buffer.from(response.audio_base64, 'base64');
+
+    const tempFilePath = path.join(__dirname, '../../', 'temp.mp3');
+    await fs.writeFile(tempFilePath, audio);
+
+    const emotionManager = new EmotionManager(agent, response.alignment);
+    await emotionManager.prepare();
+    onStartTalking();
+    emotionManager.start();
+    player.play(tempFilePath, (err) => {
+      if (err) {
+        console.error('Failed to play:', err);
+        reject(err);
+      } else {
+        // console.log('Audio playback finished.');
+        // Hanging on this, not sure why
+        // fs.unlinkSync(tempFilePath);
+        resolve();
+      }
+    });
   });
 };
 
@@ -140,6 +177,7 @@ const speakFunctions = {
   elevenlabs: speakElevenLabs,
   elevenlabsSync: speakElevenLabsSync,
   playht: speakPlayht,
+  elevenlabsSyncWithTimestamps,
 };
 
 const speak = speakFunctions[config.tts];

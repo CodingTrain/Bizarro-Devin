@@ -28,6 +28,10 @@ class SocketServer {
   sendCaption(caption) {
     if (config.showSubtitles) this.io.emit('caption', caption);
   }
+
+  sendEmotion(emotion) {
+    this.io.emit('emotion', emotion);
+  }
 }
 
 module.exports = {
