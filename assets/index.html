@@ -14,16 +14,16 @@
       integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
       crossorigin="anonymous"
     ></script>
-    <script src="animator.js" defer></script>
     <script src="data.js" defer></script>
+    <script src="animator.js" defer></script>
     <script src="sketch.js" defer></script>
     <title>P5.JS Sketch</title>
     <style>
       #animator {
         position: fixed;
         display: inline-block;
-        top: 0px;
-        right: 0px;
+        top: 10px;
+        right: 10px;
         width: 100px;
         height: 100px;
       }
@@ -42,31 +42,6 @@
         color: white;
         font-family: sans-serif;
         font-size: large;
-      }
-
-      @keyframes play-8fr {
-        0% {
-          background-position: 0px 0;
-        }
-        100% {
-          background-position: -800px 0;
-        }
-      }
-      @keyframes play-12fr {
-        0% {
-          background-position: 0px 0;
-        }
-        100% {
-          background-position: -1200px 0;
-        }
-      }
-      @keyframes play-16fr {
-        0% {
-          background-position: 0px 0;
-        }
-        100% {
-          background-position: -1600px 0;
-        }
       }
     </style>
   </head>
