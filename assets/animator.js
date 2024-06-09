@@ -1,9 +1,22 @@
 class Animator {
   constructor() {
-    this.fullMatt = document.getElementById('matt-animator');
-    this.topMatt = document.getElementById('matt-top');
-    this.bottomMatt = document.getElementById('matt-bottom');
+    this.animator = document.getElementById('animator');
+
     this.state = 'pending';
+    this.animationsList = animations.map((x) => x.sprites);
+
+    this.interval = setInterval(() => {
+      this.draw();
+    }, 200);
+
+    this.currentAnimation = null;
+    this.currentFrame = 0;
+
+    this.setAnimation('Neutral-A');
+
+    this.w = 100;
+
+    this.loop = true;
   }
 
   setState(state) {
@@ -12,35 +25,53 @@ class Animator {
     this.update();
   }
 
+  setAnimation(name) {
+    if (name.includes('.png')) name = name.replace('.png', '');
+    this.animator.style.background = `url(animations/${name}.png)`;
+    this.currentAnimation = animations.find((x) => x.sprites == `${name}.png`);
+    this.currentFrame = 0;
+  }
+
+  setRandomAnimation() {
+    // choose a new animation
+    const list = this.animationsList.filter((x) => x !== 'Neutral-A.png');
+    const random = Math.floor(Math.random() * list.length);
+    this.setAnimation(list[random]);
+  }
+
   update() {
     if (this.state === 'pending') {
-      this.fullMatt.src = '/matt-pending.png';
-      this.fullMatt.style.display = 'block';
-      this.fullMatt.style.animation = 'none';
-      this.topMatt.style.display = 'none';
-      this.bottomMatt.style.display = 'none';
+      this.setAnimation('Neutral-A');
+      this.loop = true;
     }
     if (this.state === 'talking') {
-      this.fullMatt.src = '/matt-pending.png';
-      this.fullMatt.style.display = 'none';
-      this.topMatt.style.display = 'block';
-      this.topMatt.style.animation = 'talking-up 0.2s infinite';
-      this.bottomMatt.style.display = 'block';
-      this.bottomMatt.style.animation = 'talking-down 0.2s infinite';
+      this.setRandomAnimation();
+      this.loop = false;
     }
     if (this.state === 'typing') {
-      this.fullMatt.src = '/matt-typing.png';
-      this.fullMatt.style.display = 'block';
-      this.fullMatt.style.animation = 'typing 0.25s infinite';
-      this.topMatt.style.display = 'none';
-      this.bottomMatt.style.display = 'none';
+      this.setRandomAnimation();
+      this.loop = false;
     }
     if (this.state === 'thinking') {
-      this.fullMatt.src = '/matt-thinking.png';
-      this.fullMatt.style.display = 'block';
-      this.fullMatt.style.animation = 'thinking 1s ease-in-out infinite';
-      this.topMatt.style.display = 'none';
-      this.bottomMatt.style.display = 'none';
+      this.setRandomAnimation();
+      this.loop = false;
+    }
+  }
+
+  draw() {
+    this.animator.style.backgroundPosition = `-${this.currentFrame * this.w}px 0px`;
+
+    this.currentFrame++;
+    if (this.currentFrame >= this.currentAnimation.frames) {
+      if (this.loop) {
+        this.currentFrame = 0;
+      } else {
+        if (Math.random() < 0.5) {
+          this.setRandomAnimation();
+        } else {
+          this.currentFrame = 0;
+        }
+      }
     }
   }
 }

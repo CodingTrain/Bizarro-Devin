@@ -1,5 +1,10 @@
 const Command = require('../lib/command');
-const { createFile, copyFile, readFile } = require('../util/createFile');
+const {
+  createFile,
+  copyFile,
+  readFile,
+  copyFolder,
+} = require('../util/createFile');
 const path = require('path');
 const config = require('../../config');
 class SetupFilesCommand extends Command {
@@ -11,22 +16,15 @@ class SetupFilesCommand extends Command {
     // create index.html and animator.js
 
     await copyFile(this.getPathToAssetsFolder('index.html'), 'index.html');
-    // await copyFile(this.getPathToAssetsFolder('animator.js'), 'animator.js');
+
+    // Animator requires replacing the port placeholder
     let animator = await readFile(this.getPathToAssetsFolder('animator.js'));
     animator = animator.replace('$$PORT$$', config.socketServerPort);
     await createFile('animator.js', animator);
-    await copyFile(
-      this.getPathToAssetsFolder('matt-pending.png'),
-      'matt-pending.png'
-    );
-    await copyFile(
-      this.getPathToAssetsFolder('matt-thinking.png'),
-      'matt-thinking.png'
-    );
-    await copyFile(
-      this.getPathToAssetsFolder('matt-typing.png'),
-      'matt-typing.png'
-    );
+
+    // Copy assets
+    await copyFolder(this.getPathToAssetsFolder('animations'), 'animations');
+    await copyFile(this.getPathToAssetsFolder('data.js'), 'data.js');
 
     // create sketch.js && opening it
     const doc = await createFile('sketch.js');

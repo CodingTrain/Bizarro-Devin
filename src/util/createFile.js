@@ -61,5 +61,20 @@ async function copyFile(source, path) {
     },
   };
 }
+/**
+ * Copies a folder from the given source path to the given relative destination path
+ *
+ * @param {string} source - The path of the folder to be copied
+ * @param {string} path - The relative destination path of the folder to be copied.
+ * @return {Promise<void>} - A promise that resolves when the folder is copied.
+ */
+async function copyFolder(source, path) {
+  const activeFolder = vscode.workspace.workspaceFolders[0];
+  const folderPath = vscode.Uri.joinPath(activeFolder.uri, path);
+  const sourcePath = vscode.Uri.file(source);
+  await vscode.workspace.fs.copy(sourcePath, folderPath, {
+    overwrite: true,
+  });
+}
 
-module.exports = { createFile, copyFile, readFile };
+module.exports = { createFile, copyFile, readFile, copyFolder };

@@ -1,0 +1,17 @@
+const animations = [
+  { sprites: "360-A.png", frames: 8 },
+  { sprites: "360-B.png", frames: 8 },
+  { sprites: "Coffee.png", frames: 12 },
+  { sprites: "Confused-A.png", frames: 8 },
+  { sprites: "Confused-B.png", frames: 8 },
+  { sprites: "Dancing.png", frames: 8 },
+  { sprites: "Excited-A.png", frames: 12 },
+  { sprites: "Excited-B.png", frames: 8 },
+  { sprites: "Excited-C.png", frames: 8 },
+  { sprites: "Frazzled.png", frames: 8 },
+  { sprites: "Head-shaking.png", frames: 8 },
+  { sprites: "Neutral-A.png", frames: 12 },
+  { sprites: "Neutral-Waving.png", frames: 16 },
+  { sprites: "Noding.png", frames: 8 },
+  { sprites: "Ooooh.png", frames: 8 },
+];

@@ -5,7 +5,7 @@ const vscode = require('vscode');
 const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
 const Diff = require('diff');
-const { query: queryForContext } = require('../../util/semantic-retrieval');
+// const { query: queryForContext } = require('../../util/semantic-retrieval');
 
 // States
 const IdleState = require('./states/IdleState');
@@ -14,6 +14,7 @@ const TypingState = require('./states/typingState');
 const TypingFastState = require('./states/typingFastState');
 const ThinkingState = require('./states/thinkingState');
 const TalkingState = require('./states/talkingState');
+const { prompts } = require('../../prompt');
 
 class Agent extends StateMachine {
   constructor() {
@@ -38,10 +39,8 @@ class Agent extends StateMachine {
     this.actionsQueue = [];
     this.lastCharactersList = '';
     this.processingQueue = false;
-    this.promptingTemplate =
-      'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
-    this.promptingWithContextTemplate =
-      'Dan says: {prompt}\nHere are some things that real Matt Parker has said that you should use as a model for crafting the style and vocabulary of your response. You can use them but remember, the priority is a concise and snappy response full of puns.\n{context}\n\nCurrent code in the editor:\n```\n{currentCode}\n```\nRemember, your response should be no longer than just a few sentences and full of puns.';
+    this.promptingTemplate = prompts.promptingTemplate;
+    this.promptingWithContextTemplate = prompts.promptingWithContextTemplate;
     this.isStreaming = false;
     this.includeContextFromEmbeddings = true;
 
@@ -62,21 +61,21 @@ class Agent extends StateMachine {
     const editor = vscode.window.visibleTextEditors[0];
 
     let prompt;
-    if (this.includeContextFromEmbeddings) {
-      // Get context form embeddings
-      const context = await queryForContext(input);
-      prompt = this.promptingWithContextTemplate
-        .replace('{prompt}', input)
-        .replace(
-          '{context}',
-          context.map((item) => `- ${item.text}`).join('\n')
-        )
-        .replace('{currentCode}', editor.document.getText());
-    } else {
-      prompt = this.promptingTemplate
-        .replace('{prompt}', input)
-        .replace('{currentCode}', editor.document.getText());
-    }
+    // if (this.includeContextFromEmbeddings) {
+    //   // Get context form embeddings
+    //   const context = await queryForContext(input);
+    //   prompt = this.promptingWithContextTemplate
+    //     .replace('{prompt}', input)
+    //     .replace(
+    //       '{context}',
+    //       context.map((item) => `- ${item.text}`).join('\n')
+    //     )
+    //     .replace('{currentCode}', editor.document.getText());
+    // } else {
+    prompt = this.promptingTemplate
+      .replace('{prompt}', input)
+      .replace('{currentCode}', editor.document.getText());
+    // }
 
     console.log('Prompting', prompt);
 
@@ -100,6 +99,7 @@ class Agent extends StateMachine {
   }
 
   consumeStream(response) {
+    console.log(response);
     const text = response.response;
     const event = response.event;
 
@@ -141,7 +141,10 @@ class Agent extends StateMachine {
       // It could in theory still break if there are 3 or more ``` in a single chunk of text
       // or if there are multiple ``` in the final chunk sent. This is a very rare edge case so we just ignore it
       if (this.lastCharactersList.split('```').length > 2) {
-        const cutOffIndex = this.lastCharactersList.lastIndexOf('```');
+        const cutOffIndex = this.lastCharactersList.indexOf(
+          '```',
+          this.lastCharactersList.indexOf('```') + 1
+        );
         nextIterationCharacters =
           this.lastCharactersList.slice(cutOffIndex) + nextIterationCharacters;
         this.lastCharactersList = this.lastCharactersList.slice(0, cutOffIndex);
