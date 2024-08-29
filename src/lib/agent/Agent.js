@@ -332,7 +332,7 @@ agent.activate();
  * @returns {Agent} The agent instance
  */
 const getAgent = () => {
-  return agent; // To avoid breaking everything i'm just doing this.
+  return agent;
 };
 
 module.exports = { getAgent };

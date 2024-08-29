@@ -48,6 +48,12 @@ function scrollToCursor(editor) {
   editor.revealRange(editor.selection);
 }
 
+/**
+ *
+ * @param {vscode.TextEditor} editor
+ * @param {Diff.Change[]} diffs
+ * @param {number} speedFactor
+ */
 async function applyDiffs(editor, diffs, speedFactor = 1.0) {
   // move cursor to start of document
   const position = new vscode.Position(0, 0);
@@ -85,6 +91,7 @@ async function applyDiffs(editor, diffs, speedFactor = 1.0) {
       if (diff !== diffs[0])
         await sleep(delays.moveCursor * speedFactor + noise());
       editor.selection = new vscode.Selection(newPosition, newPosition);
+
       scrollToCursor(editor);
     }
 

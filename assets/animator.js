@@ -7,7 +7,7 @@ class Animator {
 
     this.interval = setInterval(() => {
       this.draw();
-    }, 200);
+    }, FRAME_RATE);
 
     this.currentAnimation = null;
     this.currentFrame = 0;
@@ -99,6 +99,8 @@ class CaptionManager {
     this.hide();
   }
 }
+
+const FRAME_RATE = 120;
 
 const animator = new Animator();
 const captionManager = new CaptionManager();
