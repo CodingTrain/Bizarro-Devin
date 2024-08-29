@@ -1,9 +1,21 @@
 class Animator {
   constructor() {
-    this.fullMatt = document.getElementById('dan-animator');
-    this.topMatt = document.getElementById('dan-top');
-    this.bottomMatt = document.getElementById('dan-bottom');
+    this.animator = document.getElementById('animator');
     this.state = 'pending';
+    this.animationsList = animations.map((x) => x.sprites);
+
+    this.interval = setInterval(() => {
+      this.draw();
+    }, FRAME_RATE);
+
+    this.currentAnimation = null;
+    this.currentFrame = 0;
+
+    this.setAnimation('Neutral-A');
+
+    this.w = 100;
+
+    this.loop = true;
   }
 
   setState(state) {
@@ -12,35 +24,53 @@ class Animator {
     this.update();
   }
 
+  setAnimation(name) {
+    if (name.includes('.png')) name = name.replace('.png', '');
+    this.animator.style.background = `url(animations/${name}.png)`;
+    this.currentAnimation = animations.find((x) => x.sprites == `${name}.png`);
+    this.currentFrame = 0;
+  }
+
+  setRandomAnimation() {
+    // choose a new animation
+    const list = this.animationsList.filter((x) => x !== 'Neutral-A.png');
+    const random = Math.floor(Math.random() * list.length);
+    this.setAnimation(list[random]);
+  }
+
   update() {
     if (this.state === 'pending') {
-      this.fullMatt.src = '/dan.png';
-      this.fullMatt.style.display = 'block';
-      this.fullMatt.style.animation = 'none';
-      this.topMatt.style.display = 'none';
-      this.bottomMatt.style.display = 'none';
+      this.setAnimation('Neutral-A');
+      this.loop = true;
     }
     if (this.state === 'talking') {
-      this.fullMatt.src = '/dan.png';
-      this.fullMatt.style.display = 'none';
-      this.topMatt.style.display = 'block';
-      this.topMatt.style.animation = 'talking-up 0.2s infinite';
-      this.bottomMatt.style.display = 'block';
-      this.bottomMatt.style.animation = 'talking-down 0.2s infinite';
+      this.setRandomAnimation();
+      this.loop = false;
     }
     if (this.state === 'typing') {
-      this.fullMatt.src = '/dan.png';
-      this.fullMatt.style.display = 'block';
-      this.fullMatt.style.animation = 'typing 0.25s infinite';
-      this.topMatt.style.display = 'none';
-      this.bottomMatt.style.display = 'none';
+      this.setRandomAnimation();
+      this.loop = false;
     }
     if (this.state === 'thinking') {
-      this.fullMatt.src = '/dan.png';
-      this.fullMatt.style.display = 'block';
-      this.fullMatt.style.animation = 'thinking 1s ease-in-out infinite';
-      this.topMatt.style.display = 'none';
-      this.bottomMatt.style.display = 'none';
+      this.setRandomAnimation();
+      this.loop = false;
+    }
+  }
+
+  draw() {
+    this.animator.style.backgroundPosition = `-${this.currentFrame * this.w}px 0px`;
+
+    this.currentFrame++;
+    if (this.currentFrame >= this.currentAnimation.frames) {
+      if (this.loop) {
+        this.currentFrame = 0;
+      } else {
+        if (Math.random() < 0.5) {
+          this.setRandomAnimation();
+        } else {
+          this.currentFrame = 0;
+        }
+      }
     }
   }
 }
@@ -68,6 +98,8 @@ class CaptionManager {
     this.hide();
   }
 }
+
+const FRAME_RATE = 120;
 
 const animator = new Animator();
 const captionManager = new CaptionManager();

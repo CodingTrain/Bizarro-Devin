@@ -5,7 +5,7 @@ const vscode = require('vscode');
 const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
 const Diff = require('diff');
-const { query: queryForContext } = require('../../util/semantic-retrieval');
+// const { query: queryForContext } = require('../../util/semantic-retrieval');
 
 // States
 const IdleState = require('./states/IdleState');
@@ -61,21 +61,21 @@ class Agent extends StateMachine {
     const editor = vscode.window.visibleTextEditors[0];
 
     let prompt;
-    if (this.includeContextFromEmbeddings) {
-      // Get context form embeddings
-      const context = await queryForContext(input);
-      prompt = this.promptingWithContextTemplate
-        .replace('{prompt}', input)
-        .replace(
-          '{context}',
-          context.map((item) => `- ${item.text}`).join('\n')
-        )
-        .replace('{currentCode}', editor.document.getText());
-    } else {
-      prompt = this.promptingTemplate
-        .replace('{prompt}', input)
-        .replace('{currentCode}', editor.document.getText());
-    }
+    // if (this.includeContextFromEmbeddings) {
+    //   // Get context form embeddings
+    //   const context = await queryForContext(input);
+    //   prompt = this.promptingWithContextTemplate
+    //     .replace('{prompt}', input)
+    //     .replace(
+    //       '{context}',
+    //       context.map((item) => `- ${item.text}`).join('\n')
+    //     )
+    //     .replace('{currentCode}', editor.document.getText());
+    // } else {
+    prompt = this.promptingTemplate
+      .replace('{prompt}', input)
+      .replace('{currentCode}', editor.document.getText());
+    // }
 
     console.log('Prompting', prompt);
 
@@ -99,6 +99,7 @@ class Agent extends StateMachine {
   }
 
   consumeStream(response) {
+    console.log(response);
     const text = response.response;
     const event = response.event;
 
@@ -140,7 +141,10 @@ class Agent extends StateMachine {
       // It could in theory still break if there are 3 or more ``` in a single chunk of text
       // or if there are multiple ``` in the final chunk sent. This is a very rare edge case so we just ignore it
       if (this.lastCharactersList.split('```').length > 2) {
-        const cutOffIndex = this.lastCharactersList.lastIndexOf('```');
+        const cutOffIndex = this.lastCharactersList.indexOf(
+          '```',
+          this.lastCharactersList.indexOf('```') + 1
+        );
         nextIterationCharacters =
           this.lastCharactersList.slice(cutOffIndex) + nextIterationCharacters;
         this.lastCharactersList = this.lastCharactersList.slice(0, cutOffIndex);
@@ -328,7 +332,7 @@ agent.activate();
  * @returns {Agent} The agent instance
  */
 const getAgent = () => {
-  return agent; // To avoid breaking everything i'm just doing this.
+  return agent;
 };
 
 module.exports = { getAgent };
