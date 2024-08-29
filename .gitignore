@@ -5,6 +5,7 @@ node_modules
 *.wav
 *.bin
 *.npy
+*.psd
 config.js
 embeddings.json
 transcripts/
