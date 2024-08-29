@@ -1,7 +1,6 @@
 class Animator {
   constructor() {
     this.animator = document.getElementById('animator');
-
     this.state = 'pending';
     this.animationsList = animations.map((x) => x.sprites);
 
