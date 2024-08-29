@@ -106,7 +106,7 @@ const FRAME_RATE = 120;
 
 const animator = new Animator();
 const captionManager = new CaptionManager();
-const socket = io('http://127.0.0.1:4027');
+const socket = io('http://127.0.0.1:$$PORT$$');
 
 socket.on('status', (status) => {
   animator.setState(status);
