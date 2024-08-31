@@ -5,7 +5,7 @@ const vscode = require('vscode');
 const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
 const Diff = require('diff');
-// const { query: queryForContext } = require('../../util/semantic-retrieval');
+const { query: queryForContext } = require('../../util/semantic-retrieval');
 
 // States
 const IdleState = require('./states/IdleState');
@@ -61,21 +61,21 @@ class Agent extends StateMachine {
     const editor = vscode.window.visibleTextEditors[0];
 
     let prompt;
-    // if (this.includeContextFromEmbeddings) {
-    //   // Get context form embeddings
-    //   const context = await queryForContext(input);
-    //   prompt = this.promptingWithContextTemplate
-    //     .replace('{prompt}', input)
-    //     .replace(
-    //       '{context}',
-    //       context.map((item) => `- ${item.text}`).join('\n')
-    //     )
-    //     .replace('{currentCode}', editor.document.getText());
-    // } else {
-    prompt = this.promptingTemplate
-      .replace('{prompt}', input)
-      .replace('{currentCode}', editor.document.getText());
-    // }
+    if (this.includeContextFromEmbeddings) {
+      // Get context form embeddings
+      const context = await queryForContext(input);
+      prompt = this.promptingWithContextTemplate
+        .replace('{prompt}', input)
+        .replace(
+          '{context}',
+          context.map((item) => `- ${item.text}`).join('\n')
+        )
+        .replace('{currentCode}', editor.document.getText());
+    } else {
+      prompt = this.promptingTemplate
+        .replace('{prompt}', input)
+        .replace('{currentCode}', editor.document.getText());
+    }
 
     console.log('Prompting', prompt);
 

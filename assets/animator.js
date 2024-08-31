@@ -1,9 +1,9 @@
 class Animator {
   constructor() {
     this.animator = document.getElementById('animator');
+
     this.state = 'pending';
     this.animationsList = animations.map((x) => x.sprites);
-
     this.interval = setInterval(() => {
       this.draw();
     }, FRAME_RATE);
@@ -13,7 +13,7 @@ class Animator {
 
     this.setAnimation('Neutral-A');
 
-    this.w = 100;
+    this.w = 300;
 
     this.loop = true;
   }
@@ -27,8 +27,11 @@ class Animator {
   setAnimation(name) {
     if (name.includes('.png')) name = name.replace('.png', '');
     this.animator.style.background = `url(animations/${name}.png)`;
+    this.animator.style.backgroundRepeat = 'no-repeat';
     this.currentAnimation = animations.find((x) => x.sprites == `${name}.png`);
+    this.animator.style.backgroundSize = `${this.w * this.currentAnimation.frames}px ${this.w}px`;
     this.currentFrame = 0;
+    console.log('Switched to animation: ', this.currentAnimation);
   }
 
   setRandomAnimation() {
