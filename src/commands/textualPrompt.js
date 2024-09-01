@@ -2,9 +2,9 @@ const { getAgent } = require('../lib/agent/Agent');
 const Command = require('../lib/command');
 const vscode = require('vscode');
 
-class ManualPromptCommand extends Command {
+class TextualPromptCommand extends Command {
   constructor() {
-    super('bizarro-devin.manualPrompt');
+    super('bizarro-devin.textualPrompt');
   }
 
   async run() {
@@ -23,4 +23,4 @@ class ManualPromptCommand extends Command {
   }
 }
 
-module.exports = ManualPromptCommand;
+module.exports = TextualPromptCommand;

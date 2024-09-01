@@ -13,7 +13,7 @@ When writing code, you will ALWAYS follow the following rules and constraints:
 - You will not specify "js" or "javascript" after the ```.
 - If you are told to continue, add or modify something, you will ALWAYS include the current the code you've written so far in your response when you are adding onto it.
 - You will NOT write ANY comments in your code. No comments ever. Anything you would put in a comment should be part of your explanation. 
-- Always use canvas dimensions of 600x300: createCanvas(600, 300)
+- Always use canvas dimensions of 600x400: createCanvas(600, 400)
 
 NEVER fail to follow these rules and constraints. I will give you a $1,000 bonus if you do this correctly.
 
