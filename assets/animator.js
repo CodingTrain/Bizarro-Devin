@@ -1,3 +1,4 @@
+// /* eslint-disable no-undef */
 class Animator {
   constructor() {
     this.animator = document.getElementById('animator');
@@ -26,7 +27,7 @@ class Animator {
 
   setAnimation(name) {
     if (name.includes('.png')) name = name.replace('.png', '');
-    this.animator.style.background = `url(animations/${name}.png)`;
+    this.animator.style.backgroundImage = `url(animations/${name}.png)`;
     this.animator.style.backgroundRepeat = 'no-repeat';
     this.currentAnimation = animations.find((x) => x.sprites == `${name}.png`);
     this.animator.style.backgroundSize = `${this.w * this.currentAnimation.frames}px ${this.w}px`;
@@ -42,21 +43,13 @@ class Animator {
   }
 
   update() {
-    if (this.state === 'pending') {
+    this.loop = true;
+    const choices = stateAnimations[this.state];
+    if (choices) {
+      const random = Math.floor(Math.random() * choices.length);
+      this.setAnimation(choices[random]);
+    } else {
       this.setAnimation('Neutral-A');
-      this.loop = true;
-    }
-    if (this.state === 'talking') {
-      this.setRandomAnimation();
-      this.loop = false;
-    }
-    if (this.state === 'typing') {
-      this.setRandomAnimation();
-      this.loop = false;
-    }
-    if (this.state === 'thinking') {
-      this.setRandomAnimation();
-      this.loop = false;
     }
   }
 
@@ -101,6 +94,38 @@ class CaptionManager {
     this.hide();
   }
 }
+
+const animations = [
+  { sprites: '360-A.png', frames: 8 },
+  { sprites: '360-B.png', frames: 8 },
+  { sprites: 'Coffee.png', frames: 12 },
+  { sprites: 'Confused-A.png', frames: 8 },
+  { sprites: 'Confused-B.png', frames: 8 },
+  { sprites: 'Dancing.png', frames: 8 },
+  { sprites: 'Excited-A.png', frames: 12 },
+  { sprites: 'Excited-B.png', frames: 8 },
+  { sprites: 'Excited-C.png', frames: 8 },
+  { sprites: 'Frazzled.png', frames: 8 },
+  { sprites: 'Head-shaking.png', frames: 8 },
+  { sprites: 'Neutral-A.png', frames: 12 },
+  { sprites: 'Neutral-Waving.png', frames: 16 },
+  { sprites: 'Noding.png', frames: 8 },
+  { sprites: 'Ooooh.png', frames: 8 },
+];
+
+const stateAnimations = {
+  pending: ['Neutral-A'],
+  talking: [
+    'Excited-A',
+    'Excited-B',
+    'Excited-C',
+    'Ooooh',
+    'Frazzled',
+    'Dancing',
+  ],
+  typing: ['Head-shaking', '360-A', '360-B', 'Noding'],
+  thinking: ['Confused-A', 'Confused-B', 'Neutral-Waving', 'Coffee'],
+};
 
 const FRAME_RATE = 120;
 
