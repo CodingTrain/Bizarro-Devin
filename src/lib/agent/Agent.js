@@ -103,8 +103,8 @@ class Agent extends StateMachine {
     const text = response.response;
     const event = response.event;
 
-    // Check if last character of received text is a space, period or newline
-    const isEndOfSentence = [' ', '.', '\n'].includes(text.slice(-1));
+    // Check if last character of received text is a space or newline
+    const isEndOfSentence = [' ', '\n'].includes(text.slice(-1));
 
     // We will need to store the latest 30 characters to check for the action starts
     this.lastCharactersList += text;
@@ -116,11 +116,11 @@ class Agent extends StateMachine {
 
     let nextIterationCharacters = null;
 
-    // Walk back to the last space, period or newline. This is to prevent cutting off words
+    // Walk back to the last space or newline. This is to prevent cutting off words
     if (!isEndOfSentence && event !== 'done') {
       let i = this.lastCharactersList.length - 1;
       while (i >= 0) {
-        if ([' ', '.', '\n'].includes(this.lastCharactersList[i])) {
+        if ([' ', '\n'].includes(this.lastCharactersList[i])) {
           break;
         }
         i--;
