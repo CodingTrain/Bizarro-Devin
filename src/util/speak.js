@@ -142,10 +142,13 @@ const speakFunctions = {
   playht: speakPlayht,
 };
 
-const speak = function speak(...args) {
-  let text = args[0].replace(/p5\.js/g, 'p5 dot js');
-  speakFunctions[config.tts](text, args[1]);
-};
+// const speak = function speak(...args) {
+//   let text = args[0].replace(/p5\.js/g, 'p5 dot js');
+//   speakFunctions[config.tts](text, args[1]);
+// };
+
+const speak = speakFunctions[config.tts];
+
 module.exports = {
   speak,
 };
