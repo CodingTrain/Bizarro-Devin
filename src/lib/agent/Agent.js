@@ -14,6 +14,7 @@ const TypingState = require('./states/typingState');
 const TypingFastState = require('./states/typingFastState');
 const ThinkingState = require('./states/thinkingState');
 const TalkingState = require('./states/talkingState');
+const { prompts } = require('../../prompt');
 
 class Agent extends StateMachine {
   constructor() {
@@ -38,10 +39,8 @@ class Agent extends StateMachine {
     this.actionsQueue = [];
     this.lastCharactersList = '';
     this.processingQueue = false;
-    this.promptingTemplate =
-      'Dan says: {prompt}\nCurrent code in the editor:\n```\n{currentCode}\n```';
-    this.promptingWithContextTemplate =
-      'Dan says: {prompt}\nHere are some things that real Matt Parker has said that you should use as a model for crafting the style and vocabulary of your response. You can use them but remember, the priority is a concise and snappy response full of puns.\n{context}\n\nCurrent code in the editor:\n```\n{currentCode}\n```\nRemember, your response should be no longer than just a few sentences and full of puns.';
+    this.promptingTemplate = prompts.promptingTemplate;
+    this.promptingWithContextTemplate = prompts.promptingWithContextTemplate;
     this.isStreaming = false;
     this.includeContextFromEmbeddings = true;
 
@@ -100,11 +99,12 @@ class Agent extends StateMachine {
   }
 
   consumeStream(response) {
+    console.log(response);
     const text = response.response;
     const event = response.event;
 
-    // Check if last character of received text is a space, period or newline
-    const isEndOfSentence = [' ', '.', '\n'].includes(text.slice(-1));
+    // Check if last character of received text is a space or newline
+    const isEndOfSentence = [' ', '\n'].includes(text.slice(-1));
 
     // We will need to store the latest 30 characters to check for the action starts
     this.lastCharactersList += text;
@@ -116,11 +116,11 @@ class Agent extends StateMachine {
 
     let nextIterationCharacters = null;
 
-    // Walk back to the last space, period or newline. This is to prevent cutting off words
+    // Walk back to the last space or newline. This is to prevent cutting off words
     if (!isEndOfSentence && event !== 'done') {
       let i = this.lastCharactersList.length - 1;
       while (i >= 0) {
-        if ([' ', '.', '\n'].includes(this.lastCharactersList[i])) {
+        if ([' ', '\n'].includes(this.lastCharactersList[i])) {
           break;
         }
         i--;
@@ -141,7 +141,10 @@ class Agent extends StateMachine {
       // It could in theory still break if there are 3 or more ``` in a single chunk of text
       // or if there are multiple ``` in the final chunk sent. This is a very rare edge case so we just ignore it
       if (this.lastCharactersList.split('```').length > 2) {
-        const cutOffIndex = this.lastCharactersList.lastIndexOf('```');
+        const cutOffIndex = this.lastCharactersList.indexOf(
+          '```',
+          this.lastCharactersList.indexOf('```') + 1
+        );
         nextIterationCharacters =
           this.lastCharactersList.slice(cutOffIndex) + nextIterationCharacters;
         this.lastCharactersList = this.lastCharactersList.slice(0, cutOffIndex);
@@ -329,7 +332,7 @@ agent.activate();
  * @returns {Agent} The agent instance
  */
 const getAgent = () => {
-  return agent; // To avoid breaking everything i'm just doing this.
+  return agent;
 };
 
 module.exports = { getAgent };

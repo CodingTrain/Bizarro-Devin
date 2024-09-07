@@ -2,11 +2,11 @@ const { sleep } = require('./sleep');
 const vscode = require('vscode');
 
 const delays = {
-  typeCharacter: 50,
-  typePunctuation: 150,
-  deleteRange: 200,
-  moveCursor: 100,
-  applyDiff: 100,
+  typeCharacter: 25,
+  typePunctuation: 100,
+  deleteRange: 100,
+  moveCursor: 50,
+  applyDiff: 50,
 };
 
 function noise(val = 10) {
@@ -48,6 +48,12 @@ function scrollToCursor(editor) {
   editor.revealRange(editor.selection);
 }
 
+/**
+ *
+ * @param {vscode.TextEditor} editor
+ * @param {Diff.Change[]} diffs
+ * @param {number} speedFactor
+ */
 async function applyDiffs(editor, diffs, speedFactor = 1.0) {
   // move cursor to start of document
   const position = new vscode.Position(0, 0);
@@ -85,6 +91,7 @@ async function applyDiffs(editor, diffs, speedFactor = 1.0) {
       if (diff !== diffs[0])
         await sleep(delays.moveCursor * speedFactor + noise());
       editor.selection = new vscode.Selection(newPosition, newPosition);
+
       scrollToCursor(editor);
     }
 

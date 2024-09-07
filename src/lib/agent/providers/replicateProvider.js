@@ -13,16 +13,19 @@ class ReplicateProvider extends ModelProvider {
 
   async query(prompt) {
     this.messageHistory.push({ role: 'user', content: prompt });
-    const output = await this.replicate.run('meta/llama-2-70b-chat', {
-      input: this.createPrompt(),
-    });
+    const output = await this.replicate.run(
+      'meta/meta-llama-3.1-405b-instruct',
+      {
+        input: this.createPrompt(),
+      }
+    );
     this.messageHistory.push({ role: 'assistant', content: output.join('') });
     return { response: output.join('') };
   }
 
   async queryStream(prompt, process) {
     this.messageHistory.push({ role: 'user', content: prompt });
-    const stream = this.replicate.stream('meta/llama-2-70b-chat', {
+    const stream = this.replicate.stream('meta/meta-llama-3.1-405b-instruct', {
       input: this.createPrompt(),
     });
     let fullResponse = '';

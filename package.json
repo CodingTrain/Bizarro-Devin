@@ -50,8 +50,8 @@
         "icon": "$(record)"
       },
       {
-        "command": "bizarro-devin.manualPrompt",
-        "title": "Manually Prompt AI Agent",
+        "command": "bizarro-devin.textualPrompt",
+        "title": "Textual Prompt",
         "category": "Bizarro Devin"
       },
       {
