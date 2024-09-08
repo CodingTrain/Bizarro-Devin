@@ -2,10 +2,7 @@ const player = require('play-sound')();
 const { join } = require('path');
 
 let sounds = {
-  thinking: join(
-    __dirname,
-    '../../sounds/ES_Computer Tone 3 - SFX Producer.mp3'
-  ),
+  thinking: join(__dirname, '../../sounds/robot-thinking.mp3'),
   typing: join(
     __dirname,
     '../../sounds/ES_Keyboard Typing 3 - SFX Producer.mp3'
@@ -28,6 +25,7 @@ function playSound(sound, loop = false) {
   looping = loop;
   return new Promise((resolve, reject) => {
     function startSound() {
+      // { afplay: ['-v', 0.5] }
       currentSound = player.play(filepath, (err) => {
         if (err) {
           console.error('Failed to play:', err);
