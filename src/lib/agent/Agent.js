@@ -295,8 +295,16 @@ class Agent extends StateMachine {
         runTerminalCommand('cls');
         runTerminalCommand('python main.py');
       }
-
-      if (speak.length === 2) {
+      if (speak.length === 3) {
+        // It supports a callback function that gets called when it actually starts talking AND it can take this agent as a third argument
+        await speak(
+          content,
+          () => {
+            this.goToState('talking');
+          },
+          this
+        );
+      } else if (speak.length === 2) {
         // It supports a callback function that gets called when it actually starts talking
         await speak(content, () => {
           this.goToState('talking');
