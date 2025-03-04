@@ -6,6 +6,7 @@ const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
 const Diff = require('diff');
 const { query: queryForContext } = require('../../util/semantic-retrieval');
+const os = require('os');
 
 // States
 const IdleState = require('./states/IdleState');
@@ -292,7 +293,15 @@ class Agent extends StateMachine {
 
         // Run the code
         runTerminalCommand('^C');
-        runTerminalCommand('cls');
+
+        // Detect what OS we are using, if its windows we need to use cls instead of clear
+        const platform = os.platform();
+        if (platform === 'win32') {
+          runTerminalCommand('cls');
+        } else {
+          runTerminalCommand('clear');
+        }
+
         runTerminalCommand('python main.py');
       }
       if (speak.length === 3) {
