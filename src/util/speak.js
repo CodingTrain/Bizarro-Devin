@@ -6,6 +6,7 @@ const config = require('../../config');
 const Speaker = require('speaker');
 const { ElevenLabsClient, play: playElevenLabs } = require('elevenlabs');
 const playHT = require('playht');
+const SentencePacer = require('./sentencePacer');
 
 async function speakCoqui(txt) {
   // tts-server --model_name tts_models/en/ljspeech/vits
@@ -106,6 +107,46 @@ const speakElevenLabsSync = async (text, onStartTalking) => {
   });
 };
 
+const elevenlabsSyncWithTimestamps = async (text, onStartTalking, agent) => {
+  return new Promise(async (resolve, reject) => {
+    const url = `https://api.elevenlabs.io/v1/text-to-speech/${config.elevenLabs.voiceId}/with-timestamps`;
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'xi-api-key': config.elevenLabs.apiKey,
+      },
+      body: JSON.stringify({
+        text,
+        model_id: config.elevenLabs.model,
+        voice_settings: config.elevenLabs.voiceSettings,
+      }),
+    }).then((res) => res.json());
+    console.log(response);
+
+    const audio = Buffer.from(response.audio_base64, 'base64');
+
+    const tempFilePath = path.join(__dirname, '../../', 'temp.mp3');
+    await fs.writeFile(tempFilePath, audio);
+
+    const sentencePacer = new SentencePacer(agent, response.alignment);
+    await sentencePacer.prepare();
+    onStartTalking();
+    sentencePacer.start();
+    player.play(tempFilePath, (err) => {
+      if (err) {
+        console.error('Failed to play:', err);
+        reject(err);
+      } else {
+        // console.log('Audio playback finished.');
+        // Hanging on this, not sure why
+        // fs.unlinkSync(tempFilePath);
+        resolve();
+      }
+    });
+  });
+};
+
 const speakPlayht = async (text) => {
   return new Promise(async (resolve) => {
     playHT.init({
@@ -140,6 +181,7 @@ const speakFunctions = {
   elevenlabs: speakElevenLabs,
   elevenlabsSync: speakElevenLabsSync,
   playht: speakPlayht,
+  elevenlabsSyncWithTimestamps: elevenlabsSyncWithTimestamps,
 };
 
 const speak = speakFunctions[config.tts];

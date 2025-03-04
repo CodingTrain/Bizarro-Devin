@@ -14,6 +14,7 @@ const TypingState = require('./states/typingState');
 const TypingFastState = require('./states/typingFastState');
 const ThinkingState = require('./states/thinkingState');
 const TalkingState = require('./states/talkingState');
+const { runTerminalCommand } = require('../../util/terminal');
 
 class Agent extends StateMachine {
   constructor() {
@@ -284,7 +285,26 @@ class Agent extends StateMachine {
       let content = step.content.trim();
       if (!content) return;
 
-      if (speak.length === 2) {
+      if (this.previousAction === 'EDITOR') {
+        // Save current file
+        const editor = vscode.window.visibleTextEditors[0];
+        await editor.document.save();
+
+        // Run the code
+        runTerminalCommand('^C');
+        runTerminalCommand('cls');
+        runTerminalCommand('python main.py');
+      }
+      if (speak.length === 3) {
+        // It supports a callback function that gets called when it actually starts talking AND it can take this agent as a third argument
+        await speak(
+          content,
+          () => {
+            this.goToState('talking');
+          },
+          this
+        );
+      } else if (speak.length === 2) {
         // It supports a callback function that gets called when it actually starts talking
         await speak(content, () => {
           this.goToState('talking');

@@ -8,3 +8,4 @@ node_modules
 config.js
 embeddings.json
 transcripts/
+temp.mp3

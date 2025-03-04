@@ -27,9 +27,14 @@ class SetupFilesCommand extends Command {
       this.getPathToAssetsFolder('matt-typing.png'),
       'matt-typing.png'
     );
+    await copyFile(this.getPathToAssetsFolder('matt-top.png'), 'matt-top.png');
+    await copyFile(
+      this.getPathToAssetsFolder('matt-bottom.png'),
+      'matt-bottom.png'
+    );
 
-    // create sketch.js && opening it
-    const doc = await createFile('sketch.js');
+    // create main.py && opening it
+    const doc = await createFile('main.py');
     await doc.open();
   }
 
