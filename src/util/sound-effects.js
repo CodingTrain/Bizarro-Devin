@@ -4,7 +4,8 @@ const { join } = require('path');
 let sounds = {
   thinking: join(
     __dirname,
-    '../../sounds/ES_Computer Tone 3 - SFX Producer.mp3'
+    // '../../sounds/ES_Computer Tone 3 - SFX Producer.mp3'
+    '../../sounds/robot-thinking.mp3'
   ),
   typing: join(
     __dirname,
