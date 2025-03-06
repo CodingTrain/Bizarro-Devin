@@ -4,7 +4,7 @@ const { applyDiffs } = require('../../util/realisticTyping');
 const vscode = require('vscode');
 const { Provider } = require('./providers/providerInstance');
 const { speak } = require('../../util/speak');
-const Diff = require('diff');
+const { diffCode } = require('../../util/diffCode');
 const { query: queryForContext } = require('../../util/semantic-retrieval');
 const os = require('os');
 
@@ -277,7 +277,7 @@ class Agent extends StateMachine {
       const currentEditorCode = editor.document
         .getText()
         .replace(/\r\n/g, '\n');
-      const diffs = Diff.diffWordsWithSpace(currentEditorCode, step.content);
+      const diffs = diffCode(currentEditorCode, step.content);
 
       this.goToState(this.speed ? 'typing' : 'typingfast');
       const speedFactor = this.speed ? 1.25 : 0.3;
